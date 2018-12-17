@@ -1,0 +1,79 @@
+﻿@model MovieResourceViewModel
+@{
+    ViewData["Title"] = "资源下载 - " + Model.MovieInfo.FullName;
+}
+
+<div style="height:15px;"></div>
+<div>
+    <div class="resoures-left">
+        <h1><a href="/" title="p9ys">首页</a> - <a href="/movie/@Model.MovieInfo.Id" title="@Model.MovieInfo.FullName">@Model.MovieInfo.FullName</a></h1>
+        <hr />
+        <div>
+            <div class="bdsharebuttonbox"><a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"></a><a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间"></a><a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a><a href="#" class="bds_sqq" data-cmd="sqq" title="分享到QQ好友"></a><a href="#" class="bds_tqq" data-cmd="tqq" title="分享到腾讯微博"></a><a href="#" class="bds_more" data-cmd="more"></a></div>
+            <script>window._bd_share_config = { "common": { "bdSnsKey": {}, "bdText": "", "bdMini": "2", "bdMiniList": false, "bdPic": "", "bdStyle": "1", "bdSize": "24" }, "share": {} }; with (document) 0[(getElementsByTagName('head')[0] || body).appendChild(createElement('script')).src = 'http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion=' + ~(-new Date() / 36e5)];</script>
+        </div>
+        <div class="clearfix"></div>
+        @if (Model.MovieOnlinePlays.Count > 0)
+        {
+            <div id="fm-bt" style="margin: 30px 0 30px 0;">
+                <h4>在线播放源</h4>
+                <div id="bt-result">
+                    @foreach (var onlinePlay in Model.MovieOnlinePlays)
+                    {
+                        <span><a target="_blank" href="@onlinePlay.Url">@onlinePlay.WebSiteName</a> - <a target="_blank" href="@onlinePlay.Url">@onlinePlay.Price</a></span>
+                    }
+                </div>
+            </div>
+        }
+        <div class="clearfix"></div>
+        @foreach (var movieResource in Model.MovieResources)
+        {
+            <hr />
+            <div class="resoures-url" data-id="@movieResource.Id">
+                <img class="avatar pull-left" src="/@movieResource.UserAvatar" height="38" width="38">
+                <p class="u-info">
+                    <a class="pull-right btn btn-default btn-sm" target="_blank" href="@movieResource.Content">点击下载</a>
+                    <a class="pull-right btn btn-default btn-sm btn-copy" href="javascript:void(0)">复制链接</a>@movieResource.UserNickName &nbsp;&nbsp; @movieResource.UpdTime.ToString("yyyy-MM-dd HH:mm:ss")
+                </p>
+                <p class="link">@movieResource.Content</p>
+                <div style="margin:15px 0 0 48px; clear:both;">
+                    <span class="label label-info"><font style="font-weight:normal">大小</font>：@movieResource.Size</span>
+                    <span class="label label-info"><font style="font-weight:normal">画质</font>：@movieResource.Resolution</span>
+                    <span class="label label-info"><font style="font-weight:normal">配音</font>：@movieResource.Dub</span>
+                    <span class="label label-info"><font style="font-weight:normal">字幕</font>：@movieResource.Subtitle</span>
+                </div>
+            </div>
+        }
+    </div>
+
+    <div class="question-right">
+        <div class="intro">
+            <img alt="@Model.MovieInfo.ShortName" class="img-size-2" src="@Model.MovieInfo.ImgUrl">
+            <p><span class="strong">@Model.MovieInfo.ShortName</span></p>
+            <p><span class="strong">评分：</span><span class="red">@Model.MovieInfo.Score.ToString("0.0")</span></p>
+            <p><span class="strong">导演：</span>@Model.MovieInfo.Director</p>
+            <p><span class="strong">主演：</span>@string.Join("、",Model.MovieInfo.Actor.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries))</p>
+        </div>
+        <div class="clearfix"></div>
+
+        @*<div class="panel panel-default other-movies">
+            <div class="panel-heading">
+                <h3 class="panel-title">同类型其它电影</h3>
+            </div>
+            <div class="panel-body">
+                @for (var i = 0; Model.SimilarityMovies != null && i < Model.SimilarityMovies.Count; i++)
+                {
+                    <div class="div-movie">
+                        <a href="/movie/@Model.SimilarityMovies[i].Id" target="_blank" class="thumbnail">
+                            <img alt="@Model.SimilarityMovies[i].ShortName" class="img-size-2" src="@Model.SimilarityMovies[i].ImgUrl">
+                        </a>
+                        <div class="intro">
+                            <p title="@Model.SimilarityMovies[i].ShortName"><span>@Model.SimilarityMovies[i].Score.ToString("f1"))</span>@Model.SimilarityMovies[i].ShortName</p>
+                        </div>
+                    </div>
+                }
+            </div>
+        </div>*@
+    </div>
+</div>
+<div class="clearfix"></div>

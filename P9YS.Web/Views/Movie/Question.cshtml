@@ -1,0 +1,73 @@
+﻿@model MovieQuestionViewModel
+@{
+    ViewData["Title"] = Model.MovieInfo.FullName;
+}
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
+@Xsrf.GetHtml(Context)
+
+@section Scripts{
+    <script>
+        $(function () {
+            $(".question-detail .pagination").html(paging(1, @Model.QuestionAnswers.TotalCount, @Model.QuestionAnswers.PageSize, 3));
+        })
+    </script>
+}
+<div style="height:15px;"></div>
+<input type="hidden" id="questionId" value="@Model.QuestionInfo.Id" />
+<div class="question-detail">
+    <div class="question-left">
+        <div class="topic">
+            <div style="overflow:hidden;">
+                <img class="avatar pull-left" src="/@Model.QuestionInfo.UserAvatar" height="60" width="60">
+                <h1 class="title">@Model.QuestionInfo.Title</h1>
+                <p class="u-info">@*<a class="pull-right">+同问(25)</a>*@@Model.QuestionInfo.UserNickName &nbsp;&nbsp; @Model.QuestionInfo.AddTime.ToString("yyyy-MM-dd HH:mm:ss")</p>
+            </div>
+            <pre>@Model.QuestionInfo.Content</pre>
+        </div>
+        <hr />
+        <div>
+            <div class="bdsharebuttonbox" style="float:right;"><a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"></a><a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间"></a><a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a><a href="#" class="bds_sqq" data-cmd="sqq" title="分享到QQ好友"></a><a href="#" class="bds_tqq" data-cmd="tqq" title="分享到腾讯微博"></a><a href="#" class="bds_more" data-cmd="more"></a></div>
+            <script>window._bd_share_config = { "common": { "bdSnsKey": {}, "bdText": "", "bdMini": "2", "bdMiniList": false, "bdPic": "", "bdStyle": "1", "bdSize": "24" }, "share": {} }; with (document) 0[(getElementsByTagName('head')[0] || body).appendChild(createElement('script')).src = 'http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion=' + ~(-new Date() / 36e5)];</script>
+            <span style="line-height:36px;"><b class="rowsCount">@Model.QuestionInfo.AnswerCount</b> 个回答</span>
+        </div>
+
+        <div class="question-result">
+            @foreach (var item in Model.QuestionAnswers.Data)
+            {
+                <div class="reply-box">
+                    <img class="avatar pull-left" src="/@item.UserAvatar" height="38" width="38">
+                    <p class="u-info"><span class="pull-right glyphicon glyphicon-thumbs-up" data-id="@item.Id" title="赞"><font>@item.Support</font></span>@item.UserNickName &nbsp;&nbsp; @item.AddTime.ToString("yyyy-MM-dd HH:mm:ss")</p>
+                    <pre>@item.Content</pre>
+                </div>
+                <hr />
+            }
+        </div>
+        <nav class="nav-pag">
+            <ul class="pagination"></ul>
+        </nav>
+
+        <div>
+            <textarea id="txt-question-reply" placeholder="回答"></textarea>
+            <br />
+            <button class="btn btn-default btn-lg" id="btn-reply">提交</button>
+        </div>
+    </div>
+
+    <div class="question-right">
+        <div class="intro">
+            <img alt="@Model.MovieInfo.FullName" class="img-size-2" src="@Model.MovieInfo.ImgUrl">
+            <p><span class="strong">@Model.MovieInfo.FullName</span></p>
+            <p><span class="strong">评分：</span><span class="red">@Model.MovieInfo.Score.ToString("0.0")</span></p>
+            <p><span class="strong">导演：</span>@Model.MovieInfo.Director</p>
+            <p><span class="strong">主演：</span>@Model.MovieInfo.Actor</p>
+        </div>
+        <div class="clearfix"></div>
+        <div class="question-hot">
+            @foreach (var item in Model.QuestionTitles)
+            {
+                <p><span class="pull-right">回答(@item.AnswerCount)</span><a target="_blank" href="/movie/question/@item.Id">@item.Title</a></p>
+            }
+        </div>
+    </div>
+</div>
+<div class="clearfix"></div>

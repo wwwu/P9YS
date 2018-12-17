@@ -1,0 +1,22 @@
+﻿@model CurrentUserViewModel
+<div class="navbar-right nav-login" style="z-index:999">
+    @{
+        if (Model.CurrentUser == null)
+        {
+            <button type="button" class="btn btn-default navbar-login" data-toggle="modal" data-target="#panel-login">
+                <span class="glyphicon glyphicon-user"></span> 登录
+            </button>
+            <button type="button" class="btn btn-default navbar-register" data-toggle="modal" data-target="#panel-register">
+                <span class="glyphicon glyphicon-pencil"></span> 注册
+            </button>
+        }
+        else
+        {
+            <p>
+                @Model.CurrentUser.NickName <br />
+                @Model.CurrentUser.Email <a asp-controller="Member" asp-action="Logout">退出</a>
+            </p>
+            <a asp-controller="Account" asp-action="Index"><img class="avatar" src="/@Model.CurrentUser.Avatar" height="42" width="42" /></a>
+        }
+    }
+</div>

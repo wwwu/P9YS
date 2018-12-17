@@ -1,0 +1,152 @@
+﻿@model MovieViewModel;
+@{
+    ViewData["Title"] = Model.MovieInfo.FullName;
+}
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery Xsrf
+@Xsrf.GetHtml(Context)
+
+@section Css{
+    <link rel="stylesheet" href="~/lib/star-rating/star-rating.min.css" />
+}
+@section Scripts{
+    <script src="~/lib/star-rating/star-rating.min.js"></script>
+    <script src="~/lib/star-rating/zh.js"></script>
+    <script>
+        $(".rating").rating({
+            size: "lg",
+            language: "zh",
+            showClear: false,
+        });
+        $(function () {
+            $(".comment .pagination").html(paging(1, @Model.MovieComments.TotalCount, @Model.MovieComments.PageSize, 3));
+            $(".question .pagination").html(paging(1, @Model.QuestionTitles.TotalCount, @Model.QuestionTitles.PageSize, 3));
+        })
+    </script>
+}
+
+<div>
+    <h1 class="movie-title"><a href="/" title="p9ys">首页</a> - @Model.MovieInfo.FullName</h1>
+    <div class="movie-info">
+        <img class="info-lay img-size-1" alt="@Model.MovieInfo.FullName" src="@Model.MovieInfo.ImgUrl" />
+        <div class="info-lay info-dt">
+            @*<p><label class="pull-left">别名：</label></p>*@
+            <p style="overflow:hidden;">
+                <span style="display:block;float:right;width:500px; ">
+                    @foreach (string otherName in Model.MovieInfo.OtherName.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries))
+                    {
+                        <span class="label label-info">@otherName</span>
+                    }
+                </span>
+                <label>别名：</label>
+            </p>
+            <p style="overflow:hidden;">
+                <span style="display:block;float:right;width:500px; ">
+                    @foreach (string actor in Model.MovieInfo.Actor.Split(new string[] { "\r\n", "\n" }, StringSplitOptions.RemoveEmptyEntries))
+                    {
+                        <span class="label label-info"><a target="_blank" title="查看该演员其它作品" href="/?kw=@actor">@actor</a></span>
+                    }
+                </span>
+                <label>主演：</label>
+            </p>
+            <p><label>导演：</label> <a target="_blank" title="查看该导演其它作品" href="/?kw=@Model.MovieInfo.Director">@Model.MovieInfo.Director</a></p>
+            <p><label>产地：</label> @Model.MovieInfo.MovieAreaName</p>
+            <p><label>上映：</label> @Model.MovieInfo.ReleaseDate.ToString("yyyy-MM-dd")</p>
+            <p><label>片长：</label> @(Model.MovieInfo.MovieTime)分钟</p>
+            <p><label>类型：</label> @string.Join("、", Model.MovieInfo.MovieGenres.Select(s => s.Name).ToArray())</p>
+            <p><a class="btn btn-primary" target="_blank" href="/movie/resource/@Model.MovieInfo.Id"><span class="glyphicon glyphicon-download-alt"></span> 查看影片资源</a></p>
+        </div>
+        <div class="rat-wrap">
+            <div class="rat-title">
+                <label>评&#12288;&#12288;分：</label>
+                <label>豆瓣评分：</label>
+                <label>豆瓣链接：</label>
+            </div>
+            <div class="info-lay">
+                <input type="number" class="rating" value="@Model.MovieInfo.Score" data-size="xs">
+                <div style="margin-top:12px;word-wrap:break-word;">@Model.MovieOrigin?.Score.ToString("0.0")</div>
+                <div style="margin-top:15px;word-wrap:break-word;"><a target="_blank" href="@Model.MovieOrigin?.Url">@Model.MovieOrigin?.Url</a></div>
+            </div>
+        </div>
+
+        <ul class="vieworder list-group">
+            <li class="list-group-item"><span class="glyphicon glyphicon-film" aria-hidden="true"></span> 观影顺序</li>
+            @for (var i = 0; i < Model.MovieSeries.Count; i++)
+            {
+                <li class="list-group-item"><a href="/movie/@Model.MovieSeries[i].Id" target="_blank" title="@Model.MovieSeries[i].FullName"><span class="badge">@(i + 1)</span> @Model.MovieSeries[i].FullName</a></li>
+            }
+        </ul>
+
+        <div class="clearfix"></div>
+        <div class="intro">
+            @Html.Raw(Model.MovieInfo.Intro.Replace("\r\n", "<br />&#12288;&#12288;"))
+        </div>
+
+        <!--ID-->
+        <input type="hidden" id="movieId" value="@Model.MovieInfo.Id" />
+        <input type="hidden" id="parentId" value="0" />
+
+        <!--留言-->
+        <div class="comment">
+            <nav class="navbar navbar-default" role="navigation">
+                <span class="glyphicon glyphicon-pencil"></span>&nbsp;&nbsp;留言 <span class="badge">@Model.MovieCommentsCount</span>
+            </nav>
+            <div class="comment-result">
+                @foreach (var Comment in Model.MovieComments.Data)
+                {
+                    <div>
+                        <img class="avatar pull-left" src="/@Comment.UserAvatar" height="38" width="38">
+                        <p class="u-info">
+                            @*<span class="pull-right">@dr["rowId"] 楼</span><a data-id="@Comment.Id" data-l="@Comment.UserNickName" class="pull-right reply">回复</a>*@
+                            @Comment.UserNickName &nbsp;&nbsp; <span class="pull-right">@Comment.AddTime.ToString("yyyy-MM-dd HH:mm:ss")</span>
+                        </p>
+                        <p class="conment-cnt">@Comment.Content</p>
+                        @*@foreach (var Reply in Comment.Replys)
+                        {
+                            <div class="reply-box">
+                                <img class="avatar pull-left" src="/avatar/@Reply.UserAvatar" height="38" width="38">
+                                <p class="u-info">@Reply.UserNickName &nbsp;&nbsp; @Reply.AddTime.ToString("yyyy-MM-dd HH:mm:ss")</p>
+                                <p class="conment-cnt">@Reply.Content</p>
+                            </div>
+                        }*@
+                    </div>
+                    <hr />
+                }
+            </div>
+
+            <nav class="nav-pag">
+                <ul class="pagination pagination-sm"></ul>
+            </nav>
+
+            <div>
+                <textarea id="txt-comment" placeholder="来都来了不说点什么吗..."></textarea>
+                <br />
+                <button class="btn btn-default btn-lg" id="btn-comment">提交</button>
+            </div>
+        </div>
+
+        <!--提问-->
+        <div class="question">
+            <nav class="navbar navbar-default" role="navigation">
+                <span class="glyphicon glyphicon-question-sign"></span>&nbsp;&nbsp;提问 <span class="badge">@Model.QuestionTitles.TotalCount</span>
+            </nav>
+            <div class="question-result">
+                @foreach (var Question in Model.QuestionTitles.Data)
+                {
+                    <p><span class="pull-right">回答(@Question.AnswerCount)</span><a target="_blank" href="/movie/question/@Question.Id">@Question.Title</a></p>
+                }
+            </div>
+            <nav class="nav-pag">
+                <ul class="pagination pagination-sm"></ul>
+            </nav>
+            <div>
+                <input id="txt-question-title" class="question-title" placeholder="标题" type="text" maxlength="50" />
+                <textarea id="txt-question-content" placeholder="问题补充"></textarea>
+                <br />
+                <button class="btn btn-default btn-lg" id="btn-question">提交</button>
+            </div>
+        </div>
+
+    </div>
+</div>
+<div class="clearfix"></div>
+

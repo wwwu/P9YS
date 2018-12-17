@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Remove="Migrations\20181014074515_CreateMovie.cs" />
+    <Compile Remove="Migrations\20181014084949_CreateMovie.cs" />
+    <Compile Remove="Migrations\20181107145121_MidifyMovie_ImgUrl.cs" />
+    <Compile Remove="Migrations\20181108125346_Create_Movie.cs" />
+    <Compile Remove="Migrations\20181113140607_Modify_Movie_Origin.cs" />
+    <Compile Remove="Migrations\20181113141536_Modify_Movie_Origin.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="2.1.0">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="2.1.1" />
+    <PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="2.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\P9YS.Common\P9YS.Common.csproj" />
+  </ItemGroup>
+
+</Project>

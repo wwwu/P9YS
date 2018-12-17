@@ -2,73 +2,86 @@
 <html>
 <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - P9YS.Web</title>
+    <meta http-equiv=X-UA-Compatible content="IE=edge,chrome=1">
+    <meta name="viewport" content="width=1170">
+
+    <title>@ViewBag.Title - 影片推荐,P9影视,p9ys,P9电影,电影下载,@(DateTime.Now.Year)最新电影,迅雷电影下载</title>
+    <meta name="keywords" content="P9影视,p9ys,P9电影,欧美大片,分享最新电影，高清电影,高清电影下载,电影下载,新片下载,p9ys,p9ys.com">
+    <meta name="description" content="P9影视(p9ys.com) - 每天推荐高评分电影,为影视爱好者们提供交流的平台,你可以为在看和看过的电影打分、写影评,提供最新的电影介绍及评论包括上映影片的影讯查询服务。">
 
     <environment include="Development">
         <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
-        <link rel="stylesheet" href="~/css/site.css" />
+        <link rel="stylesheet" href="~/lib/layer-v3.1.1/theme/default/layer.css" />
+        <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     </environment>
     <environment exclude="Development">
-        <link rel="stylesheet" href="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/css/bootstrap.min.css"
-              asp-fallback-href="~/lib/bootstrap/dist/css/bootstrap.min.css"
-              asp-fallback-test-class="sr-only" asp-fallback-test-property="position" asp-fallback-test-value="absolute" />
+        <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+        <link rel="stylesheet" href="~/lib/layer-v3.1.1/theme/default/layer.css" />
         <link rel="stylesheet" href="~/css/site.min.css" asp-append-version="true" />
     </environment>
+    @RenderSection("Css", required: false)
 </head>
 <body>
-    <nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="navbar navbar-inverse navbar-fixed-top">
         <div class="container">
             <div class="navbar-header">
                 <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
-                    <span class="sr-only">Toggle navigation</span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                <a asp-area="" asp-controller="Home" asp-action="Index" class="navbar-brand">P9YS.Web</a>
+                <a href="/"><img style="margin-right:50px;" src="~/images/logo.png" alt="P9影视" /></a>
             </div>
-            <div class="navbar-collapse collapse">
-                <ul class="nav navbar-nav">
-                    <li><a asp-area="" asp-controller="Home" asp-action="Index">Home</a></li>
-                    <li><a asp-area="" asp-controller="Home" asp-action="About">About</a></li>
-                    <li><a asp-area="" asp-controller="Home" asp-action="Contact">Contact</a></li>
-                </ul>
+            <div class="navbar-collapse collapse vertical-center">
+                @await Component.InvokeAsync("LoginStatus")
+                <div class="col-lg-6 navbar-search">
+                    <div class="input-group">
+                        <input type="text" class="form-control" id="ipt_global_search">
+                        <span class="input-group-btn">
+                            <button class="btn btn-default" type="button" id="btn_global_search">
+                                <span class="glyphicon glyphicon-search"></span>
+                            </button>
+                        </span>
+                    </div><!-- /input-group -->
+                </div><!-- /.col-lg-6 -->
             </div>
         </div>
-    </nav>
-
-    <partial name="_CookieConsentPartial" />
-
+    </div>
     <div class="container body-content">
         @RenderBody()
+        <div class="clearfix"></div>
         <hr />
         <footer>
-            <p>&copy; 2018 - P9YS.Web</p>
+            @if (ViewContext.RouteData.Values["action"].ToString().ToLower() == "index")
+            {
+                <p>
+                    友情链接：
+                    @*<a href="/" title="P9影视">P9影视</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <a href="/" title="p9ys">p9ys</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        <a href="/" title="p9ys.com">p9ys.com</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*@
+                </p>
+            }
+            <p>&copy; @DateTime.Now.Year - P9影视 - p9ys.com &nbsp;&nbsp;&nbsp;&nbsp; 联系方式support@p9ys.com</p>
         </footer>
     </div>
+
+    <!-- Login、Register Modal -->
+    @await Component.InvokeAsync("LoginAndRegisterModal")
 
     <environment include="Development">
         <script src="~/lib/jquery/dist/jquery.js"></script>
         <script src="~/lib/bootstrap/dist/js/bootstrap.js"></script>
-        <script src="~/js/site.js" asp-append-version="true"></script>
+        <script src="~/lib/layer-v3.1.1/layer.js"></script>
+        <script src="~/js/common.js" asp-append-version="true"></script>
     </environment>
     <environment exclude="Development">
-        <script src="https://ajax.aspnetcdn.com/ajax/jquery/jquery-3.3.1.min.js"
-                asp-fallback-src="~/lib/jquery/dist/jquery.min.js"
-                asp-fallback-test="window.jQuery"
-                crossorigin="anonymous"
-                integrity="sha384-tsQFqpEReu7ZLhBV2VZlAu7zcOV+rXbYlF2cqB8txI/8aZajjp4Bqd+V6D5IgvKT">
-        </script>
-        <script src="https://ajax.aspnetcdn.com/ajax/bootstrap/3.3.7/bootstrap.min.js"
-                asp-fallback-src="~/lib/bootstrap/dist/js/bootstrap.min.js"
-                asp-fallback-test="window.jQuery && window.jQuery.fn && window.jQuery.fn.modal"
-                crossorigin="anonymous"
-                integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa">
-        </script>
-        <script src="~/js/site.min.js" asp-append-version="true"></script>
+        <script src="~/lib/jquery/dist/jquery.min.js"></script>
+        <script src="~/lib/bootstrap/dist/js/bootstrap.min.js"></script>
+        <script src="~/lib/layer-v3.1.1/layer.js"></script>
+        <script src="~/js/common.min.js" asp-append-version="true"></script>
     </environment>
-
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
     @RenderSection("Scripts", required: false)
+    @await Component.InvokeAsync("XianLiaoJavascript")
 </body>
 </html>

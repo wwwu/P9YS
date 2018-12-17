@@ -1,0 +1,70 @@
+﻿using AutoMapper.QueryableExtensions;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Caching.Memory;
+using P9YS.Common.Enums;
+using P9YS.EntityFramework;
+using P9YS.Services.MovieRecommend.Dto;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace P9YS.Services.MovieRecommend
+{
+    public class MovieRecommendService : IMovieRecommendService
+    {
+        private readonly MovieResourceContext _movieResourceContext;
+        private readonly IMemoryCache _memoryCache;
+        public MovieRecommendService(MovieResourceContext movieResourceContext
+            , IMemoryCache memoryCache)
+        {
+            _movieResourceContext = movieResourceContext;
+            _memoryCache = memoryCache;
+        }
+
+        /// <summary>
+        /// 推荐列表
+        /// </summary>
+        /// <returns></returns>
+        public async Task<List<MovieRecommendOutput>> GetAnnualRecommendsAsync(int limit = 10)
+        {
+            if (!_memoryCache.TryGetValue(CacheKeys.AnnualRecommends, out List<MovieRecommendOutput> annualRecommends))
+            {
+                annualRecommends = await _movieResourceContext.MovieRecommends.Include(s => s.Movie)
+                    .Where(s=>s.Type== RecommendTypeEnum.Annual)
+                    .OrderByDescending(s => s.Sort)
+                    .Take(limit)
+                    .ProjectTo<MovieRecommendOutput>()
+                    .AsNoTracking()
+                    .ToListAsync();
+
+                _memoryCache.Set(CacheKeys.AnnualRecommends, annualRecommends, TimeSpan.FromMinutes(CacheKeys.DefaultMinutes));
+            }
+
+            return annualRecommends;
+        }
+
+        /// <summary>
+        /// 近期推荐列表
+        /// </summary>
+        /// <returns></returns>
+        public async Task<List<MovieRecommendOutput>> GetRecentRecommendsAsync(int limit = 10)
+        {
+            if (!_memoryCache.TryGetValue(CacheKeys.RecentRecommends, out List<MovieRecommendOutput> recentRecommends))
+            {
+                recentRecommends = await _movieResourceContext.MovieRecommends.Include(s => s.Movie)
+                    .Where(s => s.Type == RecommendTypeEnum.Recent)
+                    .OrderByDescending(s => s.Sort)
+                    .Take(limit)
+                    .ProjectTo<MovieRecommendOutput>()
+                    .AsNoTracking()
+                    .ToListAsync();
+
+                _memoryCache.Set(CacheKeys.RecentRecommends, recentRecommends, TimeSpan.FromMinutes(CacheKeys.DefaultMinutes));
+            }
+
+            return recentRecommends;
+        }
+    }
+}
