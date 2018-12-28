@@ -3,7 +3,7 @@ using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
 using P9YS.Common;
 using P9YS.EntityFramework;
-using P9YS.Services.Common;
+using P9YS.Services.Base;
 using P9YS.Services.User;
 using System;
 using System.Collections.Generic;

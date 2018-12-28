@@ -1,4 +1,5 @@
-﻿using AutoMapper.QueryableExtensions;
+﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
 using P9YS.Common.Enums;
@@ -65,6 +66,33 @@ namespace P9YS.Services.MovieRecommend
             }
 
             return recentRecommends;
+        }
+
+        public async Task<List<RecommendOutput>> GetRecommendsAsync(RecommendTypeEnum recommendType)
+        {
+            var recommends = await _movieResourceContext.MovieRecommends.Include(s => s.Movie)
+                .Where(s => s.Type == recommendType)
+                .OrderByDescending(s => s.Sort).ThenByDescending(s=>s.AddTime)
+                .ProjectTo<RecommendOutput>()
+                .AsNoTracking()
+                .ToListAsync();
+            return recommends;
+        }
+
+        public async Task<bool> AddRecommendAsync(MovieRecommendInput recommendInput)
+        {
+            var recommend = Mapper.Map<EntityFramework.Models.MovieRecommend>(recommendInput);
+            var entity = await _movieResourceContext.MovieRecommends.AddAsync(recommend);
+            var rows = await _movieResourceContext.SaveChangesAsync();
+            return rows > 0;
+        }
+
+        public async Task<bool> DelRecommendAsync(int id)
+        {
+            _movieResourceContext.MovieRecommends
+                .Remove(new EntityFramework.Models.MovieRecommend { Id = id });
+            var rows = await _movieResourceContext.SaveChangesAsync();
+            return rows > 0;
         }
     }
 }

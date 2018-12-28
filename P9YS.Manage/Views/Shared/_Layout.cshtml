@@ -1,9 +1,14 @@
-﻿<!DOCTYPE html>
+﻿@{
+    var controller = ViewContext.RouteData.Values["controller"].ToString();
+    var action = ViewContext.RouteData.Values["action"].ToString();
+}
+
+<!DOCTYPE html>
 <html>
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
-    <title>后台管理 - P9YS</title>
+    <title>@ViewData["Title"] - P9YS后台</title>
     <link rel="stylesheet" href="~/lib/layui-v2.4.5/layui/css/layui.css" />
     <link rel="stylesheet" href="~/css/site.min.css" />
     @RenderSection("Css", required: false)
@@ -17,14 +22,6 @@
                 <li class="layui-nav-item"><a target="_blank" href="http://www.p9ys.com">P9YS</a></li>
                 <li class="layui-nav-item"><a target="_blank" href="">Hangfire仪表盘</a></li>
                 <li class="layui-nav-item"><a target="_blank" href="https://tongji.baidu.com/web/7449010/overview/index?siteId=10410192">百度统计</a></li>
-                @*<li class="layui-nav-item">
-                    <a href="javascript:;">其它系统</a>
-                    <dl class="layui-nav-child">
-                        <dd><a href="">邮件管理</a></dd>
-                        <dd><a href="">消息管理</a></dd>
-                        <dd><a href="">授权管理</a></dd>
-                    </dl>
-                </li>*@
             </ul>
             <ul class="layui-nav layui-layout-right">
                 <li class="layui-nav-item">
@@ -46,29 +43,28 @@
                     <li class="layui-nav-item layui-nav-itemed">
                         <a class="" href="javascript:;">影片管理</a>
                         <dl class="layui-nav-child">
-                            <dd class="layui-this"><a href="javascript:;">新片审核</a></dd>
+                            <dd><a href="javascript:;">新片审核</a></dd>
                             <dd><a href="javascript:;">BT资源</a></dd>
                             <dd><a href="javascript:;">评分</a></dd>
                             <dd><a href="javascript:;">留言</a></dd>
                             <dd><a href="javascript:;">提问</a></dd>
                         </dl>
                     </li>
-                    <li class="layui-nav-item">
+                    <li class="layui-nav-item layui-nav-itemed">
                         <a href="javascript:;">用户管理</a>
                         <dl class="layui-nav-child">
                             <dd><a href="javascript:;">用户信息</a></dd>
                         </dl>
                     </li>
-                    <li class="layui-nav-item">
+                    <li class="layui-nav-item layui-nav-itemed">
                         <a href="javascript:;">系统设置</a>
                         <dl class="layui-nav-child">
-                            <dd><a href="javascript:;">首页轮播</a></dd>
-                            <dd><a href="javascript:;">推荐列表</a></dd>
-                            <dd><a href="javascript:;">影片产地</a></dd>
-                            <dd><a href="javascript:;">影片类型</a></dd>
+                            <dd @((controller=="Setting" && action=="Carousel")?"class=layui-this":"")><a href="/Setting/Carousel">首页轮播</a></dd>
+                            <dd @((controller=="Setting" && action=="Recommend")?"class=layui-this":"")><a href="/Setting/Recommend">推荐列表</a></dd>
+                            <dd @((controller=="Setting" && action=="Carousel")?"class=layui-this":"")><a href="javascript:;">影片产地</a></dd>
+                            <dd @((controller=="Setting" && action=="Carousel")?"class=layui-this":"")><a href="javascript:;">影片类型</a></dd>
                         </dl>
                     </li>
-                    @*<li class="layui-nav-item"><a href="">发布商品</a></li>*@
                 </ul>
             </div>
         </div>
@@ -85,14 +81,36 @@
             © p9ys.com
         </div>
     </div>
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/layui-v2.4.5/layui/layui.js"></script>
     @RenderSection("Scripts", required: false)
     <script>
         //JavaScript代码区域
         layui.use('element', function () {
             var element = layui.element;
-
         });
+
+        function ImageToBase64(inputFile, dataCallback) {
+            if (typeof (FileReader) === 'undefined') {
+                alert("抱歉，你的浏览器不支持 FileReader，不能将图片转换为Base64！");
+            } else {
+                try {
+                    /*图片转Base64 核心代码*/
+                    var file = inputFile.files[0];
+                    if (!/image\/\w+/.test(file.type)) {
+                        alert("请确保文件为图像类型");
+                        return false;
+                    }
+                    var reader = new FileReader();
+                    reader.onload = function () {
+                        dataCallback(this.result);
+                    }
+                    reader.readAsDataURL(file);
+                } catch (e) {
+                    alert('图片转Base64出错' + e.toString())
+                }
+            }
+        }
     </script>
 </body>
 </html>

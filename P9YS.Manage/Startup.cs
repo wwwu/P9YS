@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.DataProtection;
@@ -11,6 +12,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using P9YS.Common;
+using P9YS.Services.Base;
 
 namespace P9YS.Manage
 {
@@ -62,6 +64,7 @@ namespace P9YS.Manage
             #region 注入
 
             services.AddScoped<EntityFramework.MovieResourceContext>();
+            services.AddSingleton<Services.Base.BaseService>();
             //批量注入Service
             var dics = BaseHelper.GetClassName("P9YS.Services", t => t.Name.EndsWith("Service") && !t.IsInterface);
             foreach (var item in dics)
@@ -73,6 +76,12 @@ namespace P9YS.Manage
             }
 
             #endregion
+            
+            //Json输出时间格式
+            services.AddMvc().AddJsonOptions(option =>
+            {
+                option.SerializerSettings.DateFormatString = "yyyy-MM-dd HH:mm:ss";
+            });
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
@@ -91,6 +100,9 @@ namespace P9YS.Manage
 
             app.UseStaticFiles();
             app.UseAuthentication();
+
+            //AutoMapper
+            Mapper.Initialize(cfg => cfg.AddProfile(new AutoMapperProfile()));
 
             app.UseMvc(routes =>
             {

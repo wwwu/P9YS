@@ -27,6 +27,7 @@ namespace P9YS.Common
         public string SecretKey { get; set; }
         public string Bucket { get; set; }
         public string CosDomain { get; set; }
+        public string Region { get; set; }
     }
 
     public class XianLiao

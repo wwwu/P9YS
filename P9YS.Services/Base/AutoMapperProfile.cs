@@ -6,7 +6,7 @@ using P9YS.EntityFramework.Models;
 using P9YS.Services;
 using System.Linq;
 
-namespace P9YS.Services.Common
+namespace P9YS.Services.Base
 {
     public class AutoMapperProfile:Profile
     {
@@ -22,12 +22,16 @@ namespace P9YS.Services.Common
             #region Carousel
 
             CreateMap<EntityFramework.Models.Carousel, Carousel.Dto.CarouselOutput>();
+            CreateMap<Carousel.Dto.Carouselnput, EntityFramework.Models.Carousel>();
+                //.ForAllMembers(opt => opt.Condition((s, d, sourceMember) => sourceMember != null)); //忽略空值映射
 
             #endregion
 
             #region MovieRecommend
 
             CreateMap<EntityFramework.Models.MovieRecommend, MovieRecommend.Dto.MovieRecommendOutput>();
+            CreateMap<MovieRecommend.Dto.MovieRecommendInput, EntityFramework.Models.MovieRecommend>()
+                .ForMember(s => s.AddTime, option => option.MapFrom(s => DateTime.Now));
 
             #endregion
 

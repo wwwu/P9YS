@@ -7,11 +7,6 @@ namespace P9YS.Services
 {
     public class Result<T>
     {
-        public Result()
-        {
-            Code = ErrorCodeEnum.Success;
-        }
-
         public Result(ErrorCodeEnum errorCodeEnum=ErrorCodeEnum.Success)
         {
             Code = errorCodeEnum;
@@ -24,11 +19,6 @@ namespace P9YS.Services
 
     public class Result
     {
-        public Result()
-        {
-            Code = ErrorCodeEnum.Success;
-        }
-
         public Result(ErrorCodeEnum errorCodeEnum = ErrorCodeEnum.Success)
         {
             Code = errorCodeEnum;

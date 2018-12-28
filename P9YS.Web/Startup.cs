@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Threading.Tasks;
+using AutoMapper;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.DataProtection;
@@ -12,6 +13,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using P9YS.Common;
+using P9YS.Services.Base;
 
 namespace P9YS.Web
 {
@@ -109,6 +111,9 @@ namespace P9YS.Web
             app.UseStaticFiles();
             app.UseSession();
             app.UseAuthentication();
+
+            //AutoMapper
+            Mapper.Initialize(cfg => cfg.AddProfile(new AutoMapperProfile()));
 
             app.UseMvc(routes =>
             {

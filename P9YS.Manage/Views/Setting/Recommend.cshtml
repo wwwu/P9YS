@@ -1,0 +1,240 @@
+﻿
+@{
+    ViewData["Title"] = "推荐列表";
+}
+
+<h2>@ViewData["Title"]</h2>
+<br />
+<div class="layui-row layui-col-space15">
+    <div class="layui-col-md6">
+        <div class="layui-card">
+            <div class="layui-card-header"><b>近期推荐</b></div>
+            <table id="tb_recent" lay-filter="tb_recent"></table>
+        </div>
+    </div>
+    <div class="layui-col-md6">
+        <div class="layui-card">
+            <div class="layui-card-header"><b>年度推荐</b></div>
+            <table id="tb_annual" lay-filter="tb_annual"></table>
+        </div>
+    </div>
+</div>
+
+
+<form class="layui-form" style="display:none;margin:15px 15px 0 0;" id="lay_add" action="" lay-filter="lay_add">
+    <input type="hidden" name="id" />
+    <div class="layui-form-item">
+        <label class="layui-form-label">MovieId</label>
+        <div class="layui-input-block">
+            <input type="number" name="movieId" lay-verify="" autocomplete="off" placeholder="MovieId" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">推荐类型</label>
+        <div class="layui-input-block">
+            <select name="type" lay-filter="type">
+                <option value="1" selected="">近期推荐</option>
+                <option value="2">年度推荐</option>
+            </select>
+        </div>
+    </div>
+</form>
+
+@section Scripts{
+    <script type="text/html" id="toolbar">
+        <div class="layui-btn-container">
+            <button class="layui-btn layui-btn-sm" lay-event="add">新增</button>
+        </div>
+    </script>
+    <script type="text/html" id="operation">
+        <a class="layui-btn layui-btn-xs" lay-event="del">删除</a>
+    </script>
+
+    <script>
+        layui.use(['table', 'form'], function () {
+            var table = layui.table, form = layui.form;
+
+            table.render({
+                elem: '#tb_recent'
+                , url: '/Setting/GetRecommends?recommendType=1' //数据接口
+                , method: "get"
+                , page: false
+                , toolbar: '#toolbar'
+                , response: {
+                    statusCode: 10000 //规定成功的状态码，默认：0
+                }
+                , parseData: function (res) { //将原始数据解析成 table 组件所规定的数据
+                    return {
+                        "code": res.code,
+                        "msg": res.message,
+                        "data": res.content
+                    };
+                }
+                , cols: [[ //表头
+                    { field: 'movieId', title: 'MovieId', width: 80, fixed: 'left' }
+                    , { field: 'movieShortName', title: '名称', fixed: 'left' }
+                    , { field: 'addTime', title: '推荐日期', width: 200 }
+                    , { title: '', width: 100, fixed: 'right', toolbar: '#operation' }
+                ]]
+            });
+
+            table.render({
+                elem: '#tb_annual'
+                , url: '/Setting/GetRecommends?recommendType=2' //数据接口
+                , method: "get"
+                , page: false
+                , toolbar: '#toolbar'
+                , response: {
+                    statusCode: 10000 //规定成功的状态码，默认：0
+                }
+                , parseData: function (res) { //将原始数据解析成 table 组件所规定的数据
+                    return {
+                        "code": res.code,
+                        "msg": res.message,
+                        "data": res.content
+                    };
+                }
+                , cols: [[ //表头
+                    { field: 'movieId', title: 'MovieId', width: 80, fixed: 'left' }
+                    , { field: 'movieShortName', title: '名称', fixed: 'left' }
+                    , { field: 'addTime', title: '推荐日期', width: 200 }
+                    , { title: '', width: 100, fixed: 'right', toolbar: '#operation' }
+                ]]
+            });
+
+            //监听行工具事件
+            table.on('tool(tb_recent)', function (obj) {
+                if (obj.event === 'del') { //删除
+                    layer.confirm('确定要删除？', { icon: 7, title: '提示' }, function (index) {
+                        var load = layer.load(2);
+                        $.ajax({
+                            type: "delete",
+                            url: "/Setting/DelRecommend/" + obj.data.id,
+                            dataType: "json",
+                            success: function (result) {
+                                if (result.code == 10000 && result.content) {
+                                    layer.closeAll();
+                                    obj.del();
+                                    layer.msg("成功");
+                                } else {
+                                    layer.msg(result.message, function () { });
+                                }
+                            },
+                            error: function (ex) {
+                                layer.close(load);
+                                layer.msg("异常", function () { });
+                            }
+                        })
+                    });
+                }
+            });
+            table.on('tool(tb_annual)', function (obj) {
+                if (obj.event === 'del') { //删除
+                    layer.confirm('确定要删除？', { icon: 3, title: '提示' }, function (index) {
+                        var load = layer.load(2);
+                        $.ajax({
+                            type: "delete",
+                            url: "/Setting/DelRecommend/" + obj.data.id,
+                            dataType: "json",
+                            success: function (result) {
+                                if (result.code == 10000 && result.content) {
+                                    layer.closeAll();
+                                    obj.del();
+                                    layer.msg("成功");
+                                } else {
+                                    layer.msg(result.message, function () { });
+                                }
+                            },
+                            error: function (ex) {
+                                layer.close(load);
+                                layer.msg("异常", function () { });
+                            }
+                        })
+                    });
+                }
+            });
+
+            //监听头工具事件
+            table.on('toolbar(tb_recent)', function (obj) {
+                switch (obj.event) {
+                    case 'add': //新增
+                        //重置表单值
+                        var $form = $("#lay_add");
+                        $form[0].reset();
+                        layer.open({
+                            title: "新增",
+                            area: ["380px", "300px"],
+                            shade: 0,
+                            type: 1,
+                            content: $("#lay_add"),
+                            btn: ['保存', '取消'],
+                            yes: function () {
+                                var requestBody = $form.serialize();
+                                var load = layer.load(2);
+                                $.ajax({
+                                    type: "post",
+                                    url: "/Setting/AddRecommend",
+                                    dataType: "json",
+                                    data: requestBody,
+                                    success: function (result) {
+                                        if (result.code == 10000 && result.content) {
+                                            layer.msg("成功");
+                                            location.href = location.href;
+                                        } else {
+                                            layer.msg(result.message, function () { });
+                                        }
+                                    },
+                                    error: function (ex) {
+                                        layer.close(load);
+                                        layer.msg("异常", function () { });
+                                    }
+                                })
+                            }
+                        });
+                        break;
+                };
+            });
+            table.on('toolbar(tb_annual)', function (obj) {
+                switch (obj.event) {
+                    case 'add': //新增
+                        //重置表单值
+                        var $form = $("#lay_add");
+                        $form[0].reset();
+                        form.val('lay_add', { "type": 2 });
+                        layer.open({
+                            title: "新增",
+                            area: ["380px", "300px"],
+                            shade: 0,
+                            type: 1,
+                            content: $("#lay_add"),
+                            btn: ['保存', '取消'],
+                            yes: function () {
+                                var requestBody = $form.serialize();
+                                var load = layer.load(2);
+                                $.ajax({
+                                    type: "post",
+                                    url: "/Setting/AddRecommend",
+                                    dataType: "json",
+                                    data: requestBody,
+                                    success: function (result) {
+                                        if (result.code == 10000 && result.content) {
+                                            layer.msg("成功");
+                                            location.href = location.href;
+                                        } else {
+                                            layer.msg(result.message, function () { });
+                                        }
+                                    },
+                                    error: function (ex) {
+                                        layer.close(load);
+                                        layer.msg("异常", function () { });
+                                    }
+                                })
+                            }
+                        });
+                        break;
+                };
+            });
+        });
+    </script>
+}
+

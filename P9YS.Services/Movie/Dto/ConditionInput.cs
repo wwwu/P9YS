@@ -1,5 +1,5 @@
 ﻿using P9YS.Common.Enums;
-using P9YS.Services.Common;
+using P9YS.Services.Base;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;

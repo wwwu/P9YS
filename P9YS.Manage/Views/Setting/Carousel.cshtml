@@ -1,0 +1,189 @@
+﻿
+@{
+    ViewData["Title"] = "首页轮播";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<table id="tb_carousel" lay-filter="tb_carousel"></table>
+<form class="layui-form" style="display:none;margin:15px 15px 0 0;" id="lay_add" action="" lay-filter="lay_add">
+    <input type="hidden" name="id" value="" />
+    <div class="layui-form-item">
+        <label class="layui-form-label">标题</label>
+        <div class="layui-input-block">
+            <input type="text" name="title" lay-verify="" autocomplete="off" placeholder="请输入标题" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">跳转链接</label>
+        <div class="layui-input-block">
+            <input type="text" name="link" lay-verify="" autocomplete="off" placeholder="完整URL" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">状态</label>
+        <div class="layui-input-block">
+            <input type="radio" name="state" value="0" title="显示" checked="">
+            <input type="radio" name="state" value="1" title="隐藏">
+        </div>
+    </div><div class="layui-form-item">
+        <label class="layui-form-label">图片</label>
+        <div class="layui-input-block">
+            <img id="imgBox" style="cursor:pointer;max-width:400px;" alt="点击上传" src="" />
+            <input id="imgFile" style="display:none" type="file">
+            <input type="hidden" name="imgData" value="" />
+        </div>
+    </div>
+</form>
+
+@section Scripts{
+    <script type="text/html" id="toolbar">
+        <div class="layui-btn-container">
+            <button class="layui-btn layui-btn-sm" lay-event="add">新增</button>
+        </div>
+    </script>
+    <script type="text/html" id="operation">
+        <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+    </script>
+
+    <script>
+        layui.use(['table','form'], function () {
+            var table = layui.table, form = layui.form;
+
+            table.render({
+                elem: '#tb_carousel'
+                , url: '/Setting/GetCarousels' //数据接口
+                , method: "get"
+                , request: {
+                    pageName: "PageIndex"
+                    , limitName: "PageSize"
+                }
+                , page: true //开启分页
+                , limit: 20
+                , toolbar: '#toolbar'
+                , response: {
+                    statusCode: 10000 //规定成功的状态码，默认：0
+                }
+                , parseData: function (res) { //将原始数据解析成 table 组件所规定的数据
+                    return {
+                        "code": res.code,
+                        "msg": res.message,
+                        "count": res.content.totalCount,
+                        "data": res.content.data
+                    };
+                }
+                , cols: [[ //表头
+                    { field: 'id', title: 'ID', width: 80, fixed: 'left' }
+                    , {
+                        field: 'imgUrl', title: '图片', width: 100, templet: function (item) {
+                            return '<img src="' + item.imgUrl + '" />'
+                        }
+                    }
+                    , { field: 'title', title: '标题', width: 300 }
+                    , { field: 'link', title: '跳转链接' }
+                    , {
+                        field: 'state', title: '状态', width: 80, templet: function (item) {
+                            return item.state == 0 ? '<span style="color:#009688">显示</span>' : '隐藏'
+                        }
+                    }
+                    , { title: '', width: 100, fixed: 'right',  toolbar: '#operation' }
+                ]]
+            });
+
+            //监听行工具事件
+            table.on('tool(tb_carousel)', function (obj) {
+                if (obj.event === 'edit') { //编辑
+                    $("#imgBox").attr("src", obj.data.imgUrl);
+                    obj.data.state = obj.data.state.toString();
+                    form.val("lay_add", obj.data);
+
+                    var $form = $("#lay_add");
+                    layer.open({
+                        title: "编辑",
+                        area: ["580px", "530px"],
+                        shade:0,
+                        type: 1,
+                        content: $("#lay_add"),
+                        btn: ['保存', '取消'],
+                        yes: function () {
+                            var requestBody = $form.serialize();
+                            var load = layer.load(2);
+                            $.ajax({
+                                type: "post",
+                                url: "/Setting/UpdCarousel",
+                                dataType: "json",
+                                data: requestBody,
+                                success: function (result) {
+                                    if (result.code == 10000) {
+                                        layer.closeAll();
+                                        obj.update(result.content);
+                                        layer.msg("成功");
+                                    } else {
+                                        layer.msg(result.message, function () { });
+                                    }
+                                },
+                                error: function (ex) {
+                                    layer.close(load);
+                                    layer.msg("异常", function () { });
+                                }
+                            })
+                        }
+                    });
+                }
+            });
+
+            //监听头工具事件
+            table.on('toolbar(tb_carousel)', function (obj) {
+                switch (obj.event) {
+                    case 'add': //新增
+                        //重置表单值
+                        var $form = $("#lay_add");
+                        $form[0].reset();
+                        layer.open({
+                            title: "新增",
+                            area: ["580px", "530px"],
+                            shade: 0,
+                            type: 1,
+                            content: $("#lay_add"),
+                            btn: ['保存', '取消'],
+                            yes: function () {
+                                var requestBody = $form.serialize();
+                                var load = layer.load(2);
+                                $.ajax({
+                                    type: "post",
+                                    url: "/Setting/AddCarousel",
+                                    dataType: "json",
+                                    data: requestBody,
+                                    success: function (result) {
+                                        if (result.code == 10000) {
+                                            layer.msg("成功");
+                                            location.href = location.href;
+                                        } else {
+                                            layer.msg(result.message, function () { });
+                                        }
+                                    },
+                                    error: function (ex) {
+                                        layer.close(load);
+                                        layer.msg("异常", function () { });
+                                    }
+                                })
+                            }
+                        });
+                        break;
+                };
+            });
+
+            //图片选取、处理 转base64
+            $("#imgBox").click(function () {
+                $("#imgFile").click();
+            })
+            $("#imgFile").change(function () {
+                ImageToBase64(this, function (data) {
+                    $('#imgBox').attr('src', data);
+                    $('[name="imgData"]').val(data.replace(/data:image\/.+?base64,/,""));
+                });
+            });
+        });
+    </script>
+}
+
