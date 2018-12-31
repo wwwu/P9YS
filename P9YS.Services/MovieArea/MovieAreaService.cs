@@ -1,7 +1,10 @@
-﻿using AutoMapper.QueryableExtensions;
+﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Memory;
+using P9YS.Common;
 using P9YS.EntityFramework;
+using P9YS.Services.MovieArea.Dto;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,7 +24,7 @@ namespace P9YS.Services.MovieArea
             _memoryCache = memoryCache;
         }
 
-        public async Task<List<Dto.MovieAreaOutput>> GetMovieAreasAsync()
+        public async Task<List<MovieAreaOutput>> GetMovieAreasAsync()
         {
             if (!_memoryCache.TryGetValue(CacheKeys.MovieAreas, out List<Dto.MovieAreaOutput> movieAreas))
             {
@@ -35,6 +38,65 @@ namespace P9YS.Services.MovieArea
             }
 
             return movieAreas;
+        }
+
+        public async Task<PagingOutput<EntityFramework.Models.MovieArea>> GetMovieAreasAsync(PagingInput<string> pagingInput)
+        {
+            var query = _movieResourceContext.MovieAreas.AsQueryable();
+            if(!string.IsNullOrWhiteSpace(pagingInput.Condition))
+                query = query.Where(s => s.Area.Contains(pagingInput.Condition));
+
+            var areas = await query.Skip((pagingInput.PageIndex - 1) * pagingInput.PageSize)
+                .Take(pagingInput.PageSize)
+                .AsNoTracking()
+                .ToListAsync();
+            var totalCount = await query.CountAsync();
+
+            var result = new PagingOutput<EntityFramework.Models.MovieArea>
+            {
+                PageIndex = pagingInput.PageIndex,
+                PageSize = pagingInput.PageSize,
+                Data = areas,
+                TotalCount = totalCount
+            };
+            return result;
+        }
+        public async Task<Result> AddMovieAreaAsync(MovieAreaInput movieAreaInput)
+        {
+            var result = new Result();
+            var isRepeated = await _movieResourceContext.MovieAreas
+                .AnyAsync(s => s.Area == movieAreaInput.Area.Trim());
+            if (isRepeated)
+            {
+                result.Code = ErrorCodeEnum.Repeated;
+                result.Message = ErrorCodeEnum.Repeated.GetRemark();
+                return result;
+            }
+
+            var movieArea = Mapper.Map<EntityFramework.Models.MovieArea>(movieAreaInput);
+            await _movieResourceContext.MovieAreas.AddAsync(movieArea);
+            var rows = await _movieResourceContext.SaveChangesAsync();
+            result.Content = rows > 0;
+            return result;
+        }
+
+        public async Task<Result> UpdMovieAreaAsync(MovieAreaInput movieAreaInput)
+        {
+            var result = new Result();
+            var isRepeated = await _movieResourceContext.MovieAreas
+                .AnyAsync(s => s.Area == movieAreaInput.Area.Trim() && s.Id != movieAreaInput.Id);
+            if (isRepeated)
+            {
+                result.Code = ErrorCodeEnum.Repeated;
+                result.Message = ErrorCodeEnum.Repeated.GetRemark();
+                return result;
+            }
+
+            var movieArea = Mapper.Map<EntityFramework.Models.MovieArea>(movieAreaInput);
+            _movieResourceContext.MovieAreas.Update(movieArea);
+            var rows = await _movieResourceContext.SaveChangesAsync();
+            result.Content = movieArea;
+            return result;
         }
     }
 }

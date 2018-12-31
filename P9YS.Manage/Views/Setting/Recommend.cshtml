@@ -4,7 +4,8 @@
 }
 
 <h2>@ViewData["Title"]</h2>
-<br />
+<hr class="layui-bg-black">
+
 <div class="layui-row layui-col-space15">
     <div class="layui-col-md6">
         <div class="layui-card">
@@ -121,8 +122,10 @@
                                 }
                             },
                             error: function (ex) {
-                                layer.close(load);
                                 layer.msg("异常", function () { });
+                            },
+                            complete: function () {
+                                layer.close(load);
                             }
                         })
                     });
@@ -146,8 +149,10 @@
                                 }
                             },
                             error: function (ex) {
-                                layer.close(load);
                                 layer.msg("异常", function () { });
+                            },
+                            complete: function () {
+                                layer.close(load);
                             }
                         })
                     });
@@ -185,8 +190,10 @@
                                         }
                                     },
                                     error: function (ex) {
-                                        layer.close(load);
                                         layer.msg("异常", function () { });
+                                    },
+                                    complete: function () {
+                                        layer.close(load);
                                     }
                                 })
                             }
@@ -225,8 +232,10 @@
                                         }
                                     },
                                     error: function (ex) {
-                                        layer.close(load);
                                         layer.msg("异常", function () { });
+                                    },
+                                    complete: function () {
+                                        layer.close(load);
                                     }
                                 })
                             }

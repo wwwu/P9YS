@@ -10,6 +10,10 @@ using P9YS.Services;
 using P9YS.Services.Carousel;
 using P9YS.Services.Carousel.Dto;
 using P9YS.Services.Movie;
+using P9YS.Services.MovieArea;
+using P9YS.Services.MovieArea.Dto;
+using P9YS.Services.MovieGenres;
+using P9YS.Services.MovieGenres.Dto;
 using P9YS.Services.MovieRecommend;
 using P9YS.Services.MovieRecommend.Dto;
 
@@ -21,17 +25,23 @@ namespace P9YS.Manage.Controllers
         private readonly IMovieService _movieService;
         private readonly ICarouselService _carouselService;
         private readonly IMovieRecommendService _movieRecommendService;
+        private readonly IMovieAreaService _movieAreaService;
+        private readonly IMovieGenreService _movieGenreService;
 
         public SettingController(IMovieService movieService
             , ICarouselService carouselService
-            , IMovieRecommendService movieRecommendService)
+            , IMovieRecommendService movieRecommendService
+            , IMovieAreaService movieAreaService
+            , IMovieGenreService movieGenreService)
         {
             _movieService = movieService;
             _carouselService = carouselService;
             _movieRecommendService = movieRecommendService;
+            _movieAreaService = movieAreaService;
+            _movieGenreService = movieGenreService;
         }
 
-        #region Carousel
+        #region 轮播
 
         public IActionResult Carousel()
         {
@@ -64,7 +74,7 @@ namespace P9YS.Manage.Controllers
 
         #endregion
 
-        #region Recomment
+        #region 推荐
 
         public IActionResult Recommend()
         {
@@ -98,6 +108,72 @@ namespace P9YS.Manage.Controllers
             {
                 Content = await _movieRecommendService.DelRecommendAsync(id)
             };
+            return Json(result);
+        }
+
+        #endregion
+
+        #region 地区
+
+        public IActionResult Area()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        public async Task<JsonResult> GetAreas(PagingInput<string> pagingInput)
+        {
+            var result = new Result
+            {
+                Content = await _movieAreaService.GetMovieAreasAsync(pagingInput)
+            };
+            return Json(result);
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> AddArea(MovieAreaInput movieAreaInput)
+        {
+            var result = await _movieAreaService.AddMovieAreaAsync(movieAreaInput);
+            return Json(result);
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> UpdArea(MovieAreaInput movieAreaInput)
+        {
+            var result = await _movieAreaService.UpdMovieAreaAsync(movieAreaInput);
+            return Json(result);
+        }
+
+        #endregion
+
+        #region 类型
+
+        public IActionResult Genre()
+        {
+            return View();
+        }
+
+        [HttpGet]
+        public async Task<JsonResult> GetGenres(PagingInput<string> pagingInput)
+        {
+            var result = new Result
+            {
+                Content = await _movieGenreService.GetMovieGenresAsync(pagingInput)
+            };
+            return Json(result);
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> AddGenre(MoiveGenreInput moiveGenreInput)
+        {
+            var result = await _movieGenreService.AddMovieGenreAsync(moiveGenreInput);
+            return Json(result);
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> UpdGenre(MoiveGenreInput moiveGenreInput)
+        {
+            var result = await _movieGenreService.UpdMovieGenreAsync(moiveGenreInput);
             return Json(result);
         }
 

@@ -1,38 +1,31 @@
 ﻿
 @{
-    ViewData["Title"] = "首页轮播";
+    ViewData["Title"] = "国家设置";
 }
 
 <h2>@ViewData["Title"]</h2>
 <hr class="layui-bg-black">
 
-<table id="tb_carousel" lay-filter="tb_carousel"></table>
+<div class="sreachBar">
+    <div class="layui-inline">
+        <input class="layui-input" name="id" id="ipt_area" placeholder="地区名称" autocomplete="off">
+    </div>
+    <button class="layui-btn" id="btn_sreach" data-type="reload">搜索</button>
+</div>
+<table id="tb_area" lay-filter="tb_area"></table>
 <form class="layui-form" style="display:none;margin:15px 15px 0 0;" id="lay_add" action="" lay-filter="lay_add">
     <input type="hidden" name="id" value="" />
     <div class="layui-form-item">
-        <label class="layui-form-label">标题</label>
+        <label class="layui-form-label">地区</label>
         <div class="layui-input-block">
-            <input type="text" name="title" lay-verify="" autocomplete="off" placeholder="请输入标题" class="layui-input">
+            <input type="text" name="area" lay-verify="" autocomplete="off" placeholder="地区" class="layui-input">
         </div>
     </div>
     <div class="layui-form-item">
-        <label class="layui-form-label">跳转链接</label>
+        <label class="layui-form-label">小众地区</label>
         <div class="layui-input-block">
-            <input type="text" name="link" lay-verify="" autocomplete="off" placeholder="完整URL" class="layui-input">
-        </div>
-    </div>
-    <div class="layui-form-item">
-        <label class="layui-form-label">状态</label>
-        <div class="layui-input-block">
-            <input type="radio" name="state" value="0" title="显示" checked="">
-            <input type="radio" name="state" value="1" title="隐藏">
-        </div>
-    </div><div class="layui-form-item">
-        <label class="layui-form-label">图片</label>
-        <div class="layui-input-block">
-            <img id="imgBox" style="cursor:pointer;max-width:400px;" alt="点击上传" src="" />
-            <input id="imgFile" style="display:none" type="file">
-            <input type="hidden" name="imgData" value="" />
+            <input type="radio" name="other" value="0" title="否" checked="">
+            <input type="radio" name="other" value="1" title="是">
         </div>
     </div>
 </form>
@@ -45,6 +38,7 @@
     </script>
     <script type="text/html" id="operation">
         <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+        @*<a class="layui-btn layui-btn-xs" lay-event="del">删除</a>*@
     </script>
 
     <script>
@@ -52,8 +46,8 @@
             var table = layui.table, form = layui.form;
 
             table.render({
-                elem: '#tb_carousel'
-                , url: '/Setting/GetCarousels' //数据接口
+                elem: '#tb_area'
+                , url: '/Setting/GetAreas' //数据接口
                 , method: "get"
                 , request: {
                     pageName: "PageIndex"
@@ -75,16 +69,10 @@
                 }
                 , cols: [[ //表头
                     { field: 'id', title: 'ID', width: 80, fixed: 'left' }
+                    , { field: 'area', title: '地区' }
                     , {
-                        field: 'imgUrl', title: '图片', width: 100, templet: function (item) {
-                            return '<img src="' + item.imgUrl + '" />'
-                        }
-                    }
-                    , { field: 'title', title: '标题', width: 300 }
-                    , { field: 'link', title: '跳转链接' }
-                    , {
-                        field: 'state', title: '状态', width: 80, templet: function (item) {
-                            return item.state == 0 ? '<span style="color:#009688">显示</span>' : '隐藏'
+                        field: 'other', title: '小众地区', width: 150, templet: function (item) {
+                            return item.other == 0 ? '<span style="color:#009688">否</span>' : '是'
                         }
                     }
                     , { title: '', width: 100, fixed: 'right', toolbar: '#operation' }
@@ -92,16 +80,15 @@
             });
 
             //监听行工具事件
-            table.on('tool(tb_carousel)', function (obj) {
+            table.on('tool(tb_area)', function (obj) {
                 if (obj.event === 'edit') { //编辑
-                    $("#imgBox").attr("src", obj.data.imgUrl);
-                    obj.data.state = obj.data.state.toString();
+                    obj.data.other = obj.data.other.toString();
                     form.val("lay_add", obj.data);
 
                     var $form = $("#lay_add");
                     layer.open({
                         title: "编辑",
-                        area: ["580px", "530px"],
+                        area: ["400px", "230px"],
                         shade: 0,
                         type: 1,
                         content: $("#lay_add"),
@@ -111,7 +98,7 @@
                             var load = layer.load(2);
                             $.ajax({
                                 type: "post",
-                                url: "/Setting/UpdCarousel",
+                                url: "/Setting/UpdArea",
                                 dataType: "json",
                                 data: requestBody,
                                 success: function (result) {
@@ -136,7 +123,7 @@
             });
 
             //监听头工具事件
-            table.on('toolbar(tb_carousel)', function (obj) {
+            table.on('toolbar(tb_area)', function (obj) {
                 switch (obj.event) {
                     case 'add': //新增
                         //重置表单值
@@ -144,7 +131,7 @@
                         $form[0].reset();
                         layer.open({
                             title: "新增",
-                            area: ["580px", "530px"],
+                            area: ["400px", "230px"],
                             shade: 0,
                             type: 1,
                             content: $("#lay_add"),
@@ -154,7 +141,7 @@
                                 var load = layer.load(2);
                                 $.ajax({
                                     type: "post",
-                                    url: "/Setting/AddCarousel",
+                                    url: "/Setting/AddArea",
                                     dataType: "json",
                                     data: requestBody,
                                     success: function (result) {
@@ -178,15 +165,25 @@
                 };
             });
 
-            //图片选取、处理 转base64
-            $("#imgBox").click(function () {
-                $("#imgFile").click();
-            })
-            $("#imgFile").change(function () {
-                ImageToBase64(this, function (data) {
-                    $('#imgBox').attr('src', data);
-                    $('[name="imgData"]').val(data.replace(/data:image\/.+?base64,/, ""));
-                });
+            var $ = layui.$, active = {
+                reload: function () {
+                    var areaName = $('#ipt_area').val();
+
+                    //执行重载
+                    table.reload('tb_area', {
+                        page: {
+                            curr: 1 //重新从第 1 页开始
+                        }
+                        , where: {
+                            condition: areaName
+                        }
+                    });
+                }
+            };
+
+            $('#btn_sreach').on('click', function () {
+                var type = $(this).data('type'); //reload
+                active[type] ? active[type].call(this) : '';
             });
         });
     </script>

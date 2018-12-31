@@ -82,6 +82,13 @@ namespace P9YS.Manage
             {
                 option.SerializerSettings.DateFormatString = "yyyy-MM-dd HH:mm:ss";
             });
+            
+            //Filter
+            services.AddMvc(option =>
+            {
+                //模型验证
+                option.Filters.Add(typeof(ModelStateFilterAttribute));
+            });
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }

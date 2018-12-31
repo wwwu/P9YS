@@ -58,6 +58,8 @@ namespace P9YS.Services.Carousel
         {
             var carousels = await _movieResourceContext.Carousels
                 .OrderByDescending(s => s.Id)
+                .Skip((pagingInput.PageIndex - 1) * pagingInput.PageSize)
+                .Take(pagingInput.PageSize)
                 .AsNoTracking()
                 .ToListAsync();
             var totalCount = await _movieResourceContext.Carousels.CountAsync();

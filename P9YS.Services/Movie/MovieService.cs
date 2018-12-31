@@ -28,12 +28,20 @@ namespace P9YS.Services.Movie
 
             #region 条件
             var query = _movieResourceContext.Movies
-                .Where(s => (!condition.MovieAreaId.HasValue || s.MovieAreaId == condition.MovieAreaId.Value)
-                    && (!condition.MovieTypeId.HasValue || s.MovieTypes.Any(t => t.MovieGenreId == condition.MovieTypeId))
+                .Where(s => (!condition.MovieTypeId.HasValue || s.MovieTypes.Any(t => t.MovieGenreId == condition.MovieTypeId))
                     && (!condition.BeginDate.HasValue || s.UpdTime >= condition.BeginDate.Value)
                     && (!condition.EndDate.HasValue || s.UpdTime < condition.EndDate.Value.AddDays(1))
                     && (string.IsNullOrWhiteSpace(condition.Keyword)
                         || (s.FullName.Contains(condition.Keyword) || s.OtherName.Contains(condition.Keyword))));
+            if (condition.MovieAreaId.HasValue && condition.MovieAreaId.Value == 0)
+            {//其它地区
+                query = query.Where(s => s.MovieArea.Other == condition.MovieAreaId.Value);
+            }
+            else
+            {
+                query = query.Where(s => s.MovieAreaId == condition.MovieAreaId);
+            }
+
             //排序
             switch (condition.Sort)
             {

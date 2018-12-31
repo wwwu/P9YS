@@ -40,7 +40,7 @@
             <div class="layui-side-scroll">
                 <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
                 <ul class="layui-nav layui-nav-tree" lay-filter="test">
-                    <li class="layui-nav-item layui-nav-itemed">
+                    <li class="layui-nav-item">
                         <a class="" href="javascript:;">影片管理</a>
                         <dl class="layui-nav-child">
                             <dd><a href="javascript:;">新片审核</a></dd>
@@ -50,19 +50,19 @@
                             <dd><a href="javascript:;">提问</a></dd>
                         </dl>
                     </li>
-                    <li class="layui-nav-item layui-nav-itemed">
+                    <li class="layui-nav-item">
                         <a href="javascript:;">用户管理</a>
                         <dl class="layui-nav-child">
                             <dd><a href="javascript:;">用户信息</a></dd>
                         </dl>
                     </li>
-                    <li class="layui-nav-item layui-nav-itemed">
+                    <li class="layui-nav-item @(controller=="Setting"?"layui-nav-itemed":"")">
                         <a href="javascript:;">系统设置</a>
                         <dl class="layui-nav-child">
                             <dd @((controller=="Setting" && action=="Carousel")?"class=layui-this":"")><a href="/Setting/Carousel">首页轮播</a></dd>
                             <dd @((controller=="Setting" && action=="Recommend")?"class=layui-this":"")><a href="/Setting/Recommend">推荐列表</a></dd>
-                            <dd @((controller=="Setting" && action=="Carousel")?"class=layui-this":"")><a href="javascript:;">影片产地</a></dd>
-                            <dd @((controller=="Setting" && action=="Carousel")?"class=layui-this":"")><a href="javascript:;">影片类型</a></dd>
+                            <dd @((controller=="Setting" && action=="Area")?"class=layui-this":"")><a href="/Setting/Area">国家设置</a></dd>
+                            <dd @((controller=="Setting" && action=="Genre")?"class=layui-this":"")><a href="/Setting/Genre">类型设置</a></dd>
                         </dl>
                     </li>
                 </ul>

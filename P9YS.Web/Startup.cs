@@ -91,6 +91,8 @@ namespace P9YS.Web
             {
                 //自定义授权过滤器
                 option.Filters.Add(typeof(CustomAuthorizeFilter));
+                //模型验证
+                option.Filters.Add(typeof(ModelStateFilterAttribute));
             });
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);

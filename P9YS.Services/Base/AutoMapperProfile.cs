@@ -64,6 +64,20 @@ namespace P9YS.Services.Base
             //    //.AfterMap((src, dest) => dest.Content = src.Content.Replace("\r\n", "<br/>"));
 
             #endregion
+
+            #region MovieArea
+
+            CreateMap<MovieArea.Dto.MovieAreaInput, EntityFramework.Models.MovieArea>()
+                .ForMember(s => s.AddTime, option => option.MapFrom(s => DateTime.Now));
+
+            #endregion  
+
+            #region MovieGenre
+
+            CreateMap<MovieGenres.Dto.MoiveGenreInput, EntityFramework.Models.MovieGenre>()
+                .ForMember(s => s.AddTime, option => option.MapFrom(s => DateTime.Now));
+
+            #endregion  
         }
     }
 }

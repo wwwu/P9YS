@@ -63,5 +63,11 @@ namespace P9YS.Common
         /// </summary>
         [Description("未登录或已过期")]
         Unauthorized = 11005,
+
+        /// <summary>
+        /// 已经存在
+        /// </summary>
+        [Description("已经存在")]
+        Repeated = 12000,
     }
 }
