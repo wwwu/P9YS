@@ -7,7 +7,7 @@ namespace P9YS.Common
     public class AppSettings
     {
         public string MovieResourceContext { get; set; }
-        public string DesKey { get; set; }
+        public string PasswordSalt { get; set; }
         public EmailServer EmailServer { get; set; }
         public TxCos TxCos { get; set; }
         public XianLiao XianLiao { get; set; }

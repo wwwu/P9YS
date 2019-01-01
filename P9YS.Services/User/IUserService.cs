@@ -18,5 +18,7 @@ namespace P9YS.Services.User
         /// </summary>
         /// <returns></returns>
         CurrentUser GetCurrentUser();
+
+        Task<PagingOutput<UserManageOutput>> GetUsersAsync(PagingInput<UserManage_Search_Input> pagingInput);
     }
 }

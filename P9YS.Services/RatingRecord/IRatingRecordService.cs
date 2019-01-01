@@ -6,5 +6,6 @@ namespace P9YS.Services.RatingRecord
     public interface IRatingRecordService
     {
         Task<bool> AddRatingRecord(RatingRecordInput ratingRecordInput);
+        Task<PagingOutput<RatingRecordOutput>> GetRatingsAsync(PagingInput<GetRatingsInput> pagingInput);
     }
 }

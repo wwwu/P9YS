@@ -9,6 +9,15 @@ namespace P9YS.Services
         public int PageIndex { get; set; } = 1;
 
         public int PageSize { get; set; } = 10;
+
+        public OrderBy OrderBy { get; set; }
+
+        
+    }
+    public class OrderBy
+    {
+        public string Field { get; set; }
+        public string Type { get; set; }
     }
 
     public class PagingInput<T> : PagingInput

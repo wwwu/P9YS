@@ -39,21 +39,21 @@
         <div class="layui-side layui-bg-black">
             <div class="layui-side-scroll">
                 <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
-                <ul class="layui-nav layui-nav-tree" lay-filter="test">
-                    <li class="layui-nav-item">
+                <ul class="layui-nav layui-nav-tree">
+                    <li class="layui-nav-item @(controller=="Movie"?"layui-nav-itemed":"")">
                         <a class="" href="javascript:;">影片管理</a>
                         <dl class="layui-nav-child">
                             <dd><a href="javascript:;">新片审核</a></dd>
-                            <dd><a href="javascript:;">BT资源</a></dd>
-                            <dd><a href="javascript:;">评分</a></dd>
-                            <dd><a href="javascript:;">留言</a></dd>
-                            <dd><a href="javascript:;">提问</a></dd>
+                            <dd><a href="javascript:;">下载资源</a></dd>
+                            <dd @((controller == "Movie" && action == "Rating") ? "class=layui-this" : "")><a href="/Movie/Rating">评分记录</a></dd>
+                            <dd><a href="javascript:;">留言记录</a></dd>
+                            @*<dd><a href="javascript:;">提问记录</a></dd>*@
                         </dl>
                     </li>
-                    <li class="layui-nav-item">
+                    <li class="layui-nav-item @(controller=="User"?"layui-nav-itemed":"")">
                         <a href="javascript:;">用户管理</a>
                         <dl class="layui-nav-child">
-                            <dd><a href="javascript:;">用户信息</a></dd>
+                            <dd @((controller == "User" && action == "Index") ? "class=layui-this" : "")><a href="/User/Index">用户管理</a></dd>
                         </dl>
                     </li>
                     <li class="layui-nav-item @(controller=="Setting"?"layui-nav-itemed":"")">

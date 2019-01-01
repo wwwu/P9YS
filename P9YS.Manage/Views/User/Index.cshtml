@@ -1,0 +1,121 @@
+﻿
+@{
+    ViewData["Title"] = "用户管理";
+}
+
+<h2>@ViewData["Title"]</h2>
+<hr class="layui-bg-black">
+
+<div class="sreachBar">
+    <div class="layui-inline">
+        <input class="layui-input" name="email" placeholder="Email" autocomplete="off">
+    </div>
+    <div class="layui-inline">
+        <input class="layui-input" name="nickName" placeholder="昵称" autocomplete="off">
+    </div>
+    <div class="layui-form layui-input-inline" style="width:120px">
+        <select name="role">
+            <option value="" selected>角色</option>
+            <option value="0">普通用户</option>
+            <option value="1">管理员</option>
+        </select>
+    </div>
+    <div class="layui-form layui-input-inline" style="width:120px">
+        <select name="status">
+            <option value="" selected>状态</option>
+            <option value="0">正常</option>
+            <option value="1">锁定</option>
+        </select>
+    </div>
+    <button class="layui-btn" id="btn_sreach" data-type="reload">搜索</button>
+</div>
+<table id="tb_users" lay-filter="tb_users"></table>
+
+@section Scripts{
+    <script>
+        layui.use(['table', 'form'], function () {
+            var table = layui.table, form = layui.form;
+
+            table.render({
+                elem: '#tb_users'
+                , url: '/User/GetUsers' //数据接口
+                , method: "get"
+                , request: {
+                    pageName: "PageIndex"
+                    , limitName: "PageSize"
+                }
+                , page: true //开启分页
+                , limit: 20
+                , response: {
+                    statusCode: 10000 //规定成功的状态码，默认：0
+                }
+                , parseData: function (res) { //将原始数据解析成 table 组件所规定的数据
+                    return {
+                        "code": res.code,
+                        "msg": res.message,
+                        "count": res.content.totalCount,
+                        "data": res.content.data
+                    };
+                }
+                , cols: [[ //表头
+                    { field: 'id', title: 'ID', width: 80, fixed: 'left' }
+                    , { field: 'email', title: 'Email',  }
+                    , { field: 'nickName', title: '昵称', }
+                    //, { field: 'avatar', title: '头像', width: 250 }
+                    , {
+                        field: 'role', title: '角色', width: 100, templet: function (item) {
+                            return item.role == 1 ? '<span style="color:#009688">管理员</span>' : '普通用户'
+                        }
+                    }
+                    , {
+                        field: 'status', title: '状态', width: 80, templet: function (item) {
+                            return item.status == 1 ? '<span style="color:#009688">锁定</span>' : '正常'
+                        }
+                    }
+                    , { field: 'registerTime', title: '注册时间', width: 180, sort: true }
+                    , { field: 'lastLoginTime', title: '最后登录时间', width: 180, sort: true }
+                ]]
+            });
+
+            //监听排序事件 
+            table.on('sort(tb_users)', function (obj) {
+                var key = {
+                    "OrderBy.Field": obj.field,
+                    "OrderBy.Type":obj.type
+                }
+
+                table.reload('tb_users', {
+                    initSort: obj,
+                    where: key
+                });
+            });
+
+
+            //搜索
+            var $ = layui.$, active = {
+                reload: function () {
+                    var email = $('[name="ipt_email"]').val();
+                    var key = {
+                        "Condition.email": $('[name="email"]').val(),
+                        "Condition.nickName": $('[name="nickName"]').val(),
+                        "Condition.role": $('[name="role"]').val(),
+                        "Condition.status": $('[name="status"]').val(),
+                    }
+
+                    //执行重载
+                    table.reload('tb_users', {
+                        page: {
+                            curr: 1 //重新从第 1 页开始
+                        }
+                        , where: key
+                    });
+                }
+            };
+            $('#btn_sreach').on('click', function () {
+                var type = $(this).data('type'); //reload
+                active[type] ? active[type].call(this) : '';
+            });
+        });
+    </script>
+}
+

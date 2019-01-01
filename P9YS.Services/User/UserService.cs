@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Http;
@@ -17,7 +18,6 @@ namespace P9YS.Services.User
 {
     public class UserService : IUserService
     {
-        private const string passwordSalt = "p9yscom";
         private IHttpContextAccessor _httpContext;
         private readonly MovieResourceContext _movieResourceContext;
         private readonly IOptionsMonitor<AppSettings> _options;
@@ -37,7 +37,7 @@ namespace P9YS.Services.User
         {
             var result = new Result<CurrentUser>();
             //假装加个盐..
-            input.Password = GetCiphertext(input.Password,passwordSalt);
+            input.Password = GetCiphertext(input.Password, _options.CurrentValue.PasswordSalt);
             var user = await _movieResourceContext.Users
                 .FirstOrDefaultAsync(u => u.Email == input.Email && u.Password == input.Password);
             if (user == null)
@@ -109,6 +109,27 @@ namespace P9YS.Services.User
                 });
         }
 
+        public CurrentUser GetCurrentUser()
+        {
+            CurrentUser user = null;
+            try
+            {
+                if (_httpContext.HttpContext.User.Identity.IsAuthenticated)
+                {
+                    var claims = _httpContext.HttpContext.User.Claims;
+                    user = new CurrentUser
+                    {
+                        UserId = int.Parse(claims.FirstOrDefault(u => u.Type == "UserId").Value),
+                        Email = claims.FirstOrDefault(u => u.Type == "Email").Value,
+                        Avatar = claims.FirstOrDefault(u => u.Type == "Avatar").Value,
+                        NickName = claims.FirstOrDefault(u => u.Type == "NickName").Value,
+                    };
+                }
+            }
+            catch { };
+            return user;
+        }
+
         #endregion
 
         #region 注册
@@ -175,7 +196,7 @@ namespace P9YS.Services.User
                 Avatar = "",
                 Email = input.Email,
                 NickName = input.Email,//Guid.NewGuid().ToString("N"),
-                Password = GetCiphertext(input.Password,passwordSalt),
+                Password = GetCiphertext(input.Password, _options.CurrentValue.PasswordSalt),
                 RegisterTime = DateTime.Now,
                 LastLoginTime = DateTime.Now,
                 Status = UserStatusEnum.Normal
@@ -244,25 +265,52 @@ namespace P9YS.Services.User
 
         #endregion
 
-        public CurrentUser GetCurrentUser()
+        public async Task<PagingOutput<UserManageOutput>> GetUsersAsync(PagingInput<UserManage_Search_Input> pagingInput)
         {
-            CurrentUser user = null;
-            try
+            var query = _movieResourceContext.Users.AsQueryable();
+            
+            //TODO:有必要封装一下分页查询(条件拼接、分页、排序)
+
+            //条件
+            if (pagingInput.Condition != null)
             {
-                if (_httpContext.HttpContext.User.Identity.IsAuthenticated)
+                if (!string.IsNullOrWhiteSpace(pagingInput.Condition.Email))
+                    query = query.Where(s => s.Email.Contains(pagingInput.Condition.Email));
+                if (!string.IsNullOrWhiteSpace(pagingInput.Condition.NickName))
+                    query = query.Where(s => s.NickName.Contains(pagingInput.Condition.NickName));
+                if (pagingInput.Condition.Status.HasValue)
+                    query = query.Where(s => s.Status == pagingInput.Condition.Status.Value);
+                if (pagingInput.Condition.Role.HasValue)
+                    query = query.Where(s => s.Role == pagingInput.Condition.Role.Value);
+            }
+            //排序
+            if (!string.IsNullOrWhiteSpace(pagingInput.OrderBy?.Field))
+            {
+                var orderByField = typeof(EntityFramework.Models.User).GetProperty(pagingInput.OrderBy.Field);
+                if (orderByField != null)
                 {
-                    var claims = _httpContext.HttpContext.User.Claims;
-                    user = new CurrentUser
-                    {
-                        UserId = int.Parse(claims.FirstOrDefault(u => u.Type == "UserId").Value),
-                        Email = claims.FirstOrDefault(u => u.Type == "Email").Value,
-                        Avatar = claims.FirstOrDefault(u => u.Type == "Avatar").Value,
-                        NickName = claims.FirstOrDefault(u => u.Type == "NickName").Value,
-                    };
+                    if (orderByField != null && pagingInput.OrderBy?.Type == "desc")
+                        query = query.OrderByDescending(s => orderByField);
+                    else
+                        query = query.OrderBy(s => orderByField);
                 }
             }
-            catch { };
-            return user;
+            //分页
+            var users = await query.Skip((pagingInput.PageIndex - 1) * pagingInput.PageSize)
+                .Take(pagingInput.PageSize)
+                .ProjectTo<UserManageOutput>()
+                .AsNoTracking()
+                .ToListAsync();
+            var totalCount = await query.CountAsync();
+
+            var result = new PagingOutput<UserManageOutput>
+            {
+                PageIndex = pagingInput.PageIndex,
+                PageSize = pagingInput.PageSize,
+                Data = users,
+                TotalCount = totalCount
+            };
+            return result;
         }
     }
 }

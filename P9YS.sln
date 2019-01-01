@@ -23,7 +23,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "01 Web", "01 Web", "{9CD08C
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "02 ThirdPartyAPIs", "02 ThirdPartyAPIs", "{D50919C2-2FE4-4004-A9E1-5AB349B8195A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TxCosSDK", "TxCosSDK\TxCosSDK.csproj", "{2428336A-D723-4C6F-981F-A763867A08E3}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TxCosSDK", "TxCosSDK\TxCosSDK.csproj", "{2428336A-D723-4C6F-981F-A763867A08E3}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

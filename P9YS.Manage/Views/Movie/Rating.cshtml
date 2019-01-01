@@ -1,0 +1,98 @@
+﻿
+@{
+    ViewData["Title"] = "评分记录";
+}
+
+<h2>@ViewData["Title"]</h2>
+<hr class="layui-bg-black">
+
+<div class="sreachBar">
+    <div class="layui-inline">
+        <input class="layui-input" name="movieId" placeholder="影片Id" autocomplete="off">
+    </div>
+    <div class="layui-inline">
+        <input class="layui-input" name="userId" placeholder="用户Id" autocomplete="off">
+    </div>
+    <div class="layui-inline">
+        <label class="layui-form-label">日期范围</label>
+        <div class="layui-input-inline">
+            <input type="text" class="layui-input" name="addTime" id="addTime" placeholder=" - ">
+        </div>
+    </div>
+    <button class="layui-btn" id="btn_sreach" data-type="reload">搜索</button>
+</div>
+<table id="tb_rating" lay-filter="tb_rating"></table>
+
+@section Scripts{
+
+    <script>
+        layui.use(['table', 'form','laydate'], function () {
+            var table = layui.table, form = layui.form, laydate = layui.laydate;
+
+            //日期范围选择
+            laydate.render({
+                elem: '#addTime'
+                , range: true //或 range: '~' 来自定义分割字符
+                , max: 0//最大日期为当天
+            });
+
+            table.render({
+                elem: '#tb_rating'
+                , url: '/Movie/GetRatings' //数据接口
+                , method: "get"
+                , request: {
+                    pageName: "PageIndex"
+                    , limitName: "PageSize"
+                }
+                , page: true //开启分页
+                , limit: 20
+                , response: {
+                    statusCode: 10000 //规定成功的状态码，默认：0
+                }
+                , parseData: function (res) { //将原始数据解析成 table 组件所规定的数据
+                    return {
+                        "code": res.code,
+                        "msg": res.message,
+                        "count": res.content.totalCount,
+                        "data": res.content.data
+                    };
+                }
+                , cols: [[ //表头
+                    { field: 'id', title: 'ID', width: 80, fixed: 'left' }
+                    , { field: 'movieId', title: '影片ID', width: 80 }
+                    , { field: 'movieShortName', title: '影片名称', }
+                    , { field: 'userId', title: '用户ID', width: 80 }
+                    , { field: 'userEmail', title: '用户邮箱', }
+                    , { field: 'score', title: '分数', width: 100 }
+                    , { field: 'addTime', title: '添加时间',width:200 }
+                ]]
+            });
+
+            var $ = layui.$, active = {
+                reload: function () {
+                    var timeArr = $("#addTime").val().split(' - ');
+                    var key = {
+                        "Condition.movieId": $('[name="movieId"]').val(),
+                        "Condition.userId": $('[name="userId"]').val(),
+                        "Condition.beginTime": timeArr[0],
+                        "Condition.endTime": timeArr[1],
+                    }
+
+                    //执行重载
+                    table.reload('tb_rating', {
+                        page: {
+                            curr: 1 //重新从第 1 页开始
+                        }
+                        , where: key
+                    });
+                }
+            };
+
+            $('#btn_sreach').on('click', function () {
+                var type = $(this).data('type'); //reload
+                active[type] ? active[type].call(this) : '';
+            });
+        });
+    </script>
+}
+
