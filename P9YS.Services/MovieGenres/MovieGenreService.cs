@@ -24,7 +24,7 @@ namespace P9YS.Services.MovieGenres
             _memoryCache = memoryCache;
         }
 
-        public async Task<List<Dto.MovieGenreOutput>> GetMovieGenresAsync()
+        public async Task<List<MovieGenreOutput>> GetMovieGenresAsync()
         {
             if (!_memoryCache.TryGetValue(CacheKeys.MovieGenres, out List<Dto.MovieGenreOutput> movieGenres))
             {

@@ -1,0 +1,147 @@
+﻿
+@{
+    ViewData["Title"] = "留言";
+}
+
+<h2>@ViewData["Title"]</h2>
+<hr class="layui-bg-black">
+
+<div class="sreachBar">
+    <div class="layui-inline">
+        <input class="layui-input" name="movieId" placeholder="影片Id" autocomplete="off">
+    </div>
+    <div class="layui-inline">
+        <input class="layui-input" name="userId" placeholder="用户Id" autocomplete="off">
+    </div>
+    <div class="layui-inline">
+        <label class="layui-form-label">日期范围</label>
+        <div class="layui-input-inline">
+            <input type="text" class="layui-input" name="addTime" id="addTime" placeholder=" - ">
+        </div>
+    </div>
+    <button class="layui-btn" id="btn_sreach" data-type="reload">搜索</button>
+</div>
+<table id="tb_comment" lay-filter="tb_comment"></table>
+
+@section Scripts{
+<script type="text/html" id="operation">
+    <a class="layui-btn layui-btn-xs" lay-event="get">查看</a>
+    <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+</script>
+
+    <script>
+        layui.use(['table', 'laydate'], function () {
+            var table = layui.table, laydate = layui.laydate;
+
+            //日期范围选择
+            laydate.render({
+                elem: '#addTime'
+                , range: true //或 range: '~' 来自定义分割字符
+                , max: 0//最大日期为当天
+            });
+
+            table.render({
+                elem: '#tb_comment'
+                , url: '/Movie/GetComments' //数据接口
+                , method: "get"
+                , request: {
+                    pageName: "PageIndex"
+                    , limitName: "PageSize"
+                }
+                , page: true //开启分页
+                , limit: 20
+                , response: {
+                    statusCode: 10000 //规定成功的状态码，默认：0
+                }
+                , parseData: function (res) { //将原始数据解析成 table 组件所规定的数据
+                    return {
+                        "code": res.code,
+                        "msg": res.message,
+                        "count": res.content.totalCount,
+                        "data": res.content.data
+                    };
+                }
+                , cols: [[ //表头
+                    { field: 'id', title: 'ID', width: 80, fixed: 'left' }
+                    , {
+                        field: 'movieShortName', title: '影片', width: 150, templet: function (item) {
+                            return '<a title="' + item.movieId + '" href="javascript:void(0)">' + item.movieShortName + '</a>';
+                        }
+                    }
+                    , {
+                        field: 'userEmail', title: '用户', width: 150, templet: function (item) {
+                            return '<a title="' + item.userId + '" href="javascript:void(0)">' + item.userEmail + '</a>';
+                        }
+                    }
+                    , {
+                        field: 'parentId', title: '上级ID', width: 80, templet: function (item) {
+                            return item.parentId > 0 ? '<a href="javascript:void(0)">' + item.parentId + '</a>' : '';
+                        }
+                    }
+                    , { field: 'addTime', title: '添加时间', width: 180, }
+                    , {
+                        field: 'content', title: '内容', templet: function (item) {
+                            return '<pre>'+item.content+'</pre>';
+                        }
+                    }
+                    , { title: '', width: 120, fixed: 'right', toolbar: '#operation' }
+                ]]
+            });
+
+            //监听行工具事件
+            table.on('tool(tb_comment)', function (obj) {
+                if (obj.event === 'del') { //删除
+                    layer.confirm('确定要删除？', { icon: 3, title: '提示' }, function (index) {
+                        var load = layer.load(2);
+                        $.ajax({
+                            type: "delete",
+                            url: "/Movie/DelComment/" + obj.data.id,
+                            dataType: "json",
+                            success: function (result) {
+                                if (result.code == 10000 && result.content) {
+                                    layer.closeAll();
+                                    obj.del();
+                                    layer.msg("成功");
+                                } else {
+                                    layer.msg(result.message, function () { });
+                                }
+                            },
+                            error: function (ex) {
+                                layer.msg("异常", function () { });
+                            },
+                            complete: function () {
+                                layer.close(load);
+                            }
+                        })
+                    });
+                }
+            });
+
+            var $ = layui.$, active = {
+                reload: function () {
+                    var timeArr = $("#addTime").val().split(' - ');
+                    var key = {
+                        "Condition.movieId": $('[name="movieId"]').val(),
+                        "Condition.userId": $('[name="userId"]').val(),
+                        "Condition.beginTime": timeArr[0],
+                        "Condition.endTime": timeArr[1],
+                    }
+
+                    //执行重载
+                    table.reload('tb_comment', {
+                        page: {
+                            curr: 1 //重新从第 1 页开始
+                        }
+                        , where: key
+                    });
+                }
+            };
+
+            $('#btn_sreach').on('click', function () {
+                var type = $(this).data('type'); //reload
+                active[type] ? active[type].call(this) : '';
+            });
+        });
+    </script>
+}
+

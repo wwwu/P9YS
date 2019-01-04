@@ -4,6 +4,8 @@ using Microsoft.EntityFrameworkCore;
 using P9YS.Common;
 using P9YS.EntityFramework;
 using P9YS.Services.Base;
+using P9YS.Services.MovieComment.Dto;
+using P9YS.Services.RatingRecord.Dto;
 using P9YS.Services.User;
 using System;
 using System.Collections.Generic;
@@ -31,7 +33,7 @@ namespace P9YS.Services.MovieComment
             return count;
         }
 
-        public async Task<PagingOutput<Dto.MovieCommentOutput>> GetCommentsAndReplyAsync(PagingInput<int> pagingInput)
+        public async Task<PagingOutput<MovieCommentOutput>> GetCommentsAndReplyAsync(PagingInput<int> pagingInput)
         {
             //comments
             var query = _movieResourceContext.MovieComments
@@ -62,7 +64,7 @@ namespace P9YS.Services.MovieComment
                 comment.Content = comment.Content.Replace("\r\n", "<br />");
             });
 
-            var result = new PagingOutput<Dto.MovieCommentOutput>
+            var result = new PagingOutput<MovieCommentOutput>
             {
                 PageIndex = pagingInput.PageIndex,
                 PageSize = pagingInput.PageSize,
@@ -73,7 +75,7 @@ namespace P9YS.Services.MovieComment
             return result;
         }
 
-        public async Task<bool> AddMovieCommentAsync(Dto.MovieCommentInput movieCommentInput)
+        public async Task<bool> AddMovieCommentAsync(MovieCommentInput movieCommentInput)
         {
             var user = _userService.GetCurrentUser();
             //Add
@@ -82,6 +84,50 @@ namespace P9YS.Services.MovieComment
             await _movieResourceContext.MovieComments.AddAsync(entity);
             var rows = await _movieResourceContext.SaveChangesAsync();
             return rows > 0;
+        }
+
+        public async Task<PagingOutput<MovieComment_Manage_Output>> GetCommentsAsync(PagingInput<GetRatingsInput> pagingInput)
+        {
+            var query = _movieResourceContext.MovieComments.AsQueryable();
+
+            //条件
+            if (pagingInput.Condition != null)
+            {
+                if (pagingInput.Condition.MovieId.HasValue)
+                    query = query.Where(s => s.MovieId == pagingInput.Condition.MovieId.Value);
+                if (pagingInput.Condition.UserId.HasValue)
+                    query = query.Where(s => s.UserId == pagingInput.Condition.UserId.Value);
+                if (pagingInput.Condition.BeginTime.HasValue)
+                    query = query.Where(s => s.AddTime >= pagingInput.Condition.BeginTime.Value);
+                if (pagingInput.Condition.EndTime.HasValue)
+                    query = query.Where(s => s.AddTime < pagingInput.Condition.EndTime.Value.AddDays(1));
+            }
+            //排序
+            query = query.OrderByDescending(s => s.Id);
+            //分页
+            var comments = await query.Skip((pagingInput.PageIndex - 1) * pagingInput.PageSize)
+                .Take(pagingInput.PageSize)
+                .ProjectTo<MovieComment_Manage_Output>()
+                .AsNoTracking()
+                .ToListAsync();
+            var totalCount = await query.CountAsync();
+
+            var result = new PagingOutput<MovieComment_Manage_Output>
+            {
+                PageIndex = pagingInput.PageIndex,
+                PageSize = pagingInput.PageSize,
+                Data = comments,
+                TotalCount = totalCount
+            };
+            return result;
+        }
+
+        public async Task<Result> DelCommentAsync(int id)
+        {
+            var result = new Result();
+            _movieResourceContext.MovieComments.Remove(new EntityFramework.Models.MovieComment { Id = id });
+            result.Content = await _movieResourceContext.SaveChangesAsync();
+            return result;
         }
     }
 }
