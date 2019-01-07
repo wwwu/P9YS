@@ -77,6 +77,15 @@ namespace P9YS.Services.Base
             CreateMap<MovieGenres.Dto.MoiveGenreInput, EntityFramework.Models.MovieGenre>()
                 .ForMember(s => s.AddTime, option => option.MapFrom(s => DateTime.Now));
 
+            #endregion
+
+
+            #region MovieResource
+
+            CreateMap<MovieResource.Dto.MovieResourceInput, EntityFramework.Models.MovieResource>()
+                .ForMember(s => s.AddTime, option => option.MapFrom(s => DateTime.Now))
+                .ForMember(s => s.UpdTime, option => option.MapFrom(s => DateTime.Now));
+
             #endregion  
         }
     }

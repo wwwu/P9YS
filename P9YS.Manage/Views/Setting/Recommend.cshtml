@@ -165,6 +165,7 @@
                     case 'add': //新增
                         //重置表单值
                         var $form = $("#lay_add");
+                        $form.find('[name="id"]').val("");
                         $form[0].reset();
                         layer.open({
                             title: "新增",
@@ -206,6 +207,7 @@
                     case 'add': //新增
                         //重置表单值
                         var $form = $("#lay_add");
+                        $form.find('[name="id"]').val("");
                         $form[0].reset();
                         form.val('lay_add', { "type": 2 });
                         layer.open({

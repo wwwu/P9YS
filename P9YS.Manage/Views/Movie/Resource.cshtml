@@ -1,0 +1,273 @@
+﻿
+@{
+    ViewData["Title"] = "资源管理";
+}
+
+<h2>@ViewData["Title"]</h2>
+<hr class="layui-bg-black">
+
+<div class="sreachBar">
+    <div class="layui-inline">
+        <input class="layui-input" name="movieId" placeholder="影片Id" autocomplete="off">
+    </div>
+    <div class="layui-inline">
+        <input class="layui-input" name="userId" placeholder="用户Id" autocomplete="off">
+    </div>
+    <div class="layui-inline">
+        <label class="layui-form-label">日期范围</label>
+        <div class="layui-input-inline">
+            <input type="text" class="layui-input" name="addTime" id="addTime" placeholder=" - ">
+        </div>
+    </div>
+    <button class="layui-btn" id="btn_sreach" data-type="reload">搜索</button>
+</div>
+
+<script type="text/html" id="toolbar">
+    <div class="layui-btn-container">
+        <button class="layui-btn layui-btn-sm" lay-event="add">新增</button>
+    </div>
+</script>
+
+<table id="tb_resource" lay-filter="tb_resource"></table>
+
+<form class="layui-form" style="display:none;margin:15px 15px 0 0;" id="lay_add" action="" lay-filter="lay_add">
+    <input type="hidden" name="id" value="" />
+    <div class="layui-form-item">
+        <label class="layui-form-label">大小</label>
+        <div class="layui-input-block">
+            <input type="text" name="size" lay-verify="" autocomplete="off" placeholder="单位MB" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">分辨率</label>
+        <div class="layui-input-block">
+            <input type="text" name="resolution" lay-verify="" autocomplete="off" placeholder="1080P" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">字幕</label>
+        <div class="layui-input-block">
+            <input type="text" name="subtitle" lay-verify="" autocomplete="off" placeholder="中、英" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">配音</label>
+        <div class="layui-input-block">
+            <input type="text" name="dub" lay-verify="" autocomplete="off" placeholder="英" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">MovieId</label>
+        <div class="layui-input-block">
+            <input type="text" name="movieId" lay-verify="" autocomplete="off" placeholder="" class="layui-input">
+        </div>
+    </div>
+    <div class="layui-form-item">
+        <label class="layui-form-label">链接</label>
+        <div class="layui-input-block">
+            <textarea name="content" lay-verify="" autocomplete="off" placeholder="" class="layui-textarea"></textarea>
+        </div>
+    </div>
+</form>
+
+@section Scripts{
+    <script type="text/html" id="operation">
+        <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>
+        <a class="layui-btn layui-btn-danger layui-btn-xs" lay-event="del">删除</a>
+    </script>
+
+    <script>
+        layui.use(['table', 'form', 'laydate'], function () {
+            var table = layui.table, form = layui.form, laydate = layui.laydate;
+
+            //日期范围选择
+            laydate.render({
+                elem: '#addTime'
+                , range: true //或 range: '~' 来自定义分割字符
+                , max: 0//最大日期为当天
+            });
+
+            table.render({
+                elem: '#tb_resource'
+                , url: '/Movie/GetResources' //数据接口
+                , method: "get"
+                , request: {
+                    pageName: "PageIndex"
+                    , limitName: "PageSize"
+                }
+                , page: true //开启分页
+                , limit: 20
+                , toolbar: '#toolbar'
+                , response: {
+                    statusCode: 10000 //规定成功的状态码，默认：0
+                }
+                , parseData: function (res) { //将原始数据解析成 table 组件所规定的数据
+                    return {
+                        "code": res.code,
+                        "msg": res.message,
+                        "count": res.content.totalCount,
+                        "data": res.content.data
+                    };
+                }
+                , cols: [[ //表头
+                    { field: 'id', title: 'ID', width: 80, fixed: 'left' }
+                    , {
+                        field: 'movieShortName', title: '影片', width: 170, templet: function (item) {
+                            return '<a title="' + item.movieId + '" href="javascript:void(0)">' + item.movieShortName + '</a>';
+                        }
+                    }
+                    , {
+                        field: 'userNickName', title: '用户', width: 170, templet: function (item) {
+                            return '<a title="' + item.userId + '" href="javascript:void(0)">' + item.userNickName + '</a>';
+                        }
+                    }
+                    , { field: 'size', title: 'MB', width: 70, }
+                    , { field: 'resolution', title: '分辨率', width: 90, }
+                    , { field: 'subtitle', title: '字幕', width: 90, }
+                    , { field: 'dub', title: '配音', width: 70, }
+                    , { field: 'content', title: '链接' }
+                    , { field: 'updTime', title: '更新时间', width: 160, }
+                    , { title: '', width: 120, fixed: 'right', toolbar: '#operation' }
+                ]]
+            });
+
+            //监听行工具事件
+            table.on('tool(tb_resource)', function (obj) {
+                if (obj.event === 'del') { //删除
+                    layer.confirm('确定要删除？', { icon: 3, title: '提示' }, function (index) {
+                        var load = layer.load(2);
+                        $.ajax({
+                            type: "delete",
+                            url: "/Movie/DelResource/" + obj.data.id,
+                            dataType: "json",
+                            success: function (result) {
+                                if (result.code == 10000 && result.content) {
+                                    layer.closeAll();
+                                    obj.del();
+                                    layer.msg("成功");
+                                } else {
+                                    layer.msg(result.message, function () { });
+                                }
+                            },
+                            error: function (ex) {
+                                layer.msg("异常", function () { });
+                            },
+                            complete: function () {
+                                layer.close(load);
+                            }
+                        })
+                    });
+                }
+                else if (obj.event === 'edit') { //编辑
+                    form.val("lay_add", obj.data);
+
+                    var $form = $("#lay_add");
+                    layer.open({
+                        title: "编辑",
+                        area: ["500px", "500px"],
+                        shade: 0,
+                        type: 1,
+                        content: $("#lay_add"),
+                        btn: ['保存', '取消'],
+                        yes: function () {
+                            var requestBody = $form.serialize();
+                            var load = layer.load(2);
+                            $.ajax({
+                                type: "post",
+                                url: "/Movie/UpdResource",
+                                dataType: "json",
+                                data: requestBody,
+                                success: function (result) {
+                                    if (result.code == 10000) {
+                                        layer.closeAll();
+                                        obj.update(result.content);
+                                        layer.msg("成功");
+                                    } else {
+                                        layer.msg(result.message, function () { });
+                                    }
+                                },
+                                error: function (ex) {
+                                    layer.msg("异常", function () { });
+                                },
+                                complete: function () {
+                                    layer.close(load);
+                                }
+                            })
+                        }
+                    });
+                }
+            });
+
+            //监听头工具事件
+            table.on('toolbar(tb_resource)', function (obj) {
+                switch (obj.event) {
+                    case 'add': //新增
+                        //重置表单值
+                        var $form = $("#lay_add");
+                        $form.find('[name="id"]').val("");
+                        $form[0].reset();
+
+                        layer.open({
+                            title: "新增",
+                            area: ["500px", "500px"],
+                            shade: 0,
+                            type: 1,
+                            content: $("#lay_add"),
+                            btn: ['保存', '取消'],
+                            yes: function () {
+                                var requestBody = $form.serialize();
+                                var load = layer.load(2);
+                                $.ajax({
+                                    type: "post",
+                                    url: "/Movie/AddResource",
+                                    dataType: "json",
+                                    data: requestBody,
+                                    success: function (result) {
+                                        if (result.code == 10000) {
+                                            layer.msg("成功");
+                                            location.href = location.href;
+                                        } else {
+                                            layer.msg(result.message, function () { });
+                                        }
+                                    },
+                                    error: function (ex) {
+                                        layer.msg("异常", function () { });
+                                    },
+                                    complete: function () {
+                                        layer.close(load);
+                                    }
+                                })
+                            }
+                        });
+                        break;
+                };
+            });
+
+            //搜索
+            var $ = layui.$, active = {
+                reload: function () {
+                    var timeArr = $("#addTime").val().split(' - ');
+                    var key = {
+                        "Condition.movieId": $('[name="movieId"]').val(),
+                        "Condition.userId": $('[name="userId"]').val(),
+                        "Condition.beginTime": timeArr[0],
+                        "Condition.endTime": timeArr[1],
+                    }
+
+                    //执行重载
+                    table.reload('tb_resource', {
+                        page: {
+                            curr: 1 //重新从第 1 页开始
+                        }
+                        , where: key
+                    });
+                }
+            };
+            $('#btn_sreach').on('click', function () {
+                var type = $(this).data('type'); //reload
+                active[type] ? active[type].call(this) : '';
+            });
+        });
+    </script>
+}
+
