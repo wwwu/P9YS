@@ -25,8 +25,7 @@ namespace P9YS.Services.Movie
 
         public MovieService(MovieResourceContext movieResourceContext
             , IUserService userService
-            , BaseService baseService
-            , IOptionsMonitor<AppSettings> options)
+            , BaseService baseService)
         {
             _movieResourceContext = movieResourceContext;
             _userService = userService;

@@ -11,8 +11,10 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using P9YS.Common;
 using P9YS.Services.Base;
+using NLog.Web;
 
 namespace P9YS.Manage
 {
@@ -92,6 +94,8 @@ namespace P9YS.Manage
             {
                 //模型验证
                 option.Filters.Add(typeof(ModelStateFilterAttribute));
+                //未捕获异常
+                option.Filters.Add(typeof(CustomExceptionFilterAttribute));
             });
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
@@ -108,9 +112,9 @@ namespace P9YS.Manage
             {
                 app.UseExceptionHandler("/Home/Error");
             }
-
             app.UseStaticFiles();
             app.UseAuthentication();
+            app.UseStatusCodePages("text/plain", "Status Code: {0}");
 
             app.UseMvc(routes =>
             {

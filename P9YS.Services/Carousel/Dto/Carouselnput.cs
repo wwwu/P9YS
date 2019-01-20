@@ -8,7 +8,7 @@ namespace P9YS.Services.Carousel.Dto
 {
     public class Carouselnput
     {
-        public int Id { get; set; }
+        public int? Id { get; set; }
 
         [StringLength(200)]
         [Required]

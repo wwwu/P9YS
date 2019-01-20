@@ -3,6 +3,7 @@ using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using P9YS.Common;
 using P9YS.Common.Enums;
@@ -26,8 +27,7 @@ namespace P9YS.Services.Carousel
 
         public CarouselService(MovieResourceContext movieResourceContext
             , IMemoryCache memoryCache
-            , BaseService baseService
-            , IOptionsMonitor<AppSettings> options)
+            , BaseService baseService)
         {
             _movieResourceContext = movieResourceContext;
             _memoryCache = memoryCache;
@@ -136,8 +136,7 @@ namespace P9YS.Services.Carousel
             carousel = Mapper.Map(carouselnput, carousel);
             await _movieResourceContext.SaveChangesAsync();
             //返回
-            carousel.ImgUrl = string.IsNullOrEmpty(imgUrl) ? carousel.ImgUrl 
-                : _baseService.GetAbsoluteUrl(carousel.ImgUrl);
+            carousel.ImgUrl = _baseService.GetAbsoluteUrl(carousel.ImgUrl);
             result.Content = carousel;
             return result;
         }

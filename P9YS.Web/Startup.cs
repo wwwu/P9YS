@@ -118,6 +118,7 @@ namespace P9YS.Web
             app.UseStaticFiles();
             app.UseSession();
             app.UseAuthentication();
+            app.UseStatusCodePages("text/plain", "Status Code: {0}");
 
             app.UseMvc(routes =>
             {

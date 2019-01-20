@@ -27,7 +27,6 @@ namespace P9YS.Manage
                 {
                     Message = msg
                 };
-                //暂不考虑非Ajax请求
                 context.Result = new Microsoft.AspNetCore.Mvc.JsonResult(result);
             }
 
