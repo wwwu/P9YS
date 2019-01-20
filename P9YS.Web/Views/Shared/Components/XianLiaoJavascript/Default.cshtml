@@ -27,7 +27,7 @@
             var xlm_url='https://www.xianliao.me/';
             var xlm_uid='@Model.UserId';
             var xlm_name='@Model.NickName'; //登录用户的用户名，游客使用空字符
-            var xlm_avatar = 'http:/www.p9ys.com/avatar/@Model.Avatar';//登录用户的头像URL，游客使用空字符
+            var xlm_avatar = 'http:/www.p9ys.com/@Model.Avatar';//登录用户的头像URL，游客使用空字符
             var xlm_time='@Model.TimeStamp'; //现在服务器的Linux timestamp, 如：1481673726
             var xlm_hash='@Model.XlmHash'; //为保障用户的登录安全，xlm_hash须在后台生成，见下附的xlm_hash的生成方法
     </script>

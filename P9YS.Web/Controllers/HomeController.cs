@@ -45,7 +45,7 @@ namespace P9YS.Web.Controllers
                 AnnualRecommends = await _movieRecommendService.GetAnnualRecommendsAsync(),
                 RecentRecommends = await _movieRecommendService.GetRecentRecommendsAsync(),
                 MovieList = await _movieService
-                    .GetMoviesByConditionAsync(new PagingInput<Services.Movie.Dto.ConditionInput> { PageSize = 1 })
+                    .GetMoviesByConditionAsync(new PagingInput<Services.Movie.Dto.ConditionInput> { PageSize = 20 })
             };
 
             return View(model);

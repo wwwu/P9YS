@@ -60,7 +60,11 @@
                 , cols: [[ //表头
                     { field: 'id', title: 'ID', width: 80, fixed: 'left' }
                     , { field: 'movieId', title: '影片ID', width: 80 }
-                    , { field: 'movieShortName', title: '影片名称', }
+                    , {
+                        field: 'movieShortName', title: '影片名称', templet: function (item) {
+                            return '<a href="javascript:ShowMovie(' + item.movieId + ')">' + item.movieShortName + '</a>';
+                        }
+                    }
                     , { field: 'userId', title: '用户ID', width: 80 }
                     , { field: 'userEmail', title: '用户邮箱', }
                     , { field: 'score', title: '分数', width: 100 }

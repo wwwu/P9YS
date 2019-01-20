@@ -65,7 +65,7 @@
                     { field: 'id', title: 'ID', width: 80, fixed: 'left' }
                     , {
                         field: 'movieShortName', title: '影片', width: 150, templet: function (item) {
-                            return '<a title="' + item.movieId + '" href="javascript:void(0)">' + item.movieShortName + '</a>';
+                            return '<a href="javascript:ShowMovie(' + item.movieId + ')">' + item.movieShortName + '</a>';
                         }
                     }
                     , {

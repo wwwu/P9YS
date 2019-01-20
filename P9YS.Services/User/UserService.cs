@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using P9YS.Common;
 using P9YS.EntityFramework;
+using P9YS.Services.Base;
 using P9YS.Services.User.Dto;
 using System;
 using System.Collections.Generic;
@@ -21,18 +22,22 @@ namespace P9YS.Services.User
         private IHttpContextAccessor _httpContext;
         private readonly MovieResourceContext _movieResourceContext;
         private readonly IOptionsMonitor<AppSettings> _options;
+        private readonly BaseService _baseService;
 
         public UserService(IHttpContextAccessor httpContext
             , MovieResourceContext movieResourceContext
-            , IOptionsMonitor<AppSettings> options)
+            , IOptionsMonitor<AppSettings> options
+            , BaseService baseService)
         {
             _httpContext = httpContext;
             _movieResourceContext = movieResourceContext;
             _options = options;
+            _baseService = baseService;
         }
 
         #region 登录、注销
 
+        public const string defaultAvatar = "/images/default.jpg";
         public async Task<Result<CurrentUser>> LoginAsync(LoginInput input)
         {
             var result = new Result<CurrentUser>();
@@ -52,8 +57,6 @@ namespace P9YS.Services.User
                 result.Message = ErrorCodeEnum.AccountLocked.GetRemark();
                 return result;
             }
-            //默认头像
-            user.Avatar = string.IsNullOrWhiteSpace(user.Avatar) ? "avatar/default.jpg" : user.Avatar;
 
             //创建身份
             await CreateIdentityAsync(input.Remember, user);
@@ -85,6 +88,9 @@ namespace P9YS.Services.User
         private async Task CreateIdentityAsync(bool remember, EntityFramework.Models.User user)
         {
             var claimsIdentity = new ClaimsIdentity(CookieAuthenticationDefaults.AuthenticationScheme);
+            //头像
+            user.Avatar = user.Avatar == defaultAvatar ? defaultAvatar
+                : _baseService.GetAbsoluteUrl(user.Avatar);
             var claims = new List<Claim>
             {
                 new Claim("UserId", user.Id.ToString()),
@@ -193,7 +199,7 @@ namespace P9YS.Services.User
             //注册
             var entity = new EntityFramework.Models.User
             {
-                Avatar = "",
+                Avatar = defaultAvatar,
                 Email = input.Email,
                 NickName = input.Email,//Guid.NewGuid().ToString("N"),
                 Password = GetCiphertext(input.Password, _options.CurrentValue.PasswordSalt),
@@ -248,7 +254,7 @@ namespace P9YS.Services.User
                     xianLiaoOutput.UserId = visitor[0];
                     xianLiaoOutput.NickName = visitor[1];
                 }
-                xianLiaoOutput.Avatar = "default.jpg";
+                xianLiaoOutput.Avatar = defaultAvatar;
             }
             else
             {//已登录，覆盖游客身份

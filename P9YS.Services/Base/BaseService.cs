@@ -21,13 +21,20 @@ namespace P9YS.Services.Base
             _cosCloud = new CosCloud(int.Parse(txCos.Appid), txCos.SecretID, txCos.SecretKey, txCos.Region);
         }
 
-        public Result UploadFile(string bucketName, string remotePath, byte[] bytes)
+        /// <summary>
+        /// 上传文件到Cos，默认bucket
+        /// </summary>
+        /// <param name="remotePath">相对路径 /文件夹名/文件名.jpg</param>
+        /// <param name="bytes"></param>
+        /// <returns></returns>
+        public Result UploadFile(string remotePath, byte[] bytes)
         {
             var result = new Result();
             try
             {
-                var str = _cosCloud.UploadFile(bucketName, remotePath, bytes, null, false, 0);
+                var str = _cosCloud.UploadFile(_options.CurrentValue.TxCos.Bucket, remotePath, bytes, null, false, 0);
                 var response = JsonConvert.DeserializeObject<TxCosResponse>(str);
+                result.Content = response;
                 if (response.Code != 0)
                 {
                     result.Code = ErrorCodeEnum.Error;
@@ -40,6 +47,11 @@ namespace P9YS.Services.Base
                 result.Message = ex.Message;
             }
             return result;
+        }
+
+        public string GetAbsoluteUrl(string relativeUrl)
+        {
+            return _options.CurrentValue.TxCos.CosDomain + relativeUrl;
         }
     }
 

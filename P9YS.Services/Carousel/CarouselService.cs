@@ -3,6 +3,7 @@ using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.Extensions.Caching.Memory;
+using Microsoft.Extensions.Options;
 using P9YS.Common;
 using P9YS.Common.Enums;
 using P9YS.EntityFramework;
@@ -22,9 +23,11 @@ namespace P9YS.Services.Carousel
         private readonly MovieResourceContext _movieResourceContext;
         private readonly IMemoryCache _memoryCache;
         private readonly BaseService _baseService;
+
         public CarouselService(MovieResourceContext movieResourceContext
             , IMemoryCache memoryCache
-            , BaseService baseService)
+            , BaseService baseService
+            , IOptionsMonitor<AppSettings> options)
         {
             _movieResourceContext = movieResourceContext;
             _memoryCache = memoryCache;
@@ -46,11 +49,12 @@ namespace P9YS.Services.Carousel
                             .AsNoTracking()
                             .ProjectTo<CarouselOutput>()
                             .ToListAsync();
+                        //图片地址
+                        carousels.ForEach(s => s.ImgUrl = _baseService.GetAbsoluteUrl(s.ImgUrl));
                         _memoryCache.Set(CacheKeys.Carousels, carousels, TimeSpan.FromMinutes(CacheKeys.DefaultMinutes));
                     }
                 }
             }
-
             return carousels;            
         }
 
@@ -62,6 +66,8 @@ namespace P9YS.Services.Carousel
                 .Take(pagingInput.PageSize)
                 .AsNoTracking()
                 .ToListAsync();
+            //图片地址
+            carousels.ForEach(s => s.ImgUrl = _baseService.GetAbsoluteUrl(s.ImgUrl));
             var totalCount = await _movieResourceContext.Carousels.CountAsync();
 
             var result = new PagingOutput<EntityFramework.Models.Carousel>
@@ -86,7 +92,7 @@ namespace P9YS.Services.Carousel
                 var suffix = ImageHelper.GetSuffix(ms);
                 ms.Dispose();
                 imgUrl = $"/carousel/{Guid.NewGuid().ToString("N")}{suffix}";
-                var uploadResult = _baseService.UploadFile("pic", imgUrl, dataBytes);
+                var uploadResult = _baseService.UploadFile(imgUrl, dataBytes);
                 if (uploadResult.Code != ErrorCodeEnum.Success)
                     return uploadResult;
             }
@@ -95,6 +101,8 @@ namespace P9YS.Services.Carousel
             entity.ImgUrl = imgUrl;
             var carousel = await _movieResourceContext.Carousels.AddAsync(entity);
             await _movieResourceContext.SaveChangesAsync();
+            //返回实体
+            entity.ImgUrl = _baseService.GetAbsoluteUrl(entity.ImgUrl);
             result.Content = entity;
             return result;
         }
@@ -118,15 +126,18 @@ namespace P9YS.Services.Carousel
                 var suffix = ImageHelper.GetSuffix(ms);
                 ms.Dispose();
                 imgUrl = $"/carousel/{Guid.NewGuid().ToString("N")}{suffix}";
-                var uploadResult = _baseService.UploadFile("pic", imgUrl, dataBytes);
+                var uploadResult = _baseService.UploadFile(imgUrl, dataBytes);
                 if (uploadResult.Code != ErrorCodeEnum.Success)
                     return uploadResult;
             }
-            //TODO:删除原图
+            //TODO:删除原图，异常流程
 
             //更新实体            
             carousel = Mapper.Map(carouselnput, carousel);
             await _movieResourceContext.SaveChangesAsync();
+            //返回
+            carousel.ImgUrl = string.IsNullOrEmpty(imgUrl) ? carousel.ImgUrl 
+                : _baseService.GetAbsoluteUrl(carousel.ImgUrl);
             result.Content = carousel;
             return result;
         }

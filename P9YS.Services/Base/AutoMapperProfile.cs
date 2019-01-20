@@ -5,12 +5,13 @@ using System.Text;
 using P9YS.EntityFramework.Models;
 using P9YS.Services;
 using System.Linq;
+using P9YS.Common;
 
 namespace P9YS.Services.Base
 {
     public class AutoMapperProfile:Profile
     {
-        public AutoMapperProfile()
+        public AutoMapperProfile(AppSettings appSettings)
         {
             #region User
 
@@ -41,6 +42,17 @@ namespace P9YS.Services.Base
                 .ForMember(s => s.MovieAreaName, option => option.MapFrom(m => m.MovieArea.Area))
                 .ForMember(s => s.MovieGenres, option => option.MapFrom(m =>
                     m.MovieTypes.Select(g => g.MovieGenre)));
+
+            CreateMap<EntityFramework.Models.Movie, Movie.Dto.Movie_Manage_Output>()
+                .ForMember(s => s.MovieTypes, opt => opt.Ignore())
+                .ForMember(s => s.MovieSeries, opt => opt.Ignore());
+
+            CreateMap<Movie.Dto.Movie_Manage_Input, EntityFramework.Models.Movie>()
+                .ForMember(s => s.MovieTypes, opt => opt.Ignore())
+                .ForMember(s => s.MovieArea, opt => opt.Ignore())
+                .ForMember(s => s.MovieOrigins, opt => opt.Ignore())
+                .ForMember(s => s.MovieComments, opt => opt.Ignore())
+                .ForMember(s => s.MovieQuestions, opt => opt.Ignore());
 
             #endregion
 
@@ -78,7 +90,6 @@ namespace P9YS.Services.Base
                 .ForMember(s => s.AddTime, option => option.MapFrom(s => DateTime.Now));
 
             #endregion
-
 
             #region MovieResource
 

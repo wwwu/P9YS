@@ -73,7 +73,11 @@
                 }
                 , cols: [[ //表头
                     { field: 'movieId', title: 'MovieId', width: 80, fixed: 'left' }
-                    , { field: 'movieShortName', title: '名称', fixed: 'left' }
+                    , {
+                        field: 'movieShortName', title: '名称', templet: function (item) {
+                            return '<a href="javascript:ShowMovie(' + item.movieId + ')">' + item.movieShortName + '</a>';
+                        }
+                    }
                     , { field: 'addTime', title: '推荐日期', width: 200 }
                     , { title: '', width: 100, fixed: 'right', toolbar: '#operation' }
                 ]]
@@ -97,7 +101,11 @@
                 }
                 , cols: [[ //表头
                     { field: 'movieId', title: 'MovieId', width: 80, fixed: 'left' }
-                    , { field: 'movieShortName', title: '名称', fixed: 'left' }
+                    , {
+                        field: 'movieShortName', title: '名称', templet: function (item) {
+                            return '<a href="javascript:ShowMovie(' + item.movieId + ')">' + item.movieShortName + '</a>';
+                        }
+                    }
                     , { field: 'addTime', title: '推荐日期', width: 200 }
                     , { title: '', width: 100, fixed: 'right', toolbar: '#operation' }
                 ]]

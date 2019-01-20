@@ -61,10 +61,10 @@ namespace P9YS.Manage
 
             services.AddHttpContextAccessor();
 
-            #region 注入
+            #region 配置DI
 
             services.AddScoped<EntityFramework.MovieResourceContext>();
-            services.AddSingleton<Services.Base.BaseService>();
+            services.AddSingleton<BaseService>();
             //批量注入Service
             var dics = BaseHelper.GetClassName("P9YS.Services", t => t.Name.EndsWith("Service") && !t.IsInterface);
             foreach (var item in dics)
@@ -76,7 +76,11 @@ namespace P9YS.Manage
             }
 
             #endregion
-            
+
+            //AutoMapper
+            var appSettings = Configuration.GetSection("AppSettings").Get<AppSettings>();
+            Mapper.Initialize(cfg => cfg.AddProfile(new AutoMapperProfile(appSettings)));
+
             //Json输出时间格式
             services.AddMvc().AddJsonOptions(option =>
             {
@@ -107,9 +111,6 @@ namespace P9YS.Manage
 
             app.UseStaticFiles();
             app.UseAuthentication();
-
-            //AutoMapper
-            Mapper.Initialize(cfg => cfg.AddProfile(new AutoMapperProfile()));
 
             app.UseMvc(routes =>
             {

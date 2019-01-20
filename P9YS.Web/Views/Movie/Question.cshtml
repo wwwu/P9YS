@@ -18,7 +18,7 @@
     <div class="question-left">
         <div class="topic">
             <div style="overflow:hidden;">
-                <img class="avatar pull-left" src="/@Model.QuestionInfo.UserAvatar" height="60" width="60">
+                <img class="avatar pull-left" src="@Model.QuestionInfo.UserAvatar" height="60" width="60">
                 <h1 class="title">@Model.QuestionInfo.Title</h1>
                 <p class="u-info">@*<a class="pull-right">+同问(25)</a>*@@Model.QuestionInfo.UserNickName &nbsp;&nbsp; @Model.QuestionInfo.AddTime.ToString("yyyy-MM-dd HH:mm:ss")</p>
             </div>
@@ -35,7 +35,7 @@
             @foreach (var item in Model.QuestionAnswers.Data)
             {
                 <div class="reply-box">
-                    <img class="avatar pull-left" src="/@item.UserAvatar" height="38" width="38">
+                    <img class="avatar pull-left" src="@item.UserAvatar" height="38" width="38">
                     <p class="u-info"><span class="pull-right glyphicon glyphicon-thumbs-up" data-id="@item.Id" title="赞"><font>@item.Support</font></span>@item.UserNickName &nbsp;&nbsp; @item.AddTime.ToString("yyyy-MM-dd HH:mm:ss")</p>
                     <pre>@item.Content</pre>
                 </div>

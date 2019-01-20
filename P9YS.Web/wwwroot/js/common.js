@@ -48,7 +48,7 @@
                     if (returnUrl != null) {
                         location.href = returnUrl;
                     } else {
-                        $(".nav-login").html("<p>{0}<br />{1} <a href='/Member/Logout'>注销</a></p><a href='/account/index'><img class='avatar' src='/{2}' height='42' width='42' /></a>".format(
+                        $(".nav-login").html("<p>{0}<br />{1} <a href='/Member/Logout'>注销</a></p><a href='/account/index'><img class='avatar' src='{2}' height='42' width='42' /></a>".format(
                             result.content.nickName, result.content.email, result.content.avatar));
                     }   
                 } else {
@@ -250,7 +250,7 @@
                     var html = "";
                     var commentList = result.content.data;
                     $.each(commentList, function (i, comment) {
-                        html += "<div><img class='avatar pull-left' src='/" + comment.userAvatar + "' height='38' width='38'>\n\
+                        html += "<div><img class='avatar pull-left' src='" + comment.userAvatar + "' height='38' width='38'>\n\
                             <p class='u-info'>" + comment.userNickName + " &nbsp;&nbsp; <span class=\"pull-right\">" + comment.addTime + "</span></p>\n\
                             <p class='conment-cnt'>"+ comment.content + "</p>\n";
                         html += "</div>\n<hr />\n";
@@ -527,7 +527,7 @@ function GetReplyList(pageIndex, pageSize, questionId) {
                 var list = result.content.data;
                 $.each(list, function (i, item) {
                     html += "<div class='reply-box'>\n\
-                                <img class='avatar pull-left' src='/" + item.userAvatar + "' height='38' width='38'>\n\
+                                <img class='avatar pull-left' src='" + item.userAvatar + "' height='38' width='38'>\n\
                                 <p class='u-info'><span class='pull-right glyphicon glyphicon-thumbs-up' data-id='"+ item.id + "' title='赞'><font>" + item.support + "</font></span>" + item.userNickName + " &nbsp;&nbsp; " + item.addTime + "</p>\n\
                                 <pre>" + item.content + "</pre>\n\
                             </div><hr />";
@@ -553,7 +553,7 @@ function search(keyword,pageIndex) {
     var datetimeStart = $(".cdt-time .label-primary").attr("data-start");
     var datetimeEnd = $(".cdt-time .label-primary").attr("data-end");
     var sort = $(".cdt-sort .label-primary").attr("data-id");
-    var pageSize = 1;
+    var pageSize = 20;
     if (!pageIndex) {
         pageIndex = $(".pagination li.active a").attr("data-page") - 0;
         pageIndex = !pageIndex ? 1 : pageIndex;

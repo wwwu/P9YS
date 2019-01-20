@@ -1,6 +1,8 @@
 ﻿@{
     var controller = ViewContext.RouteData.Values["controller"].ToString();
     var action = ViewContext.RouteData.Values["action"].ToString();
+    @inject P9YS.Services.User.IUserService _userService;
+    var user = _userService.GetCurrentUser();
 }
 
 <!DOCTYPE html>
@@ -9,8 +11,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
     <title>@ViewData["Title"] - P9YS后台</title>
-    <link rel="stylesheet" href="~/lib/layui-v2.4.5/layui/css/layui.css" />
-    <link rel="stylesheet" href="~/css/site.min.css" />
+    @{await Html.RenderPartialAsync("_BaseCssPartial");}
     @RenderSection("Css", required: false)
 </head>
 <body class="layui-layout-body">
@@ -26,8 +27,8 @@
             <ul class="layui-nav layui-layout-right">
                 <li class="layui-nav-item">
                     <a href="javascript:;">
-                        <img src="http://t.cn/RCzsdCq" class="layui-nav-img">
-                        p9ys
+                        <img src="@user.Avatar" class="layui-nav-img">
+                        @user.Email
                     </a>
                     <dl class="layui-nav-child">
                         <dd><a href="javascript:void(0)">退出</a></dd>
@@ -43,8 +44,9 @@
                     <li class="layui-nav-item @(controller=="Movie"?"layui-nav-itemed":"")">
                         <a class="" href="javascript:;">影片管理</a>
                         <dl class="layui-nav-child">
-                            <dd><a href="javascript:;">新片审核</a></dd>
-                            <dd @((controller == "Movie" && action == "Resource") ? "class=layui-this" : "")><a href="/Movie/Resource">资源管理</a></dd>
+                            <dd @((controller == "Movie" && action == "Verify") ? "class=layui-this" : "")><a href="/Movie/Verify">新片审核</a></dd>
+                            <dd @((controller == "Movie" && action == "Index") ? "class=layui-this" : "")><a href="/Movie/Index">影片库</a></dd>
+                            <dd @((controller == "Movie" && action == "Resource") ? "class=layui-this" : "")><a href="/Movie/Resource">资源</a></dd>
                             <dd @((controller == "Movie" && action == "Rating") ? "class=layui-this" : "")><a href="/Movie/Rating">评分记录</a></dd>
                             <dd @((controller == "Movie" && action == "Comment") ? "class=layui-this" : "")><a href="/Movie/Comment">留言记录</a></dd>
                             @*<dd><a href="javascript:;">提问记录</a></dd>*@
@@ -59,10 +61,10 @@
                     <li class="layui-nav-item @(controller=="Setting"?"layui-nav-itemed":"")">
                         <a href="javascript:;">系统设置</a>
                         <dl class="layui-nav-child">
-                            <dd @((controller=="Setting" && action=="Carousel")?"class=layui-this":"")><a href="/Setting/Carousel">首页轮播</a></dd>
-                            <dd @((controller=="Setting" && action=="Recommend")?"class=layui-this":"")><a href="/Setting/Recommend">推荐列表</a></dd>
-                            <dd @((controller=="Setting" && action=="Area")?"class=layui-this":"")><a href="/Setting/Area">国家设置</a></dd>
-                            <dd @((controller=="Setting" && action=="Genre")?"class=layui-this":"")><a href="/Setting/Genre">类型设置</a></dd>
+                            <dd @((controller == "Setting" && action == "Carousel") ? "class=layui-this" : "")><a href="/Setting/Carousel">首页轮播</a></dd>
+                            <dd @((controller == "Setting" && action == "Recommend") ? "class=layui-this" : "")><a href="/Setting/Recommend">推荐列表</a></dd>
+                            <dd @((controller == "Setting" && action == "Area") ? "class=layui-this" : "")><a href="/Setting/Area">国家设置</a></dd>
+                            <dd @((controller == "Setting" && action == "Genre") ? "class=layui-this" : "")><a href="/Setting/Genre">类型设置</a></dd>
                         </dl>
                     </li>
                 </ul>
@@ -81,36 +83,12 @@
             © p9ys.com
         </div>
     </div>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/layui-v2.4.5/layui/layui.js"></script>
+    @{await Html.RenderPartialAsync("_BaseScriptsPartial");}
     @RenderSection("Scripts", required: false)
     <script>
-        //JavaScript代码区域
         layui.use('element', function () {
             var element = layui.element;
         });
-
-        function ImageToBase64(inputFile, dataCallback) {
-            if (typeof (FileReader) === 'undefined') {
-                alert("抱歉，你的浏览器不支持 FileReader，不能将图片转换为Base64！");
-            } else {
-                try {
-                    /*图片转Base64 核心代码*/
-                    var file = inputFile.files[0];
-                    if (!/image\/\w+/.test(file.type)) {
-                        alert("请确保文件为图像类型");
-                        return false;
-                    }
-                    var reader = new FileReader();
-                    reader.onload = function () {
-                        dataCallback(this.result);
-                    }
-                    reader.readAsDataURL(file);
-                } catch (e) {
-                    alert('图片转Base64出错' + e.toString())
-                }
-            }
-        }
     </script>
 </body>
 </html>

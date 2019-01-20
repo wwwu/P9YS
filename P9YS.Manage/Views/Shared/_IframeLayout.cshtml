@@ -1,0 +1,18 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
+    @{await Html.RenderPartialAsync("_BaseCssPartial");}
+    @RenderSection("Css", required: false)
+</head>
+<body>
+    <div style="padding:10px 15px;">
+        @RenderBody()
+    </div>
+
+    @{await Html.RenderPartialAsync("_BaseScriptsPartial");}
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

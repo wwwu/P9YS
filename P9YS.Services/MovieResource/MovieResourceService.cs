@@ -48,7 +48,8 @@ namespace P9YS.Services.MovieResource
         }
 
 
-        public async Task<PagingOutput<MovieResource_Manage_Output>> GetResourcesAsync(PagingInput<MovieResource_Search_Input> pagingInput)
+        public async Task<PagingOutput<MovieResource_Manage_Output>> GetResourcesAsync(
+            PagingInput<MovieResource_Search_Input> pagingInput)
         {
             var query = _movieResourceContext.MovieResources.AsQueryable();
 

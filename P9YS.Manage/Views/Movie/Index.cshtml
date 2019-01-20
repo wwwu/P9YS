@@ -1,6 +1,6 @@
 ﻿
 @{
-    ViewData["Title"] = "资源管理";
+    ViewData["Title"] = "影片库";
 }
 
 <h2>@ViewData["Title"]</h2>
@@ -8,13 +8,10 @@
 
 <div class="sreachBar">
     <div class="layui-inline">
-        <input class="layui-input" name="movieId" placeholder="影片Id" autocomplete="off">
+        <input class="layui-input" name="keyword" placeholder="片名关键词" autocomplete="off">
     </div>
     <div class="layui-inline">
-        <input class="layui-input" name="userId" placeholder="用户Id" autocomplete="off">
-    </div>
-    <div class="layui-inline">
-        <label class="layui-form-label">日期范围</label>
+        <label class="layui-form-label">上映日期</label>
         <div class="layui-input-inline">
             <input type="text" class="layui-input" name="addTime" id="addTime" placeholder=" - ">
         </div>
@@ -22,13 +19,7 @@
     <button class="layui-btn" id="btn_sreach" data-type="reload">搜索</button>
 </div>
 
-<script type="text/html" id="toolbar">
-    <div class="layui-btn-container">
-        <button class="layui-btn layui-btn-sm" lay-event="add">新增</button>
-    </div>
-</script>
-
-<table id="tb_resource" lay-filter="tb_resource"></table>
+<table id="tb_movies" lay-filter="tb_movies"></table>
 
 <form class="layui-form" style="display:none;margin:15px 15px 0 0;" id="lay_add" action="" lay-filter="lay_add">
     <input type="hidden" name="id" value="" />
@@ -88,8 +79,8 @@
             });
 
             table.render({
-                elem: '#tb_resource'
-                , url: '/Movie/GetResources' //数据接口
+                elem: '#tb_movies'
+                , url: '/Movie/GetMovies' //数据接口
                 , method: "get"
                 , request: {
                     pageName: "PageIndex"
@@ -110,35 +101,32 @@
                     };
                 }
                 , cols: [[ //表头
-                    { field: 'id', title: 'ID', width: 80, fixed: 'left' }
+                    { field: 'id', title: 'ID', width: 70, fixed: 'left' }
                     , {
-                        field: 'movieShortName', title: '影片', width: 170, templet: function (item) {
-                            return '<a href="javascript:ShowMovie(' + item.movieId + ')">' + item.movieShortName + '</a>';
+                        field: 'shortName', title: '片名', templet: function (item) {
+                            return '<a href="javascript:ShowMovie(' + item.id + ')">' + item.shortName + '</a>';
                         }
                     }
-                    , {
-                        field: 'userNickName', title: '用户', width: 170, templet: function (item) {
-                            return '<a title="' + item.userId + '" href="javascript:void(0)">' + item.userNickName + '</a>';
-                        }
-                    }
-                    , { field: 'size', title: 'MB', width: 70, }
-                    , { field: 'resolution', title: '分辨率', width: 90, }
-                    , { field: 'subtitle', title: '字幕', width: 90, }
-                    , { field: 'dub', title: '配音', width: 70, }
-                    , { field: 'content', title: '链接' }
+                    , { field: 'director', title: '导演',  }
+                    , { field: 'releaseDate', title: '上映日期', width: 110, templet: function (d) { return d.releaseDate.substr(0,10) } }
+                    , { field: 'movieTime', title: '时长', width: 70, }
+                    , { field: 'movieAreaArea', title: '地区',width:90, }
+                    , { field: 'score', title: '评分', width: 70, }
+                    , { field: 'hot', title: '近期热度', width: 90, }
+                    , { field: 'addTime', title: '添加时间', width: 160, }
                     , { field: 'updTime', title: '更新时间', width: 160, }
                     , { title: '', width: 120, fixed: 'right', toolbar: '#operation' }
                 ]]
             });
 
             //监听行工具事件
-            table.on('tool(tb_resource)', function (obj) {
+            table.on('tool(tb_movies)', function (obj) {
                 if (obj.event === 'del') { //删除
                     layer.confirm('确定要删除？', { icon: 3, title: '提示' }, function (index) {
                         var load = layer.load(2);
                         $.ajax({
                             type: "delete",
-                            url: "/Movie/DelResource/" + obj.data.id,
+                            url: "/Movie/DelMovie/" + obj.data.id,
                             dataType: "json",
                             success: function (result) {
                                 if (result.code == 10000 && result.content) {
@@ -159,22 +147,21 @@
                     });
                 }
                 else if (obj.event === 'edit') { //编辑
-                    form.val("lay_add", obj.data);
-
-                    var $form = $("#lay_add");
                     layer.open({
-                        title: "编辑",
-                        area: ["500px", "500px"],
-                        shade: 0,
-                        type: 1,
-                        content: $("#lay_add"),
-                        btn: ['保存', '取消'],
-                        yes: function () {
+                        type: 2,
+                        title: obj.data.fullName,
+                        shadeClose: false,
+                        shade: 0.4,
+                        area: ['900px', '90%'],
+                        content: '/Movie/Detail/' + obj.data.id,
+                        btn: ['保存', '关闭'],
+                        yes: function (index, layero) {
+                            var $form = $(layero.find("iframe")[0].contentWindow.document).find("form");
                             var requestBody = $form.serialize();
                             var load = layer.load(2);
                             $.ajax({
                                 type: "post",
-                                url: "/Movie/UpdResource",
+                                url: "/Movie/UpdMovie",
                                 dataType: "json",
                                 data: requestBody,
                                 success: function (result) {
@@ -198,64 +185,18 @@
                 }
             });
 
-            //监听头工具事件
-            table.on('toolbar(tb_resource)', function (obj) {
-                switch (obj.event) {
-                    case 'add': //新增
-                        //重置表单值
-                        var $form = $("#lay_add");
-                        $form.find('[name="id"]').val("");
-                        $form[0].reset();
-
-                        layer.open({
-                            title: "新增",
-                            area: ["500px", "500px"],
-                            shade: 0,
-                            type: 1,
-                            content: $("#lay_add"),
-                            btn: ['保存', '取消'],
-                            yes: function () {
-                                var requestBody = $form.serialize();
-                                var load = layer.load(2);
-                                $.ajax({
-                                    type: "post",
-                                    url: "/Movie/AddResource",
-                                    dataType: "json",
-                                    data: requestBody,
-                                    success: function (result) {
-                                        if (result.code == 10000) {
-                                            layer.msg("成功");
-                                            location.href = location.href;
-                                        } else {
-                                            layer.msg(result.message, function () { });
-                                        }
-                                    },
-                                    error: function (ex) {
-                                        layer.msg("异常", function () { });
-                                    },
-                                    complete: function () {
-                                        layer.close(load);
-                                    }
-                                })
-                            }
-                        });
-                        break;
-                };
-            });
-
             //搜索
             var $ = layui.$, active = {
                 reload: function () {
                     var timeArr = $("#addTime").val().split(' - ');
                     var key = {
-                        "Condition.movieId": $('[name="movieId"]').val(),
-                        "Condition.userId": $('[name="userId"]').val(),
-                        "Condition.beginTime": timeArr[0],
-                        "Condition.endTime": timeArr[1],
+                        "Condition.keyword": $('[name="keyword"]').val(),
+                        "Condition.beginDate": timeArr[0],
+                        "Condition.endDate": timeArr[1],
                     }
 
                     //执行重载
-                    table.reload('tb_resource', {
+                    table.reload('tb_movies', {
                         page: {
                             curr: 1 //重新从第 1 页开始
                         }
@@ -270,4 +211,5 @@
         });
     </script>
 }
+
 

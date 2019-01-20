@@ -8,10 +8,15 @@ namespace P9YS.Common
 {
     public static class ImageHelper
     {
+        /// <summary>
+        /// 获取图片扩展名  .jpg
+        /// </summary>
+        /// <param name="stream"></param>
+        /// <returns></returns>
         public static string GetSuffix(Stream stream)
         {
-            var image = Image.FromStream(stream);
             var suffix = string.Empty;
+            var image = Image.FromStream(stream);
             if (image.RawFormat.Equals(System.DrawingCore.Imaging.ImageFormat.Jpeg))
                 suffix = ".jpg";
             else if (image.RawFormat.Equals(System.DrawingCore.Imaging.ImageFormat.Png))

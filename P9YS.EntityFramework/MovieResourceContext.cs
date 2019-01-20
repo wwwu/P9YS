@@ -16,6 +16,7 @@ namespace P9YS.EntityFramework
         public virtual DbSet<Movie> Movies { get; set; }
         public virtual DbSet<MovieArea> MovieAreas { get; set; }
         public virtual DbSet<MovieGenre> MovieGenres { get; set; }
+        public virtual DbSet<MovieType> MovieType { get; set; }
         public virtual DbSet<Carousel> Carousels { get; set; }
         public virtual DbSet<MovieRecommend> MovieRecommends { get; set; }
         public virtual DbSet<MovieOrigin> MovieOrigins { get; set; }

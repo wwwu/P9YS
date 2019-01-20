@@ -60,6 +60,7 @@ namespace P9YS.Services.MovieGenres
             };
             return result;
         }
+
         public async Task<Result> AddMovieGenreAsync(MoiveGenreInput moiveGenreInput)
         {
             var result = new Result();

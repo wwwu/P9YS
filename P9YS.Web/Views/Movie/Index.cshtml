@@ -94,7 +94,7 @@
                 @foreach (var Comment in Model.MovieComments.Data)
                 {
                     <div>
-                        <img class="avatar pull-left" src="/@Comment.UserAvatar" height="38" width="38">
+                        <img class="avatar pull-left" src="@Comment.UserAvatar" height="38" width="38">
                         <p class="u-info">
                             @*<span class="pull-right">@dr["rowId"] 楼</span><a data-id="@Comment.Id" data-l="@Comment.UserNickName" class="pull-right reply">回复</a>*@
                             @Comment.UserNickName &nbsp;&nbsp; <span class="pull-right">@Comment.AddTime.ToString("yyyy-MM-dd HH:mm:ss")</span>
