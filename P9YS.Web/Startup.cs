@@ -98,6 +98,8 @@ namespace P9YS.Web
                 option.Filters.Add(typeof(CustomAuthorizeFilter));
                 //模型验证
                 option.Filters.Add(typeof(ModelStateFilterAttribute));
+                //未捕获异常
+                option.Filters.Add(typeof(CustomExceptionFilterAttribute));
             });
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
