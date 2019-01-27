@@ -18,6 +18,8 @@ namespace P9YS.EntityFramework.Models
 
         public decimal Score { get; set; }
 
+        public DateTime? Mark { get; set; }
+
         [ForeignKey("MovieId")]
         public virtual Movie Movie { get; set; }
         [ForeignKey("UserId")]

@@ -13,8 +13,10 @@ namespace P9YS.EntityFramework.Models
 
         public int UserId { get; set; }
 
+        public DateTime? Mark { get; set; }
+
         [ForeignKey("MovieQuestionAnswerId")]
-        public virtual MovieQuestionAnswer Movie { get; set; }
+        public virtual MovieQuestionAnswer MovieQuestionAnswer { get; set; }
         [ForeignKey("UserId")]
         public virtual User User { get; set; }
 

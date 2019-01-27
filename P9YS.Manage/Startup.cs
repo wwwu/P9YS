@@ -11,10 +11,11 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
 using P9YS.Common;
 using P9YS.Services.Base;
-using NLog.Web;
+using Hangfire;
+using Hangfire.MySql.Core;
+using P9YS.HangfireJobs;
 
 namespace P9YS.Manage
 {
@@ -67,7 +68,8 @@ namespace P9YS.Manage
 
             services.AddScoped<EntityFramework.MovieResourceContext>();
             services.AddSingleton<BaseService>();
-            //批量注入Service
+            services.AddScoped<IJobService, JobService>();
+            //批量注册Service
             var dics = BaseHelper.GetClassName("P9YS.Services", t => t.Name.EndsWith("Service") && !t.IsInterface);
             foreach (var item in dics)
             {
@@ -98,6 +100,10 @@ namespace P9YS.Manage
                 option.Filters.Add(typeof(CustomExceptionFilterAttribute));
             });
 
+            //Hangfire
+            var connectionString = Configuration["AppSettings:HangfireContext"];
+            services.AddHangfire(s => s.UseStorage(new MySqlStorage(connectionString)));
+
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
 
@@ -115,6 +121,9 @@ namespace P9YS.Manage
             app.UseStaticFiles();
             app.UseAuthentication();
             app.UseStatusCodePages("text/plain", "Status Code: {0}");
+
+            //Hangfire            
+            HangfireJobs.Startup.Run(app);
 
             app.UseMvc(routes =>
             {

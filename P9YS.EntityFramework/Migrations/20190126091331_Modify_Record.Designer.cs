@@ -2,15 +2,17 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using P9YS.EntityFramework;
 
 namespace P9YS.EntityFramework.Migrations
 {
     [DbContext(typeof(MovieResourceContext))]
-    partial class MovieResourceContextModelSnapshot : ModelSnapshot
+    [Migration("20190126091331_Modify_Record")]
+    partial class Modify_Record
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
