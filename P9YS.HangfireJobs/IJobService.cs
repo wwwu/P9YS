@@ -14,5 +14,10 @@ namespace P9YS.HangfireJobs
         /// </summary>
         /// <param name="jobId"></param>
         void UpdSuportsJob(string jobId);
+        /// <summary>
+        /// 更新豆瓣数据(评分、在线播放源)
+        /// 每次生成x个延迟任务
+        /// </summary>
+        void UpdDoubanDataJob();
     }
 }

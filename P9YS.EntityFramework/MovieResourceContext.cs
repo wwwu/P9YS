@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using JetBrains.Annotations;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.Json;
 using P9YS.EntityFramework.Models;
@@ -10,6 +11,13 @@ namespace P9YS.EntityFramework
 {
     public class MovieResourceContext : DbContext
     {
+        public MovieResourceContext()
+        { }
+
+        public MovieResourceContext(DbContextOptions<MovieResourceContext> options)
+            : base(options)
+        { }
+
         public IConfiguration Configuration { get; set; }
 
         public virtual DbSet<User> Users { get; set; }
@@ -31,11 +39,14 @@ namespace P9YS.EntityFramework
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            var envName = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
-            Configuration = new ConfigurationBuilder()
-                .Add(new JsonConfigurationSource { Path = $"appsettings.{envName}.json", ReloadOnChange = true })
-                .Build();
-            optionsBuilder.UseMySql(Configuration["AppSettings:MovieResourceContext"]);
+            if (!optionsBuilder.IsConfigured)
+            {
+                var envName = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+                Configuration = new ConfigurationBuilder()
+                    .Add(new JsonConfigurationSource { Path = $"appsettings.{envName}.json", ReloadOnChange = true })
+                    .Build();
+                optionsBuilder.UseMySql(Configuration["AppSettings:MovieResourceContext"]);
+            }
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -46,9 +57,8 @@ namespace P9YS.EntityFramework
 
             #region 种子数据
 
-            //更新表结构时也会执行，迁移过程中可能会导致数据丢失，慎用。建议到Program初始化数据
-            //modelBuilder.Entity<MovieArea>().HasData(SeedData.GetDefaultMoiveAreas());
-            //modelBuilder.Entity<MovieGenre>().HasData(SeedData.GetDefaultMovieGenres());
+            modelBuilder.Entity<MovieArea>().HasData(SeedData.GetDefaultMoiveAreas());
+            modelBuilder.Entity<MovieGenre>().HasData(SeedData.GetDefaultMovieGenres());
 
             #endregion
         }

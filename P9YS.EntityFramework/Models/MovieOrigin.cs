@@ -18,9 +18,19 @@ namespace P9YS.EntityFramework.Models
 
         public MovieOriginTypeEnum OriginType { get; set; }
 
+        /// <summary>
+        /// "豆瓣"评分
+        /// </summary>
         public decimal Score { get; set; }
 
+        /// <summary>
+        /// "豆瓣"Url
+        /// </summary>
         [StringLength(200)]
         public string Url { get; set; }
+
+        public DateTime AddTime { get; set; }
+
+        public DateTime UpdTime { get; set; }
     }
 }

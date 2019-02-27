@@ -2,9 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
-using Hangfire;
-using Hangfire.AspNetCore;
 using Hangfire.Dashboard;
+using Hangfire;
 
 namespace P9YS.HangfireJobs
 {
@@ -25,11 +24,15 @@ namespace P9YS.HangfireJobs
 
             //更新评分数据
             RecurringJob.AddOrUpdate<IJobService>("Recurring_UpdRatingsJob"
-                , s => s.UpdRatingsJob("Recurring_UpdRatingsJob"), "0 0/5 * * * ? *");
+                , s => s.UpdRatingsJob("Recurring_UpdRatingsJob"), "0 0/5 * * * ?");
 
             //更新点赞数据
             RecurringJob.AddOrUpdate<IJobService>("Recurring_UpdSuportsJob"
-                , s => s.UpdSuportsJob("Recurring_UpdSuportsJob"), "0 0/5 * * * ? *");
+                , s => s.UpdSuportsJob("Recurring_UpdSuportsJob"), "0 0/5 * * * ?");
+
+            //更新豆瓣数据(评分、在线播放源)
+            RecurringJob.AddOrUpdate<IJobService>("Recurring_UpdDoubanDataJob"
+                , s => s.UpdDoubanDataJob(), "0 0 2 * * ?");
 
             #endregion
         }

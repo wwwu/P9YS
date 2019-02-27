@@ -8,6 +8,7 @@ namespace P9YS.EntityFramework.Models
 {
     public class Carousel
     {
+        [Key]
         public int Id { get; set; }
 
         [StringLength(200)]

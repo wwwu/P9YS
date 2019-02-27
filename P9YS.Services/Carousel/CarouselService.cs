@@ -3,8 +3,6 @@ using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Internal;
 using Microsoft.Extensions.Caching.Memory;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
 using P9YS.Common;
 using P9YS.Common.Enums;
 using P9YS.EntityFramework;
@@ -23,11 +21,11 @@ namespace P9YS.Services.Carousel
     {
         private readonly MovieResourceContext _movieResourceContext;
         private readonly IMemoryCache _memoryCache;
-        private readonly BaseService _baseService;
+        private readonly IBaseService _baseService;
 
         public CarouselService(MovieResourceContext movieResourceContext
             , IMemoryCache memoryCache
-            , BaseService baseService)
+            , IBaseService baseService)
         {
             _movieResourceContext = movieResourceContext;
             _memoryCache = memoryCache;
@@ -50,7 +48,7 @@ namespace P9YS.Services.Carousel
                             .ProjectTo<CarouselOutput>()
                             .ToListAsync();
                         //图片地址
-                        carousels.ForEach(s => s.ImgUrl = _baseService.GetAbsoluteUrl(s.ImgUrl));
+                        carousels.ForEach(s => s.ImgUrl = _baseService.GetCosAbsoluteUrl(s.ImgUrl));
                         _memoryCache.Set(CacheKeys.Carousels, carousels, TimeSpan.FromMinutes(CacheKeys.DefaultMinutes));
                     }
                 }
@@ -67,7 +65,7 @@ namespace P9YS.Services.Carousel
                 .AsNoTracking()
                 .ToListAsync();
             //图片地址
-            carousels.ForEach(s => s.ImgUrl = _baseService.GetAbsoluteUrl(s.ImgUrl));
+            carousels.ForEach(s => s.ImgUrl = _baseService.GetCosAbsoluteUrl(s.ImgUrl));
             var totalCount = await _movieResourceContext.Carousels.CountAsync();
 
             var result = new PagingOutput<EntityFramework.Models.Carousel>
@@ -102,7 +100,7 @@ namespace P9YS.Services.Carousel
             var carousel = await _movieResourceContext.Carousels.AddAsync(entity);
             await _movieResourceContext.SaveChangesAsync();
             //返回实体
-            entity.ImgUrl = _baseService.GetAbsoluteUrl(entity.ImgUrl);
+            entity.ImgUrl = _baseService.GetCosAbsoluteUrl(entity.ImgUrl);
             result.Content = entity;
             return result;
         }
@@ -136,7 +134,7 @@ namespace P9YS.Services.Carousel
             carousel = Mapper.Map(carouselnput, carousel);
             await _movieResourceContext.SaveChangesAsync();
             //返回
-            carousel.ImgUrl = _baseService.GetAbsoluteUrl(carousel.ImgUrl);
+            carousel.ImgUrl = _baseService.GetCosAbsoluteUrl(carousel.ImgUrl);
             result.Content = carousel;
             return result;
         }

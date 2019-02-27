@@ -5,6 +5,7 @@ using Microsoft.Extensions.Options;
 using P9YS.Common;
 using P9YS.Common.Enums;
 using P9YS.EntityFramework;
+using P9YS.EntityFramework.Models;
 using P9YS.Services.Base;
 using P9YS.Services.Movie.Dto;
 using P9YS.Services.User;
@@ -12,7 +13,9 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace P9YS.Services.Movie
@@ -21,11 +24,11 @@ namespace P9YS.Services.Movie
     {
         private readonly MovieResourceContext _movieResourceContext;
         private readonly IUserService _userService;
-        private readonly BaseService _baseService;
+        private readonly IBaseService _baseService;
 
         public MovieService(MovieResourceContext movieResourceContext
             , IUserService userService
-            , BaseService baseService)
+            , IBaseService baseService)
         {
             _movieResourceContext = movieResourceContext;
             _userService = userService;
@@ -84,7 +87,7 @@ namespace P9YS.Services.Movie
                 .AsNoTracking()
                 .ToListAsync();
             //图片路径
-            movieList.ForEach(s => s.ImgUrl = _baseService.GetAbsoluteUrl(s.ImgUrl));
+            movieList.ForEach(s => s.ImgUrl = _baseService.GetCosAbsoluteUrl(s.ImgUrl));
             var totalCount = await query.CountAsync();
 
             var result = new PagingOutput<MovieListOutput>
@@ -104,7 +107,7 @@ namespace P9YS.Services.Movie
                 .AsNoTracking()
                 .FirstOrDefaultAsync(s => s.Id == movieId);
             //图片路径
-            movie.ImgUrl = _baseService.GetAbsoluteUrl(movie.ImgUrl);
+            movie.ImgUrl = _baseService.GetCosAbsoluteUrl(movie.ImgUrl);
             return movie;
         }
 
@@ -156,7 +159,7 @@ namespace P9YS.Services.Movie
                 .AsNoTracking()
                 .ToListAsync();
             //图片路径
-            movies.ForEach(s => s.ImgUrl = _baseService.GetAbsoluteUrl(s.ImgUrl));
+            movies.ForEach(s => s.ImgUrl = _baseService.GetCosAbsoluteUrl(s.ImgUrl));
             //总页数
             var totalCount = await query.CountAsync();
 
@@ -175,7 +178,7 @@ namespace P9YS.Services.Movie
             var entity = await _movieResourceContext.Movies.FindAsync(movieId);
             var movie = Mapper.Map<Movie_Manage_Output>(entity);
             //图片路径
-            movie.ImgUrl = _baseService.GetAbsoluteUrl(movie.ImgUrl);
+            movie.ImgUrl = _baseService.GetCosAbsoluteUrl(movie.ImgUrl);
             movie.MovieSeries = await GetMovieSeriesAsync(movieId);
             movie.MovieTypes = await _movieResourceContext.MovieType
                 .Where(s=>s.MovieId== movieId)
@@ -239,5 +242,78 @@ namespace P9YS.Services.Movie
             result.Content = rows > 0;
             return result;
         }
+
+        #region 更新Douban数据
+
+        public List<MovieDoubanOriginOutput> GetMoviesByOriginUpdTime(int count)
+        {
+            var entities = _movieResourceContext.Movies.Include(s => s.MovieOrigins)
+                .GroupJoin(_movieResourceContext.MovieOrigins, m => m.Id, mo => mo.MovieId
+                    , (m, mo) => new MovieDoubanOriginOutput
+                    {
+                        MovieId = m.Id,
+                        FullName = m.FullName,
+                        Url = mo.FirstOrDefault().Url,
+                        UpdTime = mo.FirstOrDefault().UpdTime
+                    })
+                .OrderBy(s => s.UpdTime)
+                .Take(count)
+                .ToList();
+            return entities;
+        }
+
+        public async Task UpdDoubanDataAsync(MovieDoubanOriginOutput movieDoubanOrigin)
+        {
+            HttpClient client = new HttpClient();
+            //没有url，根据片名搜索
+            if (string.IsNullOrWhiteSpace(movieDoubanOrigin.Url))
+            {
+                var searchPageUrl = $"https://www.douban.com/search?cat=1002&q={movieDoubanOrigin.FullName}";
+                var searchPageHtml = await client.GetStringAsync(searchPageUrl);
+                var sid = Regex.Match(searchPageHtml, @"sid:\s*?(\d+)\s*?,").Groups[1]?.Value;
+                if (string.IsNullOrWhiteSpace(sid))
+                    return;
+                movieDoubanOrigin.Url = $"https://movie.douban.com/subject/{sid}/";
+            }
+            //影片内容页
+            var html = await client.GetStringAsync(movieDoubanOrigin.Url);
+            //评分
+            var score = Regex.Match(html, @"<strong.*?rating_num.*?>([\d.]+?)</strong>").Groups[1]?.Value;
+            //在线播放源
+            var matches = Regex.Matches(html, @"class=""playBtn"".+?data-cn=""(.+?)"".+?href=""(.+?)""[\w\W]+?class=""buylink-price""><span>([\w\W]*?)</span></span>");
+            var movieOnlinePlays = new List<MovieOnlinePlay>();
+            foreach (Match match in matches)
+            {
+                movieOnlinePlays.Add(new MovieOnlinePlay
+                {
+                    MovieId = movieDoubanOrigin.MovieId,
+                    WebSiteName = match.Groups[1]?.Value ?? "",
+                    Url = match.Groups[2]?.Value ?? "",
+                    Price = match.Groups[3]?.Value ?? ""
+                });
+            }
+            //插入
+            if (!string.IsNullOrWhiteSpace(score))
+            {
+                _movieResourceContext.MovieOrigins.Add(new MovieOrigin
+                {
+                    MovieId = movieDoubanOrigin.MovieId,
+                    OriginType = MovieOriginTypeEnum.DouBan,
+                    Score = decimal.Parse(score),
+                    Url = movieDoubanOrigin.Url,
+                    AddTime = DateTime.Now,
+                    UpdTime = DateTime.Now,
+                });
+                await _movieResourceContext.SaveChangesAsync();
+            }
+            if (movieOnlinePlays.Any())
+            {
+                _movieResourceContext.MovieOnlinePlays.AddRange(movieOnlinePlays);
+                await _movieResourceContext.SaveChangesAsync();
+            }
+
+        }
+
+        #endregion
     }
 }

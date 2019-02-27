@@ -1,6 +1,7 @@
 ﻿using Hangfire;
 using Hangfire.Common;
 using Hangfire.Storage;
+using P9YS.Services.Movie;
 using P9YS.Services.RatingRecord;
 using P9YS.Services.SuportRecord;
 using System;
@@ -14,14 +15,17 @@ namespace P9YS.HangfireJobs
     {
         private readonly IRatingRecordService _ratingRecordService;
         private readonly ISuportRecordService _suportRecordService;
+        private readonly IMovieService _movieService;
 
         public JobService(IRatingRecordService ratingRecordService
-            , ISuportRecordService suportRecordService)
+            , ISuportRecordService suportRecordService
+            , IMovieService movieService)
         {
-            this._ratingRecordService = ratingRecordService;
-            this._suportRecordService = suportRecordService;
+            _ratingRecordService = ratingRecordService;
+            _suportRecordService = suportRecordService;
+            _movieService = movieService;
         }
-        
+
         /// <summary>
         /// 更新评分数据
         /// </summary>
@@ -30,9 +34,9 @@ namespace P9YS.HangfireJobs
         {
             var connection = JobStorage.Current.GetConnection();
             var job = connection.GetRecurringJobs().FirstOrDefault(s => s.Id == jobId);
-            //本次次运行时间
+            //本次运行时间
             var beginTime = job?.LastExecution ?? DateTime.Now;
-            //bug,async会丢失上下文
+            //async会丢失上下文
             _ratingRecordService.UpdRatingsJob(beginTime);
         }
 
@@ -47,6 +51,24 @@ namespace P9YS.HangfireJobs
             //本次运行时间
             var beginTime = job?.LastExecution ?? DateTime.Now;
             _suportRecordService.UpdSuportsJob(beginTime);
+        }
+
+        /// <summary>
+        /// 更新豆瓣数据(评分、在线播放源)
+        /// 每次生成x个延迟任务
+        /// </summary>
+        public void UpdDoubanDataJob()
+        {
+            var movies = _movieService.GetMoviesByOriginUpdTime(20);
+            //5小时内随机分布抓取时间
+            var totalMinutes = 300;
+            var random = new Random();
+            movies.ForEach(movie =>
+            {
+                var delay = random.Next(1, totalMinutes);
+                BackgroundJob.Schedule<IMovieService>(s => s.UpdDoubanDataAsync(movie)
+                    , TimeSpan.FromMinutes(delay));
+            });
         }
     }
 }

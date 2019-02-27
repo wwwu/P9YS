@@ -9,7 +9,7 @@ using System.Text;
 
 namespace P9YS.Services.Base
 {
-    public class BaseService
+    public class BaseService : IBaseService
     {
         private readonly IOptionsMonitor<AppSettings> _options;
         private readonly CosCloud _cosCloud;
@@ -49,7 +49,12 @@ namespace P9YS.Services.Base
             return result;
         }
 
-        public string GetAbsoluteUrl(string relativeUrl)
+        /// <summary>
+        /// 获取TxCos图片绝对路径
+        /// </summary>
+        /// <param name="relativeUrl">相对路径</param>
+        /// <returns></returns>
+        public string GetCosAbsoluteUrl(string relativeUrl)
         {
             return _options.CurrentValue.TxCos.CosDomain + relativeUrl;
         }

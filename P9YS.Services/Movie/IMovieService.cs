@@ -21,5 +21,9 @@ namespace P9YS.Services.Movie
         Task<Result> UpdMovieAsync(Movie_Manage_Input input);
 
         Task<Result> DelMovieAsync(int movieId);
+
+        List<MovieDoubanOriginOutput> GetMoviesByOriginUpdTime(int count);
+
+        Task UpdDoubanDataAsync(MovieDoubanOriginOutput movieDoubanOrigin);
     }
 }

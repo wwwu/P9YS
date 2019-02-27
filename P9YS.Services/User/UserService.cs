@@ -22,12 +22,12 @@ namespace P9YS.Services.User
         private IHttpContextAccessor _httpContext;
         private readonly MovieResourceContext _movieResourceContext;
         private readonly IOptionsMonitor<AppSettings> _options;
-        private readonly BaseService _baseService;
+        private readonly IBaseService _baseService;
 
         public UserService(IHttpContextAccessor httpContext
             , MovieResourceContext movieResourceContext
             , IOptionsMonitor<AppSettings> options
-            , BaseService baseService)
+            , IBaseService baseService)
         {
             _httpContext = httpContext;
             _movieResourceContext = movieResourceContext;
@@ -90,7 +90,7 @@ namespace P9YS.Services.User
             var claimsIdentity = new ClaimsIdentity(CookieAuthenticationDefaults.AuthenticationScheme);
             //头像
             user.Avatar = user.Avatar == defaultAvatar ? defaultAvatar
-                : _baseService.GetAbsoluteUrl(user.Avatar);
+                : _baseService.GetCosAbsoluteUrl(user.Avatar);
             var claims = new List<Claim>
             {
                 new Claim("UserId", user.Id.ToString()),

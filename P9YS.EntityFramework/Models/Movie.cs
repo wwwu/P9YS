@@ -63,6 +63,8 @@ namespace P9YS.EntityFramework.Models
 
         public virtual IEnumerable<MovieOrigin> MovieOrigins { get; set; }
 
+        public virtual IEnumerable<MovieOnlinePlay> MovieOnlinePlays { get; set; }
+
         public virtual IEnumerable<MovieComment> MovieComments { get; set; }
 
         public virtual IEnumerable<MovieQuestion> MovieQuestions { get; set; }

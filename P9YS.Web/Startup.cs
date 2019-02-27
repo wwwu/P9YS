@@ -65,7 +65,7 @@ namespace P9YS.Web
             #region 配置DI
 
             services.AddScoped<EntityFramework.MovieResourceContext>();
-            services.AddSingleton<BaseService>();
+            //services.AddSingleton<BaseService>();
             //批量注册Service
             var dics = BaseHelper.GetClassName("P9YS.Services", t => t.Name.EndsWith("Service") && !t.IsInterface);
             foreach (var item in dics)

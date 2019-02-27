@@ -14,7 +14,7 @@ namespace P9YS.EntityFramework.Migrations
         {
 #pragma warning disable 612, 618
             modelBuilder
-                .HasAnnotation("ProductVersion", "2.1.4-rtm-31024")
+                .HasAnnotation("ProductVersion", "2.1.8-servicing-32085")
                 .HasAnnotation("Relational:MaxIdentifierLength", 64);
 
             modelBuilder.Entity("P9YS.EntityFramework.Models.Carousel", b =>
@@ -113,6 +113,37 @@ namespace P9YS.EntityFramework.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("MovieAreas");
+
+                    b.HasData(
+                        new { Id = 1, AddTime = new DateTime(2019, 2, 18, 19, 21, 59, 511, DateTimeKind.Local), Area = "中国", Other = 0 },
+                        new { Id = 2, AddTime = new DateTime(2019, 2, 18, 19, 21, 59, 511, DateTimeKind.Local), Area = "香港", Other = 0 },
+                        new { Id = 3, AddTime = new DateTime(2019, 2, 18, 19, 21, 59, 511, DateTimeKind.Local), Area = "台湾", Other = 0 },
+                        new { Id = 4, AddTime = new DateTime(2019, 2, 18, 19, 21, 59, 511, DateTimeKind.Local), Area = "美国", Other = 0 },
+                        new { Id = 5, AddTime = new DateTime(2019, 2, 18, 19, 21, 59, 511, DateTimeKind.Local), Area = "英国", Other = 0 },
+                        new { Id = 6, AddTime = new DateTime(2019, 2, 18, 19, 21, 59, 511, DateTimeKind.Local), Area = "日本", Other = 0 },
+                        new { Id = 7, AddTime = new DateTime(2019, 2, 18, 19, 21, 59, 511, DateTimeKind.Local), Area = "韩国", Other = 0 },
+                        new { Id = 8, AddTime = new DateTime(2019, 2, 18, 19, 21, 59, 511, DateTimeKind.Local), Area = "法国", Other = 0 },
+                        new { Id = 9, AddTime = new DateTime(2019, 2, 18, 19, 21, 59, 511, DateTimeKind.Local), Area = "印度", Other = 1 },
+                        new { Id = 10, AddTime = new DateTime(2019, 2, 18, 19, 21, 59, 511, DateTimeKind.Local), Area = "泰国", Other = 1 },
+                        new { Id = 11, AddTime = new DateTime(2019, 2, 18, 19, 21, 59, 511, DateTimeKind.Local), Area = "加拿大", Other = 1 },
+                        new { Id = 12, AddTime = new DateTime(2019, 2, 18, 19, 21, 59, 511, DateTimeKind.Local), Area = "澳大利亚", Other = 1 },
+                        new { Id = 13, AddTime = new DateTime(2019, 2, 18, 19, 21, 59, 511, DateTimeKind.Local), Area = "俄罗斯", Other = 1 },
+                        new { Id = 14, AddTime = new DateTime(2019, 2, 18, 19, 21, 59, 511, DateTimeKind.Local), Area = "伊朗", Other = 1 },
+                        new { Id = 15, AddTime = new DateTime(2019, 2, 18, 19, 21, 59, 511, DateTimeKind.Local), Area = "爱尔兰", Other = 1 },
+                        new { Id = 16, AddTime = new DateTime(2019, 2, 18, 19, 21, 59, 511, DateTimeKind.Local), Area = "瑞典", Other = 1 },
+                        new { Id = 17, AddTime = new DateTime(2019, 2, 18, 19, 21, 59, 511, DateTimeKind.Local), Area = "丹麦", Other = 1 },
+                        new { Id = 18, AddTime = new DateTime(2019, 2, 18, 19, 21, 59, 511, DateTimeKind.Local), Area = "巴西", Other = 1 },
+                        new { Id = 19, AddTime = new DateTime(2019, 2, 18, 19, 21, 59, 511, DateTimeKind.Local), Area = "墨西哥", Other = 1 },
+                        new { Id = 20, AddTime = new DateTime(2019, 2, 18, 19, 21, 59, 511, DateTimeKind.Local), Area = "新西兰", Other = 1 },
+                        new { Id = 21, AddTime = new DateTime(2019, 2, 18, 19, 21, 59, 511, DateTimeKind.Local), Area = "新加坡", Other = 1 },
+                        new { Id = 22, AddTime = new DateTime(2019, 2, 18, 19, 21, 59, 511, DateTimeKind.Local), Area = "土耳其", Other = 1 },
+                        new { Id = 23, AddTime = new DateTime(2019, 2, 18, 19, 21, 59, 511, DateTimeKind.Local), Area = "捷克", Other = 1 },
+                        new { Id = 24, AddTime = new DateTime(2019, 2, 18, 19, 21, 59, 511, DateTimeKind.Local), Area = "波兰", Other = 1 },
+                        new { Id = 25, AddTime = new DateTime(2019, 2, 18, 19, 21, 59, 511, DateTimeKind.Local), Area = "阿根廷", Other = 1 },
+                        new { Id = 26, AddTime = new DateTime(2019, 2, 18, 19, 21, 59, 511, DateTimeKind.Local), Area = "奥地利", Other = 1 },
+                        new { Id = 27, AddTime = new DateTime(2019, 2, 18, 19, 21, 59, 511, DateTimeKind.Local), Area = "比利时", Other = 1 },
+                        new { Id = 28, AddTime = new DateTime(2019, 2, 18, 19, 21, 59, 511, DateTimeKind.Local), Area = "其它", Other = 1 }
+                    );
                 });
 
             modelBuilder.Entity("P9YS.EntityFramework.Models.MovieComment", b =>
@@ -156,6 +187,40 @@ namespace P9YS.EntityFramework.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("MovieGenres");
+
+                    b.HasData(
+                        new { Id = 1, AddTime = new DateTime(2019, 2, 18, 19, 21, 59, 515, DateTimeKind.Local), Name = "科幻" },
+                        new { Id = 2, AddTime = new DateTime(2019, 2, 18, 19, 21, 59, 515, DateTimeKind.Local), Name = "动作" },
+                        new { Id = 3, AddTime = new DateTime(2019, 2, 18, 19, 21, 59, 515, DateTimeKind.Local), Name = "犯罪" },
+                        new { Id = 4, AddTime = new DateTime(2019, 2, 18, 19, 21, 59, 515, DateTimeKind.Local), Name = "战争" },
+                        new { Id = 5, AddTime = new DateTime(2019, 2, 18, 19, 21, 59, 515, DateTimeKind.Local), Name = "剧情" },
+                        new { Id = 6, AddTime = new DateTime(2019, 2, 18, 19, 21, 59, 515, DateTimeKind.Local), Name = "青春" },
+                        new { Id = 7, AddTime = new DateTime(2019, 2, 18, 19, 21, 59, 515, DateTimeKind.Local), Name = "爱情" },
+                        new { Id = 8, AddTime = new DateTime(2019, 2, 18, 19, 21, 59, 515, DateTimeKind.Local), Name = "烂片" },
+                        new { Id = 9, AddTime = new DateTime(2019, 2, 18, 19, 21, 59, 515, DateTimeKind.Local), Name = "文艺" },
+                        new { Id = 10, AddTime = new DateTime(2019, 2, 18, 19, 21, 59, 515, DateTimeKind.Local), Name = "喜剧" },
+                        new { Id = 11, AddTime = new DateTime(2019, 2, 18, 19, 21, 59, 515, DateTimeKind.Local), Name = "音乐" },
+                        new { Id = 12, AddTime = new DateTime(2019, 2, 18, 19, 21, 59, 515, DateTimeKind.Local), Name = "动画" },
+                        new { Id = 13, AddTime = new DateTime(2019, 2, 18, 19, 21, 59, 515, DateTimeKind.Local), Name = "童话" },
+                        new { Id = 14, AddTime = new DateTime(2019, 2, 18, 19, 21, 59, 515, DateTimeKind.Local), Name = "奇幻" },
+                        new { Id = 15, AddTime = new DateTime(2019, 2, 18, 19, 21, 59, 515, DateTimeKind.Local), Name = "史诗" },
+                        new { Id = 16, AddTime = new DateTime(2019, 2, 18, 19, 21, 59, 515, DateTimeKind.Local), Name = "家庭" },
+                        new { Id = 17, AddTime = new DateTime(2019, 2, 18, 19, 21, 59, 515, DateTimeKind.Local), Name = "暴力" },
+                        new { Id = 18, AddTime = new DateTime(2019, 2, 18, 19, 21, 59, 515, DateTimeKind.Local), Name = "恐怖" },
+                        new { Id = 19, AddTime = new DateTime(2019, 2, 18, 19, 21, 59, 515, DateTimeKind.Local), Name = "同性" },
+                        new { Id = 20, AddTime = new DateTime(2019, 2, 18, 19, 21, 59, 515, DateTimeKind.Local), Name = "悬疑" },
+                        new { Id = 21, AddTime = new DateTime(2019, 2, 18, 19, 21, 59, 515, DateTimeKind.Local), Name = "缉毒" },
+                        new { Id = 22, AddTime = new DateTime(2019, 2, 18, 19, 21, 59, 515, DateTimeKind.Local), Name = "黑帮" },
+                        new { Id = 23, AddTime = new DateTime(2019, 2, 18, 19, 21, 59, 515, DateTimeKind.Local), Name = "卧底" },
+                        new { Id = 24, AddTime = new DateTime(2019, 2, 18, 19, 21, 59, 515, DateTimeKind.Local), Name = "枪战" },
+                        new { Id = 25, AddTime = new DateTime(2019, 2, 18, 19, 21, 59, 515, DateTimeKind.Local), Name = "宇宙" },
+                        new { Id = 26, AddTime = new DateTime(2019, 2, 18, 19, 21, 59, 515, DateTimeKind.Local), Name = "星战" },
+                        new { Id = 27, AddTime = new DateTime(2019, 2, 18, 19, 21, 59, 515, DateTimeKind.Local), Name = "武侠" },
+                        new { Id = 28, AddTime = new DateTime(2019, 2, 18, 19, 21, 59, 515, DateTimeKind.Local), Name = "纪录" },
+                        new { Id = 29, AddTime = new DateTime(2019, 2, 18, 19, 21, 59, 515, DateTimeKind.Local), Name = "监狱" },
+                        new { Id = 30, AddTime = new DateTime(2019, 2, 18, 19, 21, 59, 515, DateTimeKind.Local), Name = "历史" },
+                        new { Id = 31, AddTime = new DateTime(2019, 2, 18, 19, 21, 59, 515, DateTimeKind.Local), Name = "传记" }
+                    );
                 });
 
             modelBuilder.Entity("P9YS.EntityFramework.Models.MovieOnlinePlay", b =>
@@ -185,11 +250,15 @@ namespace P9YS.EntityFramework.Migrations
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd();
 
+                    b.Property<DateTime>("AddTime");
+
                     b.Property<int>("MovieId");
 
                     b.Property<int>("OriginType");
 
                     b.Property<decimal>("Score");
+
+                    b.Property<DateTime>("UpdTime");
 
                     b.Property<string>("Url")
                         .HasMaxLength(200);
@@ -528,7 +597,7 @@ namespace P9YS.EntityFramework.Migrations
 
             modelBuilder.Entity("P9YS.EntityFramework.Models.SuportRecord", b =>
                 {
-                    b.HasOne("P9YS.EntityFramework.Models.MovieQuestionAnswer", "Movie")
+                    b.HasOne("P9YS.EntityFramework.Models.MovieQuestionAnswer", "MovieQuestionAnswer")
                         .WithMany()
                         .HasForeignKey("MovieQuestionAnswerId")
                         .OnDelete(DeleteBehavior.Cascade);

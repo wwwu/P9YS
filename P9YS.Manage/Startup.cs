@@ -14,8 +14,8 @@ using Microsoft.Extensions.DependencyInjection;
 using P9YS.Common;
 using P9YS.Services.Base;
 using Hangfire;
-using Hangfire.MySql.Core;
 using P9YS.HangfireJobs;
+using Hangfire.MySql.Core;
 
 namespace P9YS.Manage
 {
@@ -67,7 +67,7 @@ namespace P9YS.Manage
             #region 配置DI
 
             services.AddScoped<EntityFramework.MovieResourceContext>();
-            services.AddSingleton<BaseService>();
+            //services.AddSingleton<BaseService>();
             services.AddScoped<IJobService, JobService>();
             //批量注册Service
             var dics = BaseHelper.GetClassName("P9YS.Services", t => t.Name.EndsWith("Service") && !t.IsInterface);
