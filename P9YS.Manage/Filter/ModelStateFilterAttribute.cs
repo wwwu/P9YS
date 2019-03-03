@@ -23,7 +23,7 @@ namespace P9YS.Manage
                 if (string.IsNullOrWhiteSpace(msg))
                     msg = errors.Value.Errors[0].Exception.Message;
 
-                var result = new Result(Common.ErrorCodeEnum.Failed)
+                var result = new Result(Common.CustomCodeEnum.Failed)
                 {
                     Message = msg
                 };

@@ -63,9 +63,7 @@ namespace P9YS.Web
             services.AddHttpContextAccessor();
 
             #region 配置DI
-
             services.AddScoped<EntityFramework.MovieResourceContext>();
-            //services.AddSingleton<BaseService>();
             //批量注册Service
             var dics = BaseHelper.GetClassName("P9YS.Services", t => t.Name.EndsWith("Service") && !t.IsInterface);
             foreach (var item in dics)
@@ -75,12 +73,21 @@ namespace P9YS.Web
                     services.AddScoped(typeArray, item.Key);
                 }
             }
-
             #endregion
 
-            //AutoMapper
+            #region AutoMapper
+
             var appSettings = Configuration.GetSection("AppSettings").Get<AppSettings>();
-            Mapper.Initialize(cfg => cfg.AddProfile(new AutoMapperProfile(appSettings)));
+            AutoMapper.IConfigurationProvider mapperConfig = new MapperConfiguration(cfg =>
+            {
+                cfg.AddProfile(new AutoMapperProfile(appSettings));
+            });
+            services.AddSingleton(mapperConfig);
+            services.AddScoped<IMapper, Mapper>();
+            //AutoMapper静态实例导致无法进行单元测试
+            //Mapper.Initialize(cfg => cfg.AddProfile(new AutoMapperProfile(appSettings)));
+
+            #endregion
 
             //缓存
             services.AddMemoryCache();
@@ -91,7 +98,8 @@ namespace P9YS.Web
                 option.SerializerSettings.DateFormatString = "yyyy-MM-dd HH:mm:ss";
             });
 
-            //Filter
+            #region Filter
+
             services.AddMvc(option =>
             {
                 //自定义授权过滤器
@@ -101,6 +109,8 @@ namespace P9YS.Web
                 //未捕获异常
                 option.Filters.Add(typeof(CustomExceptionFilterAttribute));
             });
+
+            #endregion
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }

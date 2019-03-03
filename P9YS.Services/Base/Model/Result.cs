@@ -5,28 +5,26 @@ using System.Text;
 
 namespace P9YS.Services
 {
-    public class Result<T>
+    public class Result<T>: Result
     {
-        public Result(ErrorCodeEnum errorCodeEnum=ErrorCodeEnum.Success)
-        {
-            Code = errorCodeEnum;
-            Message = errorCodeEnum.GetRemark();
-        }
-        public ErrorCodeEnum Code { get; set; }
-        public T Content { get; set; }
-        public string Message { get; set; }
+        public new T Content { get; set; }
     }
 
     public class Result
     {
-        public Result(ErrorCodeEnum errorCodeEnum = ErrorCodeEnum.Success)
+        public Result(CustomCodeEnum customCodeEnum = CustomCodeEnum.Success)
+        {
+            SetCode(customCodeEnum);
+        }
+
+        public CustomCodeEnum Code { get; set; }
+        public object Content { get; set; }
+        public string Message { get; set; }
+
+        public void SetCode(CustomCodeEnum errorCodeEnum)
         {
             Code = errorCodeEnum;
             Message = errorCodeEnum.GetRemark();
         }
-
-        public ErrorCodeEnum Code { get; set; }
-        public object Content { get; set; }
-        public string Message { get; set; }
     }
 }

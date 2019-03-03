@@ -37,13 +37,13 @@ namespace P9YS.Services.Base
                 result.Content = response;
                 if (response.Code != 0)
                 {
-                    result.Code = ErrorCodeEnum.Error;
+                    result.Code = CustomCodeEnum.Error;
                     result.Message = response.Message;
                 }
             }
             catch (Exception ex)
             {
-                result.Code = ErrorCodeEnum.Error;
+                result.Code = CustomCodeEnum.Error;
                 result.Message = ex.Message;
             }
             return result;

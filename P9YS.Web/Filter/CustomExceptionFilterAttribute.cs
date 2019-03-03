@@ -33,7 +33,7 @@ namespace P9YS.Web
                 //}
                 _logger.LogError(context.Exception, requestBody, null);
 
-                var result = new Result(Common.ErrorCodeEnum.Error);
+                var result = new Result(Common.CustomCodeEnum.Error);
                 context.Result = new Microsoft.AspNetCore.Mvc.JsonResult(result);
             }
             else

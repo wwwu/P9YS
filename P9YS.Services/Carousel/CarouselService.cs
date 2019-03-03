@@ -19,14 +19,17 @@ namespace P9YS.Services.Carousel
 {
     public class CarouselService : ICarouselService
     {
+        private readonly IMapper _mapper;
         private readonly MovieResourceContext _movieResourceContext;
         private readonly IMemoryCache _memoryCache;
         private readonly IBaseService _baseService;
 
-        public CarouselService(MovieResourceContext movieResourceContext
+        public CarouselService(IMapper mapper
+            , MovieResourceContext movieResourceContext
             , IMemoryCache memoryCache
             , IBaseService baseService)
         {
+            _mapper = mapper;
             _movieResourceContext = movieResourceContext;
             _memoryCache = memoryCache;
             _baseService = baseService;
@@ -45,7 +48,7 @@ namespace P9YS.Services.Carousel
                             .Where(s => s.State == CarouselStateEnum.Show)
                             .OrderByDescending(s => s.Id)
                             .AsNoTracking()
-                            .ProjectTo<CarouselOutput>()
+                            .ProjectTo<CarouselOutput>(_mapper.ConfigurationProvider)
                             .ToListAsync();
                         //图片地址
                         carousels.ForEach(s => s.ImgUrl = _baseService.GetCosAbsoluteUrl(s.ImgUrl));
@@ -91,11 +94,11 @@ namespace P9YS.Services.Carousel
                 ms.Dispose();
                 imgUrl = $"/carousel/{Guid.NewGuid().ToString("N")}{suffix}";
                 var uploadResult = _baseService.UploadFile(imgUrl, dataBytes);
-                if (uploadResult.Code != ErrorCodeEnum.Success)
+                if (uploadResult.Code != CustomCodeEnum.Success)
                     return uploadResult;
             }
             //添加
-            var entity = Mapper.Map<Carouselnput, EntityFramework.Models.Carousel>(carouselnput);
+            var entity = _mapper.Map<Carouselnput, EntityFramework.Models.Carousel>(carouselnput);
             entity.ImgUrl = imgUrl;
             var carousel = await _movieResourceContext.Carousels.AddAsync(entity);
             await _movieResourceContext.SaveChangesAsync();
@@ -111,8 +114,8 @@ namespace P9YS.Services.Carousel
             var carousel = await _movieResourceContext.Carousels.FindAsync(carouselnput.Id);
             if (carousel == null)
             {
-                result.Code = ErrorCodeEnum.Failed;
-                result.Message = ErrorCodeEnum.Failed.GetRemark();
+                result.Code = CustomCodeEnum.Failed;
+                result.Message = CustomCodeEnum.Failed.GetRemark();
             }
 
             //上传新图片
@@ -125,13 +128,13 @@ namespace P9YS.Services.Carousel
                 ms.Dispose();
                 imgUrl = $"/carousel/{Guid.NewGuid().ToString("N")}{suffix}";
                 var uploadResult = _baseService.UploadFile(imgUrl, dataBytes);
-                if (uploadResult.Code != ErrorCodeEnum.Success)
+                if (uploadResult.Code != CustomCodeEnum.Success)
                     return uploadResult;
             }
             //TODO:删除原图，异常流程
 
             //更新实体            
-            carousel = Mapper.Map(carouselnput, carousel);
+            carousel = _mapper.Map(carouselnput, carousel);
             await _movieResourceContext.SaveChangesAsync();
             //返回
             carousel.ImgUrl = _baseService.GetCosAbsoluteUrl(carousel.ImgUrl);

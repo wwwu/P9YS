@@ -1,4 +1,5 @@
-﻿using AutoMapper.QueryableExtensions;
+﻿using AutoMapper;
+using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
 using P9YS.EntityFramework;
 using P9YS.Services.RatingRecord.Dto;
@@ -13,11 +14,14 @@ namespace P9YS.Services.RatingRecord
 {
     public class RatingRecordService : IRatingRecordService
     {
+        private readonly IMapper _mapper;
         private readonly MovieResourceContext _movieResourceContext;
         private readonly IUserService _userService;
-        public RatingRecordService(MovieResourceContext movieResourceContext
+        public RatingRecordService(IMapper mapper
+            , MovieResourceContext movieResourceContext
             , IUserService userService)
         {
+            _mapper = mapper;
             _movieResourceContext = movieResourceContext;
             _userService = userService;
         }
@@ -67,7 +71,7 @@ namespace P9YS.Services.RatingRecord
             //分页
             var ratingRecords = await query.Skip((pagingInput.PageIndex - 1) * pagingInput.PageSize)
                 .Take(pagingInput.PageSize)
-                .ProjectTo<RatingRecordOutput>()
+                .ProjectTo<RatingRecordOutput>(_mapper.ConfigurationProvider)
                 .AsNoTracking()
                 .ToListAsync();
             var totalCount = await query.CountAsync();

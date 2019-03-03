@@ -15,21 +15,24 @@ namespace P9YS.Services.MovieGenres
 {
     public class MovieGenreService : IMovieGenreService
     {
+        private readonly IMapper _mapper;
         private readonly MovieResourceContext _movieResourceContext;
         private readonly IMemoryCache _memoryCache;
-        public MovieGenreService(MovieResourceContext movieResourceContext
+        public MovieGenreService(IMapper mapper
+            , MovieResourceContext movieResourceContext
             , IMemoryCache memoryCache)
         {
+            _mapper = mapper;
             _movieResourceContext = movieResourceContext;
             _memoryCache = memoryCache;
         }
 
         public async Task<List<MovieGenreOutput>> GetMovieGenresAsync()
         {
-            if (!_memoryCache.TryGetValue(CacheKeys.MovieGenres, out List<Dto.MovieGenreOutput> movieGenres))
+            if (!_memoryCache.TryGetValue(CacheKeys.MovieGenres, out List<MovieGenreOutput> movieGenres))
             {
                 movieGenres = await _movieResourceContext.MovieGenres
-                    .ProjectTo<Dto.MovieGenreOutput>()
+                    .ProjectTo<MovieGenreOutput>(_mapper.ConfigurationProvider)
                     .AsNoTracking()
                     .ToListAsync();
 
@@ -68,8 +71,8 @@ namespace P9YS.Services.MovieGenres
                 .AnyAsync(s => s.Name == moiveGenreInput.Name.Trim());
             if (isRepeated)
             {
-                result.Code = ErrorCodeEnum.Repeated;
-                result.Message = ErrorCodeEnum.Repeated.GetRemark();
+                result.Code = CustomCodeEnum.Repeated;
+                result.Message = CustomCodeEnum.Repeated.GetRemark();
                 return result;
             }
 
@@ -87,8 +90,8 @@ namespace P9YS.Services.MovieGenres
                 .AnyAsync(s => s.Name == moiveGenreInput.Name.Trim() && s.Id != moiveGenreInput.Id);
             if (isRepeated)
             {
-                result.Code = ErrorCodeEnum.Repeated;
-                result.Message = ErrorCodeEnum.Repeated.GetRemark();
+                result.Code = CustomCodeEnum.Repeated;
+                result.Message = CustomCodeEnum.Repeated.GetRemark();
                 return result;
             }
 

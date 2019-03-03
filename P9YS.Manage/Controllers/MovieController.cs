@@ -32,11 +32,11 @@ namespace P9YS.Manage.Controllers
             , IUserService userService
             , IMovieService movieService)
         {
-            this._ratingRecordService = ratingRecordService;
-            this._movieCommentService = movieCommentService;
-            this._movieResourceService = movieResourceService;
-            this._userService = userService;
-            this._movieService = movieService;
+            _ratingRecordService = ratingRecordService;
+            _movieCommentService = movieCommentService;
+            _movieResourceService = movieResourceService;
+            _userService = userService;
+            _movieService = movieService;
         }
 
         #region 新片审核

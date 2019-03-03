@@ -14,7 +14,7 @@ namespace P9YS.Common
         private string m_remark;
         public RemarkAttribute(string remark)
         {
-            this.m_remark = remark;
+            m_remark = remark;
         }
         /// <summary>
         /// 备注

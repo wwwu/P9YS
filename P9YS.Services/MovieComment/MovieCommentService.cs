@@ -17,11 +17,14 @@ namespace P9YS.Services.MovieComment
 {
     public class MovieCommentService : IMovieCommentService
     {
+        private readonly IMapper _mapper;
         private readonly MovieResourceContext _movieResourceContext;
         private readonly IUserService _userService;
-        public MovieCommentService(MovieResourceContext movieResourceContext
+        public MovieCommentService(IMapper mapper
+            , MovieResourceContext movieResourceContext
             , IUserService userService)
         {
+            _mapper = mapper;
             _movieResourceContext = movieResourceContext;
             _userService = userService;
         }
@@ -41,12 +44,12 @@ namespace P9YS.Services.MovieComment
             var comments = await query.OrderByDescending(s => s.AddTime)
                 .Skip((pagingInput.PageIndex - 1) * pagingInput.PageSize)
                 .Take(pagingInput.PageSize)
-                .ProjectTo<MovieCommentOutput>()
+                .ProjectTo<MovieCommentOutput>(_mapper.ConfigurationProvider)
                 .AsNoTracking()
                 .ToListAsync();
             var totalCount = await query.CountAsync();
 
-            ////reply  没设计好，搁置
+            ////reply  TODO: 没设计好，搁置
             //var parentIds = comments.Select(s => s.Id).ToList();
             //var replyQuery = new List<Dto.MovieCommentOutput>().AsQueryable();
             //parentIds.ForEach(parentId =>
@@ -55,7 +58,7 @@ namespace P9YS.Services.MovieComment
             //        .Where(s => s.ParentId == parentId)
             //        .OrderByDescending(s => s.AddTime)
             //        .Take(pagingInput.PageSize)
-            //        .ProjectTo<Dto.MovieCommentOutput>());
+            //        .ProjectTo<Dto.MovieCommentOutput>(_mapper.ConfigurationProvider));
             //});
             //var replies = replyQuery.AsNoTracking().ToList();
 
@@ -108,7 +111,7 @@ namespace P9YS.Services.MovieComment
             //分页
             var comments = await query.Skip((pagingInput.PageIndex - 1) * pagingInput.PageSize)
                 .Take(pagingInput.PageSize)
-                .ProjectTo<MovieComment_Manage_Output>()
+                .ProjectTo<MovieComment_Manage_Output>(_mapper.ConfigurationProvider)
                 .AsNoTracking()
                 .ToListAsync();
             var totalCount = await query.CountAsync();

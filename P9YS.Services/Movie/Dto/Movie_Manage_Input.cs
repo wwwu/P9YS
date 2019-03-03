@@ -36,6 +36,7 @@ namespace P9YS.Services.Movie.Dto
 
         public int MovieAreaId { get; set; }
 
+        [Required]
         public IEnumerable<int> MovieTypes { get; set; }
 
         public string ImgData { get; set; }

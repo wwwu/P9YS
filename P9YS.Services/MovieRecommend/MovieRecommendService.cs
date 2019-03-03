@@ -15,11 +15,14 @@ namespace P9YS.Services.MovieRecommend
 {
     public class MovieRecommendService : IMovieRecommendService
     {
+        private readonly IMapper _mapper;
         private readonly MovieResourceContext _movieResourceContext;
         private readonly IMemoryCache _memoryCache;
-        public MovieRecommendService(MovieResourceContext movieResourceContext
+        public MovieRecommendService(IMapper mapper
+            , MovieResourceContext movieResourceContext
             , IMemoryCache memoryCache)
         {
+            _mapper = mapper;
             _movieResourceContext = movieResourceContext;
             _memoryCache = memoryCache;
         }
@@ -36,7 +39,7 @@ namespace P9YS.Services.MovieRecommend
                     .Where(s=>s.Type== RecommendTypeEnum.Annual)
                     .OrderByDescending(s => s.Sort)
                     .Take(limit)
-                    .ProjectTo<MovieRecommendOutput>()
+                    .ProjectTo<MovieRecommendOutput>(_mapper.ConfigurationProvider)
                     .AsNoTracking()
                     .ToListAsync();
 
@@ -58,7 +61,7 @@ namespace P9YS.Services.MovieRecommend
                     .Where(s => s.Type == RecommendTypeEnum.Recent)
                     .OrderByDescending(s => s.Sort)
                     .Take(limit)
-                    .ProjectTo<MovieRecommendOutput>()
+                    .ProjectTo<MovieRecommendOutput>(_mapper.ConfigurationProvider)
                     .AsNoTracking()
                     .ToListAsync();
 
@@ -73,7 +76,7 @@ namespace P9YS.Services.MovieRecommend
             var recommends = await _movieResourceContext.MovieRecommends.Include(s => s.Movie)
                 .Where(s => s.Type == recommendType)
                 .OrderByDescending(s => s.Sort).ThenByDescending(s=>s.AddTime)
-                .ProjectTo<RecommendOutput>()
+                .ProjectTo<RecommendOutput>(_mapper.ConfigurationProvider)
                 .AsNoTracking()
                 .ToListAsync();
             return recommends;

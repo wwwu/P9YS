@@ -14,9 +14,12 @@ namespace P9YS.Services.MovieResource
 {
     public class MovieResourceService : IMovieResourceService
     {
+        private readonly IMapper _mapper;
         private readonly MovieResourceContext _movieResourceContext;
-        public MovieResourceService(MovieResourceContext movieResourceContext)
+        public MovieResourceService(IMapper mapper
+            , MovieResourceContext movieResourceContext)
         {
+            _mapper = mapper;
             _movieResourceContext = movieResourceContext;
         }
 
@@ -25,7 +28,7 @@ namespace P9YS.Services.MovieResource
             var movieResources = await _movieResourceContext.MovieResources
                 .Where(s => s.MovieId == movieId)
                 .OrderBy(s => s.Size)
-                .ProjectTo<MovieResourceOutput>()
+                .ProjectTo<MovieResourceOutput>(_mapper.ConfigurationProvider)
                 .AsNoTracking()
                 .ToListAsync();
             movieResources.ForEach(item =>
@@ -41,7 +44,7 @@ namespace P9YS.Services.MovieResource
         {
             var movieOnlinePlays = await _movieResourceContext.MovieOnlinePlays
                 .Where(s => s.MovieId == movieId)
-                .ProjectTo<MovieOnlinePlayOutput>()
+                .ProjectTo<MovieOnlinePlayOutput>(_mapper.ConfigurationProvider)
                 .AsNoTracking()
                 .ToListAsync();
             return movieOnlinePlays;
@@ -70,7 +73,7 @@ namespace P9YS.Services.MovieResource
             //分页
             var resources = await query.Skip((pagingInput.PageIndex - 1) * pagingInput.PageSize)
                 .Take(pagingInput.PageSize)
-                .ProjectTo<MovieResource_Manage_Output>()
+                .ProjectTo<MovieResource_Manage_Output>(_mapper.ConfigurationProvider)
                 .AsNoTracking()
                 .ToListAsync();
             var totalCount = await query.CountAsync();
@@ -101,8 +104,8 @@ namespace P9YS.Services.MovieResource
             var entity = await _movieResourceContext.MovieResources.FindAsync(movieResourceInput.Id);
             if (entity == null)
             {
-                result.Code = ErrorCodeEnum.Failed;
-                result.Message = ErrorCodeEnum.Failed.GetRemark();
+                result.Code = CustomCodeEnum.Failed;
+                result.Message = CustomCodeEnum.Failed.GetRemark();
                 return result;
             }
             entity.Content = movieResourceInput.Content;

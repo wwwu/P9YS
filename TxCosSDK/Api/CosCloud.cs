@@ -42,7 +42,7 @@ namespace QCloud.CosApi.Api
 			this.secretId = secretId;
 			this.secretKey = secretKey;
 			this.timeOut = timeOut * 1000;
-			this.httpRequest = new Request();
+			httpRequest = new Request();
             this.region = region;
         } 
 
@@ -989,7 +989,7 @@ namespace QCloud.CosApi.Api
 		/// <returns></returns>
 		private string generateURL(string bucketName, string remotePath)
 		{
-			string url = "http://" + this.region + ".file.myqcloud.com/files/v2/" + this.appId + "/" + bucketName + HttpUtils.EncodeRemotePath(remotePath);
+			string url = "http://" + region + ".file.myqcloud.com/files/v2/" + appId + "/" + bucketName + HttpUtils.EncodeRemotePath(remotePath);
 			return url;
 		}
 		
@@ -999,7 +999,7 @@ namespace QCloud.CosApi.Api
 		/// <returns></returns>
 		private string generateURL(string bucketName, string remotePath, string prefix)
 		{
-			string url = "http://" + this.region + ".file.myqcloud.com/files/v2/" + this.appId + "/" + bucketName + HttpUtils.EncodeRemotePath(remotePath) + HttpUtility.UrlEncode(prefix);
+			string url = "http://" + region + ".file.myqcloud.com/files/v2/" + appId + "/" + bucketName + HttpUtils.EncodeRemotePath(remotePath) + HttpUtility.UrlEncode(prefix);
 			return url;
 		}
 		

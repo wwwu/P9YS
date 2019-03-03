@@ -15,11 +15,14 @@ namespace P9YS.Services.MovieQuestion
 {
     public class MovieQuestionService : IMovieQuestionService
     {
+        private readonly IMapper _mapper;
         private readonly MovieResourceContext _movieResourceContext;
         private readonly IUserService _userService;
-        public MovieQuestionService(MovieResourceContext movieResourceContext
+        public MovieQuestionService(IMapper mapper
+            , MovieResourceContext movieResourceContext
             , IUserService userService)
         {
+            _mapper = mapper;
             _movieResourceContext = movieResourceContext;
             _userService = userService;
         }
@@ -31,7 +34,7 @@ namespace P9YS.Services.MovieQuestion
             var questions = await query.OrderByDescending(s => s.AddTime)
                 .Skip((pagingInput.PageIndex - 1) * pagingInput.PageSize)
                 .Take(pagingInput.PageSize)
-                .ProjectTo<Dto.QuestionTitleOutput>()
+                .ProjectTo<Dto.QuestionTitleOutput>(_mapper.ConfigurationProvider)
                 .AsNoTracking()
                 .ToListAsync();
             var totalCount = await query.CountAsync();
@@ -62,7 +65,7 @@ namespace P9YS.Services.MovieQuestion
         {
             var question = await _movieResourceContext.MovieQuestions
                 .Where(s=>s.Id==questionId)
-                .ProjectTo<Dto.QuestionOutput>()
+                .ProjectTo<Dto.QuestionOutput>(_mapper.ConfigurationProvider)
                 .AsNoTracking()
                 .FirstOrDefaultAsync();
             return question;
@@ -74,7 +77,7 @@ namespace P9YS.Services.MovieQuestion
                 .Where(s => s.MovieQuestionId == pagingInput.Condition);
             var answers = await query.Skip((pagingInput.PageIndex - 1) * pagingInput.PageSize)
                 .Take(pagingInput.PageSize)
-                .ProjectTo<Dto.QuestionAnswerOutput>()
+                .ProjectTo<Dto.QuestionAnswerOutput>(_mapper.ConfigurationProvider)
                 .AsNoTracking()
                 .ToListAsync();
             var totalCount = await query.CountAsync();

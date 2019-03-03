@@ -67,7 +67,6 @@ namespace P9YS.Manage
             #region 配置DI
 
             services.AddScoped<EntityFramework.MovieResourceContext>();
-            //services.AddSingleton<BaseService>();
             services.AddScoped<IJobService, JobService>();
             //批量注册Service
             var dics = BaseHelper.GetClassName("P9YS.Services", t => t.Name.EndsWith("Service") && !t.IsInterface);
@@ -81,17 +80,28 @@ namespace P9YS.Manage
 
             #endregion
 
-            //AutoMapper
+            #region AutoMapper
+
             var appSettings = Configuration.GetSection("AppSettings").Get<AppSettings>();
-            Mapper.Initialize(cfg => cfg.AddProfile(new AutoMapperProfile(appSettings)));
+            AutoMapper.IConfigurationProvider mapperConfig = new MapperConfiguration(cfg =>
+            {
+                cfg.AddProfile(new AutoMapperProfile(appSettings));
+            });
+            services.AddSingleton(mapperConfig);
+            services.AddScoped<IMapper, Mapper>();
+            //AutoMapper静态实例导致无法进行单元测试
+            //Mapper.Initialize(cfg => cfg.AddProfile(new AutoMapperProfile(appSettings)));
+
+            #endregion
 
             //Json输出时间格式
             services.AddMvc().AddJsonOptions(option =>
             {
                 option.SerializerSettings.DateFormatString = "yyyy-MM-dd HH:mm:ss";
             });
-            
-            //Filter
+
+            #region Filter
+
             services.AddMvc(option =>
             {
                 //模型验证
@@ -99,6 +109,8 @@ namespace P9YS.Manage
                 //未捕获异常
                 option.Filters.Add(typeof(CustomExceptionFilterAttribute));
             });
+
+            #endregion
 
             //Hangfire
             var connectionString = Configuration["AppSettings:HangfireContext"];

@@ -126,7 +126,7 @@
                         var load = layer.load(2);
                         $.ajax({
                             type: "delete",
-                            url: "/Movie/DelMovie/" + obj.data.id,
+                            url: "/Movie/DelMovie?movieId=" + obj.data.id,
                             dataType: "json",
                             success: function (result) {
                                 if (result.code == 10000 && result.content) {

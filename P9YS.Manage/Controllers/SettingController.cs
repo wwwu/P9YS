@@ -51,7 +51,7 @@ namespace P9YS.Manage.Controllers
         [HttpGet]
         public async Task<JsonResult> GetCarousels(PagingInput pagingInput)
         {
-            var result = new Result<object>
+            var result = new Result
             {
                 Content = await _carouselService.GetCarouselsAsync(pagingInput)
             };

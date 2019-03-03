@@ -15,11 +15,14 @@ namespace P9YS.Services.MovieArea
 {
     public class MovieAreaService : IMovieAreaService
     {
+        private readonly IMapper _mapper;
         private readonly MovieResourceContext _movieResourceContext;
         private readonly IMemoryCache _memoryCache;
-        public MovieAreaService(MovieResourceContext movieResourceContext
+        public MovieAreaService(IMapper mapper
+            , MovieResourceContext movieResourceContext
             , IMemoryCache memoryCache)
         {
+            _mapper = mapper;
             _movieResourceContext = movieResourceContext;
             _memoryCache = memoryCache;
         }
@@ -30,7 +33,7 @@ namespace P9YS.Services.MovieArea
             {
                 movieAreas = await _movieResourceContext.MovieAreas
                     .Where(s => s.Other == 0)
-                    .ProjectTo<Dto.MovieAreaOutput>()
+                    .ProjectTo<MovieAreaOutput>(_mapper.ConfigurationProvider)
                     .AsNoTracking()
                     .ToListAsync();
 
@@ -61,6 +64,7 @@ namespace P9YS.Services.MovieArea
             };
             return result;
         }
+
         public async Task<Result> AddMovieAreaAsync(MovieAreaInput movieAreaInput)
         {
             var result = new Result();
@@ -68,12 +72,12 @@ namespace P9YS.Services.MovieArea
                 .AnyAsync(s => s.Area == movieAreaInput.Area.Trim());
             if (isRepeated)
             {
-                result.Code = ErrorCodeEnum.Repeated;
-                result.Message = ErrorCodeEnum.Repeated.GetRemark();
+                result.Code = CustomCodeEnum.Repeated;
+                result.Message = CustomCodeEnum.Repeated.GetRemark();
                 return result;
             }
 
-            var movieArea = Mapper.Map<EntityFramework.Models.MovieArea>(movieAreaInput);
+            var movieArea = _mapper.Map<EntityFramework.Models.MovieArea>(movieAreaInput);
             await _movieResourceContext.MovieAreas.AddAsync(movieArea);
             var rows = await _movieResourceContext.SaveChangesAsync();
             result.Content = rows > 0;
@@ -87,12 +91,12 @@ namespace P9YS.Services.MovieArea
                 .AnyAsync(s => s.Area == movieAreaInput.Area.Trim() && s.Id != movieAreaInput.Id);
             if (isRepeated)
             {
-                result.Code = ErrorCodeEnum.Repeated;
-                result.Message = ErrorCodeEnum.Repeated.GetRemark();
+                result.Code = CustomCodeEnum.Repeated;
+                result.Message = CustomCodeEnum.Repeated.GetRemark();
                 return result;
             }
 
-            var movieArea = Mapper.Map<EntityFramework.Models.MovieArea>(movieAreaInput);
+            var movieArea = _mapper.Map<EntityFramework.Models.MovieArea>(movieAreaInput);
             _movieResourceContext.MovieAreas.Update(movieArea);
             var rows = await _movieResourceContext.SaveChangesAsync();
             result.Content = movieArea;

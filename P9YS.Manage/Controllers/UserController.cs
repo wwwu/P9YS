@@ -18,7 +18,7 @@ namespace P9YS.Manage.Controllers
 
         public UserController(IUserService userService)
         {
-            this._userService = userService;
+            _userService = userService;
         }
 
         public IActionResult Index()

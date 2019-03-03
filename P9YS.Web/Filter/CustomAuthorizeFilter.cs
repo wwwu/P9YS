@@ -30,7 +30,7 @@ namespace P9YS.Web
                 if (!context.HttpContext.User.Identity.IsAuthenticated //未授权
                     && context.HttpContext.Request.Headers["x-requested-with"] == "XMLHttpRequest") //Ajax请求
                 {
-                    context.Result = new Microsoft.AspNetCore.Mvc.JsonResult(new Result(Common.ErrorCodeEnum.Unauthorized));
+                    context.Result = new Microsoft.AspNetCore.Mvc.JsonResult(new Result(Common.CustomCodeEnum.Unauthorized));
                 }
                 else
                 {

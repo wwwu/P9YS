@@ -8,7 +8,7 @@ namespace P9YS.Common
     /// <summary>
     /// 错误码
     /// </summary>
-    public enum ErrorCodeEnum
+    public enum CustomCodeEnum
     {
         /// <summary>
         /// 成功

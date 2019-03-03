@@ -19,16 +19,19 @@ namespace P9YS.Services.User
 {
     public class UserService : IUserService
     {
+        private readonly IMapper _mapper;
         private IHttpContextAccessor _httpContext;
         private readonly MovieResourceContext _movieResourceContext;
         private readonly IOptionsMonitor<AppSettings> _options;
         private readonly IBaseService _baseService;
 
-        public UserService(IHttpContextAccessor httpContext
+        public UserService(IMapper mapper
+            , IHttpContextAccessor httpContext
             , MovieResourceContext movieResourceContext
             , IOptionsMonitor<AppSettings> options
             , IBaseService baseService)
         {
+            _mapper = mapper;
             _httpContext = httpContext;
             _movieResourceContext = movieResourceContext;
             _options = options;
@@ -47,14 +50,12 @@ namespace P9YS.Services.User
                 .FirstOrDefaultAsync(u => u.Email == input.Email && u.Password == input.Password);
             if (user == null)
             {
-                result.Code = ErrorCodeEnum.PassworError;
-                result.Message = ErrorCodeEnum.PassworError.GetRemark();
+                result.SetCode(CustomCodeEnum.PassworError);
                 return result;
             }
             else if (user.Status == UserStatusEnum.Locked)
             {
-                result.Code = ErrorCodeEnum.AccountLocked;
-                result.Message = ErrorCodeEnum.AccountLocked.GetRemark();
+                result.SetCode(CustomCodeEnum.AccountLocked);
                 return result;
             }
 
@@ -153,8 +154,7 @@ namespace P9YS.Services.User
             var isExist = await AccountIsExistAsync(email);
             if (isExist)
             {
-                result.Code = ErrorCodeEnum.Registered;
-                result.Message = ErrorCodeEnum.Registered.GetRemark();
+                result.SetCode(CustomCodeEnum.Registered);
                 result.Content = false;
                 return result;
             }
@@ -177,8 +177,7 @@ namespace P9YS.Services.User
             }
             catch (Exception ex)
             {
-                result.Code = ErrorCodeEnum.VerifyCodeSendFailed;
-                result.Message = ErrorCodeEnum.VerifyCodeSendFailed.GetRemark();
+                result.SetCode(CustomCodeEnum.VerifyCodeSendFailed);
                 result.Content = false;
             }
             return result;
@@ -191,8 +190,7 @@ namespace P9YS.Services.User
             var verifyCode = _httpContext.HttpContext.Session.GetString(RegisterVerifyCodeName);
             if (verifyCode != input.VerifyCode)
             {
-                result.Code = ErrorCodeEnum.VerifyCodeError;
-                result.Message = ErrorCodeEnum.VerifyCodeError.GetRemark();
+                result.SetCode(CustomCodeEnum.VerifyCodeError);
                 result.Content = false;
                 return result;
             }
@@ -210,8 +208,7 @@ namespace P9YS.Services.User
             var user = await _movieResourceContext.Users.AddAsync(entity);
             if (await _movieResourceContext.SaveChangesAsync() < 1)
             {
-                result.Code = ErrorCodeEnum.Failed;
-                result.Message = ErrorCodeEnum.Failed.GetRemark();
+                result.SetCode(CustomCodeEnum.Failed);
                 result.Content = false;
                 return result;
             }
@@ -304,7 +301,7 @@ namespace P9YS.Services.User
             //分页
             var users = await query.Skip((pagingInput.PageIndex - 1) * pagingInput.PageSize)
                 .Take(pagingInput.PageSize)
-                .ProjectTo<UserManageOutput>()
+                .ProjectTo<UserManageOutput>(_mapper.ConfigurationProvider)
                 .AsNoTracking()
                 .ToListAsync();
             var totalCount = await query.CountAsync();
