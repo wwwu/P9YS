@@ -208,9 +208,13 @@ namespace P9YS.ServiceTests
             //Arrange
             dbContext.Movies.AddRange(movies);
             dbContext.SaveChanges();
+            var entryState = dbContext.Entry(movies[0]).State;  // 此时为Unchanged
+            //Mark: movieService中的Remove方法和模拟数据(Arrange)时所用到的是同一个dbContext，此时movies对象的EntryState为Unchanged
+            //由于实体对象还在被追踪，导致The instance of entity type 'Movie' cannot be tracked
+            dbContext.Movies.Attach(movies[0]).State = Microsoft.EntityFrameworkCore.EntityState.Detached;
             var movieService = new MovieService(mapper, dbContext, baseService.Object);
             //Act
-            var movieId = movies.First().Id;
+            var movieId = movies[0].Id;
             var result = await movieService.DelMovieAsync(movieId);
             //Assert
             Assert.True(result.Code == CustomCodeEnum.Success);
