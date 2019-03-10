@@ -51,7 +51,7 @@ namespace P9YS.Services.MovieResource
         }
 
 
-        public async Task<PagingOutput<MovieResource_Manage_Output>> GetResourcesAsync(
+        public async Task<PagingOutput<MovieResource_Manage_Output>> GetResources(
             PagingInput<MovieResource_Search_Input> pagingInput)
         {
             var query = _movieResourceContext.MovieResources.AsQueryable();
@@ -88,7 +88,7 @@ namespace P9YS.Services.MovieResource
             return result;
         }
 
-        public async Task<Result> AddResourceAsync(MovieResourceInput movieResourceInput)
+        public async Task<Result> AddResource(MovieResourceInput movieResourceInput)
         {
             var result = new Result();
             var resource = Mapper.Map<EntityFramework.Models.MovieResource>(movieResourceInput);
@@ -98,7 +98,7 @@ namespace P9YS.Services.MovieResource
             return result;
         }
 
-        public async Task<Result> UpdResourceAsync(MovieResourceInput movieResourceInput)
+        public async Task<Result> UpdResource(MovieResourceInput movieResourceInput)
         {
             var result = new Result();
             var entity = await _movieResourceContext.MovieResources.FindAsync(movieResourceInput.Id);
@@ -119,7 +119,7 @@ namespace P9YS.Services.MovieResource
             return result;
         }
 
-        public async Task<Result> DelResourceAsync(int id)
+        public async Task<Result> DelResource(int id)
         {
             var result = new Result();
             _movieResourceContext.MovieResources.Remove(new EntityFramework.Models.MovieResource { Id = id });

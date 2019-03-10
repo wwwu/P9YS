@@ -31,7 +31,7 @@ namespace P9YS.Services.MovieRecommend
         /// 推荐列表
         /// </summary>
         /// <returns></returns>
-        public async Task<List<MovieRecommendOutput>> GetAnnualRecommendsAsync(int limit = 10)
+        public async Task<List<MovieRecommendOutput>> GetAnnualRecommends(int limit = 10)
         {
             if (!_memoryCache.TryGetValue(CacheKeys.AnnualRecommends, out List<MovieRecommendOutput> annualRecommends))
             {
@@ -53,7 +53,7 @@ namespace P9YS.Services.MovieRecommend
         /// 近期推荐列表
         /// </summary>
         /// <returns></returns>
-        public async Task<List<MovieRecommendOutput>> GetRecentRecommendsAsync(int limit = 10)
+        public async Task<List<MovieRecommendOutput>> GetRecentRecommends(int limit = 10)
         {
             if (!_memoryCache.TryGetValue(CacheKeys.RecentRecommends, out List<MovieRecommendOutput> recentRecommends))
             {
@@ -71,7 +71,7 @@ namespace P9YS.Services.MovieRecommend
             return recentRecommends;
         }
 
-        public async Task<List<RecommendOutput>> GetRecommendsAsync(RecommendTypeEnum recommendType)
+        public async Task<List<RecommendOutput>> GetRecommends(RecommendTypeEnum recommendType)
         {
             var recommends = await _movieResourceContext.MovieRecommends.Include(s => s.Movie)
                 .Where(s => s.Type == recommendType)
@@ -82,7 +82,7 @@ namespace P9YS.Services.MovieRecommend
             return recommends;
         }
 
-        public async Task<bool> AddRecommendAsync(MovieRecommendInput recommendInput)
+        public async Task<bool> AddRecommend(MovieRecommendInput recommendInput)
         {
             var recommend = Mapper.Map<EntityFramework.Models.MovieRecommend>(recommendInput);
             var entity = await _movieResourceContext.MovieRecommends.AddAsync(recommend);
@@ -90,7 +90,7 @@ namespace P9YS.Services.MovieRecommend
             return rows > 0;
         }
 
-        public async Task<bool> DelRecommendAsync(int id)
+        public async Task<bool> DelRecommend(int id)
         {
             _movieResourceContext.MovieRecommends
                 .Remove(new EntityFramework.Models.MovieRecommend { Id = id });

@@ -35,7 +35,7 @@ namespace P9YS.Services.Movie
             _baseService = baseService;
         }
 
-        public async Task<PagingOutput<MovieListOutput>> GetMoviesByConditionAsync(
+        public async Task<PagingOutput<MovieListOutput>> GetMoviesByCondition(
             PagingInput<ConditionInput> pagingInput)
         {
             var condition = pagingInput.Condition ?? new ConditionInput();
@@ -100,7 +100,7 @@ namespace P9YS.Services.Movie
             return result;
         }
 
-        public async Task<MovieInfoOutput> GetMovieInfoAsync(int movieId)
+        public async Task<MovieInfoOutput> GetMovieInfo(int movieId)
         {
             var movie = await _movieResourceContext.Movies
                 .ProjectTo<MovieInfoOutput>(_mapper.ConfigurationProvider)
@@ -111,7 +111,7 @@ namespace P9YS.Services.Movie
             return movie;
         }
 
-        public async Task<List<MovieSeriesOutput>> GetMovieSeriesAsync(int seriesId)
+        public async Task<List<MovieSeriesOutput>> GetMovieSeries(int seriesId)
         {
             var series = await _movieResourceContext.Movies
                 .Where(s => s.SeriesId==seriesId)
@@ -123,7 +123,7 @@ namespace P9YS.Services.Movie
             return series;
         }
 
-        public async Task<MovieOriginOutput> GetMovieOriginAsync(int movieId)
+        public async Task<MovieOriginOutput> GetMovieOrigin(int movieId)
         {
             var movieOrigin = await _movieResourceContext.MovieOrigins
                 .Where(s => s.MovieId == movieId && s.OriginType == MovieOriginTypeEnum.DouBan)
@@ -134,7 +134,7 @@ namespace P9YS.Services.Movie
             return movieOrigin;
         }
 
-        public async Task<PagingOutput<Movie_Manage_Output>> GetMoviesAsync(PagingInput<ConditionInput> pagingInput)
+        public async Task<PagingOutput<Movie_Manage_Output>> GetMovies(PagingInput<ConditionInput> pagingInput)
         {
             var condition = pagingInput.Condition ?? new ConditionInput();
 
@@ -173,13 +173,13 @@ namespace P9YS.Services.Movie
             return result;
         }
 
-        public async Task<Movie_Manage_Output> GetMovieAsync(int movieId)
+        public async Task<Movie_Manage_Output> GetMovie(int movieId)
         {
             var entity = await _movieResourceContext.Movies.FindAsync(movieId);
             var movie = _mapper.Map<Movie_Manage_Output>(entity);
             //图片路径
             movie.ImgUrl = _baseService.GetCosAbsoluteUrl(movie.ImgUrl);
-            movie.MovieSeries = await GetMovieSeriesAsync(movieId);
+            movie.MovieSeries = await GetMovieSeries(movieId);
             movie.MovieTypes = await _movieResourceContext.MovieType
                 .Where(s => s.MovieId == movieId)
                 .AsNoTracking()
@@ -188,7 +188,7 @@ namespace P9YS.Services.Movie
             return movie;
         }
 
-        public async Task<Result> UpdMovieAsync(Movie_Manage_Input input)
+        public async Task<Result> UpdMovie(Movie_Manage_Input input)
         {
             var result = new Result();
             var movie = await _movieResourceContext.Movies.FindAsync(input.Id);
@@ -229,12 +229,12 @@ namespace P9YS.Services.Movie
             var rows = await _movieResourceContext.SaveChangesAsync();
             if (rows > 0)
             {
-                result.Content = await GetMovieAsync(input.Id);
+                result.Content = await GetMovie(input.Id);
             }
             return result;
         }
 
-        public async Task<Result> DelMovieAsync(int movieId)
+        public async Task<Result> DelMovie(int movieId)
         {
             var result = new Result();
             _movieResourceContext.Movies.Remove(new EntityFramework.Models.Movie { Id = movieId });
@@ -262,7 +262,7 @@ namespace P9YS.Services.Movie
             return entities;
         }
 
-        public async Task UpdDoubanDataAsync(MovieDoubanOriginOutput movieDoubanOrigin)
+        public async Task UpdDoubanData(MovieDoubanOriginOutput movieDoubanOrigin)
         {
             HttpClient client = new HttpClient();
             client.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64)");
@@ -295,22 +295,37 @@ namespace P9YS.Services.Movie
                     Price = price
                 });
             }
-            //插入
+            //MovieOrigins
             if (!string.IsNullOrWhiteSpace(score))
             {
-                _movieResourceContext.MovieOrigins.Add(new MovieOrigin
-                {
-                    MovieId = movieDoubanOrigin.MovieId,
-                    OriginType = MovieOriginTypeEnum.DouBan,
-                    Score = decimal.Parse(score),
-                    Url = movieDoubanOrigin.Url,
-                    AddTime = DateTime.Now,
-                    UpdTime = DateTime.Now,
-                });
+                var movieOrigin = _movieResourceContext.MovieOrigins
+                    .FirstOrDefault(s => s.MovieId == movieDoubanOrigin.MovieId && s.OriginType == MovieOriginTypeEnum.DouBan);
+                if (movieOrigin != null)
+                {//修改
+                    movieOrigin.Score = decimal.Parse(score);
+                    movieOrigin.UpdTime = DateTime.Now;
+                }
+                else
+                {//新增
+                    _movieResourceContext.MovieOrigins.Add(new MovieOrigin
+                    {
+                        MovieId = movieDoubanOrigin.MovieId,
+                        OriginType = MovieOriginTypeEnum.DouBan,
+                        Score = decimal.Parse(score),
+                        Url = movieDoubanOrigin.Url,
+                        AddTime = DateTime.Now,
+                        UpdTime = DateTime.Now,
+                    });
+                }
                 await _movieResourceContext.SaveChangesAsync();
             }
+            //MovieOnlinePlays
             if (movieOnlinePlays.Any())
             {
+                var oldDatas = _movieResourceContext.MovieOnlinePlays
+                    .Where(s => s.MovieId == movieDoubanOrigin.MovieId)
+                    .ToList();
+                _movieResourceContext.MovieOnlinePlays.RemoveRange(oldDatas);
                 _movieResourceContext.MovieOnlinePlays.AddRange(movieOnlinePlays);
                 await _movieResourceContext.SaveChangesAsync();
             }

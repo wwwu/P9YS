@@ -53,7 +53,7 @@ namespace P9YS.Manage.Controllers
         {
             var result = new Result
             {
-                Content = await _carouselService.GetCarouselsAsync(pagingInput)
+                Content = await _carouselService.GetCarousels(pagingInput)
             };
             return Json(result);
         }
@@ -61,14 +61,14 @@ namespace P9YS.Manage.Controllers
         [HttpPost]
         public async Task<JsonResult> AddCarousel(Carouselnput carouselnput)
         {
-            var result = await _carouselService.AddCarouselAsync(carouselnput);
+            var result = await _carouselService.AddCarousel(carouselnput);
             return Json(result);
         }
 
         [HttpPost]
         public async Task<JsonResult> UpdCarousel(Carouselnput carouselnput)
         {
-            var result = await _carouselService.UpdCarouselAsync(carouselnput);
+            var result = await _carouselService.UpdCarousel(carouselnput);
             return Json(result);
         }
 
@@ -86,7 +86,7 @@ namespace P9YS.Manage.Controllers
         {
             var result = new Result
             {
-                Content = await _movieRecommendService.GetRecommendsAsync(recommendType)
+                Content = await _movieRecommendService.GetRecommends(recommendType)
             };
             return Json(result);
         }
@@ -96,7 +96,7 @@ namespace P9YS.Manage.Controllers
         {
             var result = new Result
             {
-                Content = await _movieRecommendService.AddRecommendAsync(movieRecommend)
+                Content = await _movieRecommendService.AddRecommend(movieRecommend)
             };
             return Json(result);
         }
@@ -106,7 +106,7 @@ namespace P9YS.Manage.Controllers
         {
             var result = new Result
             {
-                Content = await _movieRecommendService.DelRecommendAsync(id)
+                Content = await _movieRecommendService.DelRecommend(id)
             };
             return Json(result);
         }
@@ -125,7 +125,7 @@ namespace P9YS.Manage.Controllers
         {
             var result = new Result
             {
-                Content = await _movieAreaService.GetMovieAreasAsync(pagingInput)
+                Content = await _movieAreaService.GetMovieAreas(pagingInput)
             };
             return Json(result);
         }
@@ -133,14 +133,14 @@ namespace P9YS.Manage.Controllers
         [HttpPost]
         public async Task<JsonResult> AddArea(MovieAreaInput movieAreaInput)
         {
-            var result = await _movieAreaService.AddMovieAreaAsync(movieAreaInput);
+            var result = await _movieAreaService.AddMovieArea(movieAreaInput);
             return Json(result);
         }
 
         [HttpPost]
         public async Task<JsonResult> UpdArea(MovieAreaInput movieAreaInput)
         {
-            var result = await _movieAreaService.UpdMovieAreaAsync(movieAreaInput);
+            var result = await _movieAreaService.UpdMovieArea(movieAreaInput);
             return Json(result);
         }
 
@@ -158,7 +158,7 @@ namespace P9YS.Manage.Controllers
         {
             var result = new Result
             {
-                Content = await _movieGenreService.GetMovieGenresAsync(pagingInput)
+                Content = await _movieGenreService.GetMovieGenres(pagingInput)
             };
             return Json(result);
         }
@@ -166,14 +166,14 @@ namespace P9YS.Manage.Controllers
         [HttpPost]
         public async Task<JsonResult> AddGenre(MoiveGenreInput moiveGenreInput)
         {
-            var result = await _movieGenreService.AddMovieGenreAsync(moiveGenreInput);
+            var result = await _movieGenreService.AddMovieGenre(moiveGenreInput);
             return Json(result);
         }
 
         [HttpPost]
         public async Task<JsonResult> UpdGenre(MoiveGenreInput moiveGenreInput)
         {
-            var result = await _movieGenreService.UpdMovieGenreAsync(moiveGenreInput);
+            var result = await _movieGenreService.UpdMovieGenre(moiveGenreInput);
             return Json(result);
         }
 

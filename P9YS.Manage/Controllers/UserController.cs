@@ -31,7 +31,7 @@ namespace P9YS.Manage.Controllers
         {
             var result = new Result
             {
-                Content = await _userService.GetUsersAsync(pagingInput)
+                Content = await _userService.GetUsers(pagingInput)
             };
             return Json(result);
         }

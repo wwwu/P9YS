@@ -41,7 +41,7 @@ namespace P9YS.Services.User
         #region 登录、注销
 
         public const string defaultAvatar = "/images/default.jpg";
-        public async Task<Result<CurrentUser>> LoginAsync(LoginInput input)
+        public async Task<Result<CurrentUser>> Login(LoginInput input)
         {
             var result = new Result<CurrentUser>();
             //假装加个盐..
@@ -81,7 +81,7 @@ namespace P9YS.Services.User
             return password;
         }
 
-        public async Task LogoutAsync()
+        public async Task Logout()
         {
             await _httpContext.HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
         }
@@ -141,17 +141,17 @@ namespace P9YS.Services.User
 
         #region 注册
 
-        public async Task<bool> AccountIsExistAsync(string email)
+        public async Task<bool> AccountIsExist(string email)
         {
             return await _movieResourceContext.Users.AnyAsync(s => s.Email == email);
         }
 
         public const string RegisterVerifyCodeName = "RegisterVerifyCode";
-        public async Task<Result<bool>> SendVerifyCodeAsync(string email)
+        public async Task<Result<bool>> SendVerifyCode(string email)
         {
             var result = new Result<bool>();
             //是否已注册
-            var isExist = await AccountIsExistAsync(email);
+            var isExist = await AccountIsExist(email);
             if (isExist)
             {
                 result.SetCode(CustomCodeEnum.Registered);
@@ -183,7 +183,7 @@ namespace P9YS.Services.User
             return result;
         }
 
-        public async Task<Result<bool>> RegisterAsync(RegisterInput input)
+        public async Task<Result<bool>> Register(RegisterInput input)
         {
             var result = new Result<bool>();
             //校验验证码
@@ -268,7 +268,7 @@ namespace P9YS.Services.User
 
         #endregion
 
-        public async Task<PagingOutput<UserManageOutput>> GetUsersAsync(PagingInput<UserManage_Search_Input> pagingInput)
+        public async Task<PagingOutput<UserManageOutput>> GetUsers(PagingInput<UserManage_Search_Input> pagingInput)
         {
             var query = _movieResourceContext.Users.AsQueryable();
             

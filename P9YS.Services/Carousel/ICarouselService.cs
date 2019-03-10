@@ -6,9 +6,9 @@ namespace P9YS.Services.Carousel
 {
     public interface ICarouselService
     {
-        Task<List<CarouselOutput>> GetCarouselsAsync();
-        Task<PagingOutput<EntityFramework.Models.Carousel>> GetCarouselsAsync(PagingInput pagingInput);
-        Task<Result> AddCarouselAsync(Carouselnput carouselnput);
-        Task<Result> UpdCarouselAsync(Carouselnput carouselnput);
+        Task<List<CarouselOutput>> GetCarousels();
+        Task<PagingOutput<EntityFramework.Models.Carousel>> GetCarousels(PagingInput pagingInput);
+        Task<Result> AddCarousel(Carouselnput carouselnput);
+        Task<Result> UpdCarousel(Carouselnput carouselnput);
     }
 }

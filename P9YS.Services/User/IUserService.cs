@@ -6,11 +6,11 @@ namespace P9YS.Services.User
 {
     public interface IUserService
     {
-        Task<Result<CurrentUser>> LoginAsync(LoginInput input);
-        Task LogoutAsync();
-        Task<bool> AccountIsExistAsync(string email);
-        Task<Result<bool>> SendVerifyCodeAsync(string email);
-        Task<Result<bool>> RegisterAsync(RegisterInput input);
+        Task<Result<CurrentUser>> Login(LoginInput input);
+        Task Logout();
+        Task<bool> AccountIsExist(string email);
+        Task<Result<bool>> SendVerifyCode(string email);
+        Task<Result<bool>> Register(RegisterInput input);
         XianLiaoOutput GetXianLiaoUserInfo();
 
         /// <summary>
@@ -19,6 +19,6 @@ namespace P9YS.Services.User
         /// <returns></returns>
         CurrentUser GetCurrentUser();
 
-        Task<PagingOutput<UserManageOutput>> GetUsersAsync(PagingInput<UserManage_Search_Input> pagingInput);
+        Task<PagingOutput<UserManageOutput>> GetUsers(PagingInput<UserManage_Search_Input> pagingInput);
     }
 }

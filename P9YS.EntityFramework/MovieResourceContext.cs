@@ -35,6 +35,7 @@ namespace P9YS.EntityFramework
         public virtual DbSet<MovieOnlinePlay> MovieOnlinePlays { get; set; }
         public virtual DbSet<RatingRecord> RatingRecords { get; set; }
         public virtual DbSet<SuportRecord> SuportRecords { get; set; }
+        public virtual DbSet<MovieDraft> MovieDrafts { get; set; }
 
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

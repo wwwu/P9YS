@@ -28,20 +28,20 @@ namespace P9YS.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Login(LoginAndRegisterModalViewModel input)
         {
-            var result = await _userService.LoginAsync(input.LoginInput);
+            var result = await _userService.Login(input.LoginInput);
             return Json(result);
         }
 
         public async Task<IActionResult> Logout()
         {
-            await _userService.LogoutAsync();
+            await _userService.Logout();
             return RedirectToAction("Index", "Home");
         }
 
         [HttpPost]
         public async Task<IActionResult> SendVerifyCode(string email)
         {
-            var result = await _userService.SendVerifyCodeAsync(email);
+            var result = await _userService.SendVerifyCode(email);
             return Json(result);
         }
 
@@ -49,7 +49,7 @@ namespace P9YS.Web.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Register(LoginAndRegisterModalViewModel input)
         {
-            var result = await _userService.RegisterAsync(input.RegisterInput);
+            var result = await _userService.Register(input.RegisterInput);
             return Json(result);
         }
     }

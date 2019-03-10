@@ -66,7 +66,7 @@ namespace P9YS.HangfireJobs
             movies.ForEach(movie =>
             {
                 var delay = random.Next(1, totalMinutes);
-                BackgroundJob.Schedule<IMovieService>(s => s.UpdDoubanDataAsync(movie)
+                BackgroundJob.Schedule<IMovieService>(s => s.UpdDoubanData(movie)
                     , TimeSpan.FromMinutes(delay));
             });
         }

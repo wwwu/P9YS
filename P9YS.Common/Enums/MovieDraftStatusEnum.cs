@@ -11,6 +11,14 @@ namespace P9YS.Common.Enums
         /// </summary>
         Unverified,
 
-        
+        /// <summary>
+        /// 已添加
+        /// </summary>
+        Added,
+
+        /// <summary>
+        /// 已更新
+        /// </summary>
+        Updated,
     }
 }

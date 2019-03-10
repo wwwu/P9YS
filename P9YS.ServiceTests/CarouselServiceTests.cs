@@ -38,7 +38,7 @@ namespace P9YS.ServiceTests
             var carouselService = new CarouselService(mapper, dbContext, memoryCache, baseService.Object);
             //Act
             var actBeforeCache = memoryCache.Get(CacheKeys.Carousels);
-            var result = await carouselService.GetCarouselsAsync();
+            var result = await carouselService.GetCarousels();
             //Assert
             var actAfterCache = memoryCache.Get(CacheKeys.Carousels);
             Assert.True(actBeforeCache == null);
@@ -56,7 +56,7 @@ namespace P9YS.ServiceTests
             var carouselService = new CarouselService(mapper, dbContext, memoryCache, baseService.Object);
             //Act
             var input = new PagingInput { PageSize = 2 };
-            var result = await carouselService.GetCarouselsAsync(input);
+            var result = await carouselService.GetCarousels(input);
             //Assert
             Assert.True(result.TotalCount == carousels.Count);
             Assert.True(result.Data.Count == input.PageSize);
@@ -76,7 +76,7 @@ namespace P9YS.ServiceTests
                 State = Common.Enums.CarouselStateEnum.Show,
                 Title = "≤‚ ‘"
             };
-            var result = await carouselService.AddCarouselAsync(input);
+            var result = await carouselService.AddCarousel(input);
             //Assert
             Assert.True(result.Code == Common.CustomCodeEnum.Success);
             Assert.True(result.Content != null);
@@ -100,7 +100,7 @@ namespace P9YS.ServiceTests
                 State = Common.Enums.CarouselStateEnum.Show,
                 Title = "≤‚ ‘"
             };
-            var result = await carouselService.UpdCarouselAsync(input);
+            var result = await carouselService.UpdCarousel(input);
             //Assert
             Assert.True(result.Code == Common.CustomCodeEnum.Success);
             var entity = (Carousel)result.Content;

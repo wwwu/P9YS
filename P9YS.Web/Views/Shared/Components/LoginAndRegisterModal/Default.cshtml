@@ -11,9 +11,9 @@
                         <h4 class="modal-title">登录</h4>
                     </div>
                     <div class="modal-body">
-                        <input asp-for="LoginInput.Email" type="text" class="form-control" placeholder="邮箱" autofocus>
+                        <input asp-for="LoginInput.Email" type="text" autocomplete="off" class="form-control" placeholder="邮箱" autofocus>
                         <span asp-validation-for="LoginInput.Email" class="text-danger"></span>
-                        <input asp-for="LoginInput.Password" type="password" class="form-control" placeholder="密码">
+                        <input asp-for="LoginInput.Password" type="password" autocomplete="off" class="form-control" placeholder="密码">
                         <span asp-validation-for="LoginInput.Password" class="text-danger"></span>
                         <div class="checkbox">
                             <label>
@@ -39,18 +39,18 @@
                         <h4 class="modal-title">注册</h4>
                     </div>
                     <div class="modal-body">
-                        <input asp-for="RegisterInput.Email" class="form-control" placeholder="邮箱" autofocus>
+                        <input asp-for="RegisterInput.Email" autocomplete="off" class="form-control" placeholder="邮箱" autofocus>
                         <span asp-validation-for="RegisterInput.Email" class="text-danger"></span>
                         <div class="input-group">
-                            <input asp-for="RegisterInput.VerifyCode" class="form-control ipt-verifyCode" placeholder="邮件收到的验证码" />
+                            <input asp-for="RegisterInput.VerifyCode" autocomplete="off" class="form-control ipt-verifyCode" placeholder="邮件收到的验证码" />
                             <span class="input-group-btn">
                                 <input type="button" class="btn btn-default btn-verifyCode" value="获取验证码" />
                             </span>
                         </div>
-                        <span asp-validation-for="RegisterInput.VerifyCode" class="text-danger"></span>
+                        <span asp-validation-for="RegisterInput.VerifyCode" autocomplete="off" class="text-danger"></span>
                         <input type="password" asp-for="RegisterInput.Password" class="form-control" placeholder="密码" />
                         <span asp-validation-for="RegisterInput.Password" class="text-danger"></span>
-                        <input type="password" asp-for="RegisterInput.PasswordAg" class="form-control" placeholder="确认密码" />
+                        <input type="password" asp-for="RegisterInput.PasswordAg" autocomplete="off" class="form-control" placeholder="确认密码" />
                         <span asp-validation-for="RegisterInput.PasswordAg" class="text-danger"></span>
                     </div>
                     <div class="modal-footer">

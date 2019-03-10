@@ -8,10 +8,10 @@ namespace P9YS.Services.MovieRecommend
 {
     public interface IMovieRecommendService
     {
-        Task<bool> AddRecommendAsync(MovieRecommendInput recommendInput);
-        Task<bool> DelRecommendAsync(int id);
-        Task<List<MovieRecommendOutput>> GetAnnualRecommendsAsync(int limit = 10);
-        Task<List<MovieRecommendOutput>> GetRecentRecommendsAsync(int limit = 10);
-        Task<List<RecommendOutput>> GetRecommendsAsync(RecommendTypeEnum recommendType);
+        Task<bool> AddRecommend(MovieRecommendInput recommendInput);
+        Task<bool> DelRecommend(int id);
+        Task<List<MovieRecommendOutput>> GetAnnualRecommends(int limit = 10);
+        Task<List<MovieRecommendOutput>> GetRecentRecommends(int limit = 10);
+        Task<List<RecommendOutput>> GetRecommends(RecommendTypeEnum recommendType);
     }
 }

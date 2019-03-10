@@ -94,7 +94,7 @@ namespace P9YS.ServiceTests
                     Sort = MovieListSortEnum.LastModify,
                 }
             };
-            var result = await movieService.GetMoviesByConditionAsync(input);
+            var result = await movieService.GetMoviesByCondition(input);
             //Assert
             if (areaId == 0)
                 Assert.True(result.Data[0].ShortName == movies[1].ShortName);
@@ -111,7 +111,7 @@ namespace P9YS.ServiceTests
             dbContext.SaveChanges();
             var movieService = new MovieService(mapper, dbContext, baseService.Object);
             //Act
-            var result = await movieService.GetMovieInfoAsync(1);
+            var result = await movieService.GetMovieInfo(1);
             //Assert
             Assert.True(result.Id == 1);
         }
@@ -124,7 +124,7 @@ namespace P9YS.ServiceTests
             dbContext.SaveChanges();
             var movieService = new MovieService(mapper, dbContext, baseService.Object);
             //Act
-            var result = await movieService.GetMovieSeriesAsync(100);
+            var result = await movieService.GetMovieSeries(100);
             //Assert
             Assert.True(result.Count == 2);
         }
@@ -137,7 +137,7 @@ namespace P9YS.ServiceTests
             dbContext.SaveChanges();
             var movieService = new MovieService(mapper, dbContext, baseService.Object);
             //Act
-            var result = await movieService.GetMovieOriginAsync(1);
+            var result = await movieService.GetMovieOrigin(1);
             //Assert
             Assert.True(result.Score == 8);
         }
@@ -159,7 +159,7 @@ namespace P9YS.ServiceTests
                 },
                 PageSize = 1
             };
-            var result = await movieService.GetMoviesAsync(input);
+            var result = await movieService.GetMovies(input);
             //Assert
             Assert.True(result.Data.Count == 1);
         }
@@ -175,7 +175,7 @@ namespace P9YS.ServiceTests
             var movieService = new MovieService(mapper, dbContext, baseService.Object);
             //Act
             var movieId = 1;
-            var result = await movieService.GetMovieAsync(movieId);
+            var result = await movieService.GetMovie(movieId);
             //Assert
             Assert.True(result.ShortName == movies.First(s => s.Id == movieId).ShortName);
         }
@@ -197,7 +197,7 @@ namespace P9YS.ServiceTests
                 ShortName = "妇联",
                 MovieTypes = new List<int>(),
             };
-            var result = await movieService.UpdMovieAsync(input);
+            var result = await movieService.UpdMovie(input);
             //Assert
             Assert.True(result.Code == CustomCodeEnum.Success);
         }
@@ -215,7 +215,7 @@ namespace P9YS.ServiceTests
             var movieService = new MovieService(mapper, dbContext, baseService.Object);
             //Act
             var movieId = movies[0].Id;
-            var result = await movieService.DelMovieAsync(movieId);
+            var result = await movieService.DelMovie(movieId);
             //Assert
             Assert.True(result.Code == CustomCodeEnum.Success);
         }
@@ -243,9 +243,9 @@ namespace P9YS.ServiceTests
             var input = new MovieDoubanOriginOutput
             {
                 MovieId = 1,
-                FullName = "复仇者联盟1",                
+                FullName = "海王",                
             };
-            await movieService.UpdDoubanDataAsync(input);
+            await movieService.UpdDoubanData(input);
             //Assert
         }
     }

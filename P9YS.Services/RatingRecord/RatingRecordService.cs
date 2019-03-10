@@ -50,7 +50,7 @@ namespace P9YS.Services.RatingRecord
             return result;
         }
 
-        public async Task<PagingOutput<RatingRecordOutput>> GetRatingsAsync(PagingInput<GetRatingsInput> pagingInput)
+        public async Task<PagingOutput<RatingRecordOutput>> GetRatings(PagingInput<GetRatingsInput> pagingInput)
         {
             var query = _movieResourceContext.RatingRecords.AsQueryable();
 

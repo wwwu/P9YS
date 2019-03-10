@@ -11,6 +11,7 @@
     <Compile Remove="Migrations\20181108125346_Create_Movie.cs" />
     <Compile Remove="Migrations\20181113140607_Modify_Movie_Origin.cs" />
     <Compile Remove="Migrations\20181113141536_Modify_Movie_Origin.cs" />
+    <Compile Remove="Migrations\20190308125710_CreateMovieDraft.cs" />
   </ItemGroup>
 
   <ItemGroup>

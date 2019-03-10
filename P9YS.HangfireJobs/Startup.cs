@@ -24,7 +24,7 @@ namespace P9YS.HangfireJobs
 
             //更新评分数据
             RecurringJob.AddOrUpdate<IJobService>("Recurring_UpdRatingsJob"
-                , s => s.UpdRatingsJob("Recurring_UpdRatingsJob"), "0 0/5 * * * ?");
+                , s => s.UpdRatingsJob("Recurring_UpdRatingsJob"), "0 0/10 * * * ?");
 
             //更新点赞数据
             RecurringJob.AddOrUpdate<IJobService>("Recurring_UpdSuportsJob"

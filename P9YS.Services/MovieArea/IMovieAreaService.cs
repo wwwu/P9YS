@@ -7,9 +7,10 @@ namespace P9YS.Services.MovieArea
 {
     public interface IMovieAreaService
     {
-        Task<Result> AddMovieAreaAsync(MovieAreaInput movieAreaInput);
-        Task<List<MovieAreaOutput>> GetMovieAreasAsync();
-        Task<PagingOutput<EntityFramework.Models.MovieArea>> GetMovieAreasAsync(PagingInput<string> pagingInput);
-        Task<Result> UpdMovieAreaAsync(MovieAreaInput movieAreaInput);
+        Task<Result> AddMovieArea(MovieAreaInput movieAreaInput);
+        Task<List<MovieAreaOutput>> GetMovieAreas();
+        Task<PagingOutput<EntityFramework.Models.MovieArea>> GetMovieAreas(PagingInput<string> pagingInput);
+        Task<Result> UpdMovieArea(MovieAreaInput movieAreaInput);
+        Task<int> GetMovieAreaId(string areaName);
     }
 }

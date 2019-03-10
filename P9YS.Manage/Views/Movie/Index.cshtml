@@ -21,46 +21,6 @@
 
 <table id="tb_movies" lay-filter="tb_movies"></table>
 
-<form class="layui-form" style="display:none;margin:15px 15px 0 0;" id="lay_add" action="" lay-filter="lay_add">
-    <input type="hidden" name="id" value="" />
-    <div class="layui-form-item">
-        <label class="layui-form-label">大小</label>
-        <div class="layui-input-block">
-            <input type="text" name="size" lay-verify="" autocomplete="off" placeholder="单位MB" class="layui-input">
-        </div>
-    </div>
-    <div class="layui-form-item">
-        <label class="layui-form-label">分辨率</label>
-        <div class="layui-input-block">
-            <input type="text" name="resolution" lay-verify="" autocomplete="off" placeholder="1080P" class="layui-input">
-        </div>
-    </div>
-    <div class="layui-form-item">
-        <label class="layui-form-label">字幕</label>
-        <div class="layui-input-block">
-            <input type="text" name="subtitle" lay-verify="" autocomplete="off" placeholder="中、英" class="layui-input">
-        </div>
-    </div>
-    <div class="layui-form-item">
-        <label class="layui-form-label">配音</label>
-        <div class="layui-input-block">
-            <input type="text" name="dub" lay-verify="" autocomplete="off" placeholder="英" class="layui-input">
-        </div>
-    </div>
-    <div class="layui-form-item">
-        <label class="layui-form-label">MovieId</label>
-        <div class="layui-input-block">
-            <input type="text" name="movieId" lay-verify="" autocomplete="off" placeholder="" class="layui-input">
-        </div>
-    </div>
-    <div class="layui-form-item">
-        <label class="layui-form-label">链接</label>
-        <div class="layui-input-block">
-            <textarea name="content" lay-verify="" autocomplete="off" placeholder="" class="layui-textarea"></textarea>
-        </div>
-    </div>
-</form>
-
 @section Scripts{
     <script type="text/html" id="operation">
         <a class="layui-btn layui-btn-xs" lay-event="edit">编辑</a>

@@ -27,7 +27,7 @@ namespace P9YS.Services.MovieArea
             _memoryCache = memoryCache;
         }
 
-        public async Task<List<MovieAreaOutput>> GetMovieAreasAsync()
+        public async Task<List<MovieAreaOutput>> GetMovieAreas()
         {
             if (!_memoryCache.TryGetValue(CacheKeys.MovieAreas, out List<Dto.MovieAreaOutput> movieAreas))
             {
@@ -43,7 +43,7 @@ namespace P9YS.Services.MovieArea
             return movieAreas;
         }
 
-        public async Task<PagingOutput<EntityFramework.Models.MovieArea>> GetMovieAreasAsync(PagingInput<string> pagingInput)
+        public async Task<PagingOutput<EntityFramework.Models.MovieArea>> GetMovieAreas(PagingInput<string> pagingInput)
         {
             var query = _movieResourceContext.MovieAreas.AsQueryable();
             if(!string.IsNullOrWhiteSpace(pagingInput.Condition))
@@ -65,7 +65,7 @@ namespace P9YS.Services.MovieArea
             return result;
         }
 
-        public async Task<Result> AddMovieAreaAsync(MovieAreaInput movieAreaInput)
+        public async Task<Result> AddMovieArea(MovieAreaInput movieAreaInput)
         {
             var result = new Result();
             var isRepeated = await _movieResourceContext.MovieAreas
@@ -84,7 +84,7 @@ namespace P9YS.Services.MovieArea
             return result;
         }
 
-        public async Task<Result> UpdMovieAreaAsync(MovieAreaInput movieAreaInput)
+        public async Task<Result> UpdMovieArea(MovieAreaInput movieAreaInput)
         {
             var result = new Result();
             var isRepeated = await _movieResourceContext.MovieAreas
@@ -100,6 +100,17 @@ namespace P9YS.Services.MovieArea
             _movieResourceContext.MovieAreas.Update(movieArea);
             var rows = await _movieResourceContext.SaveChangesAsync();
             result.Content = movieArea;
+            return result;
+        }
+
+        public async Task<int> GetMovieAreaId(string areaName)
+        {
+            areaName = areaName.Replace("中国大陆", "中国");
+            var movieAreas = await GetMovieAreas();
+            var result = movieAreas.First(s => s.Area == "其它").Id;
+            var area = movieAreas.FirstOrDefault(s => s.Area == areaName);
+            if (area != null)
+                result = area.Id;
             return result;
         }
     }

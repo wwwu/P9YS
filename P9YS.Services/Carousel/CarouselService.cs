@@ -36,7 +36,7 @@ namespace P9YS.Services.Carousel
         }
 
         private static readonly AsyncLock _carouselsLock = new AsyncLock();
-        public async Task<List<CarouselOutput>> GetCarouselsAsync()
+        public async Task<List<CarouselOutput>> GetCarousels()
         {
             if (!_memoryCache.TryGetValue(CacheKeys.Carousels, out List<CarouselOutput> carousels))
             {
@@ -59,7 +59,7 @@ namespace P9YS.Services.Carousel
             return carousels;            
         }
 
-        public async Task<PagingOutput<EntityFramework.Models.Carousel>> GetCarouselsAsync(PagingInput pagingInput)
+        public async Task<PagingOutput<EntityFramework.Models.Carousel>> GetCarousels(PagingInput pagingInput)
         {
             var carousels = await _movieResourceContext.Carousels
                 .OrderByDescending(s => s.Id)
@@ -81,7 +81,7 @@ namespace P9YS.Services.Carousel
             return result;
         }
 
-        public async Task<Result> AddCarouselAsync(Carouselnput carouselnput)
+        public async Task<Result> AddCarousel(Carouselnput carouselnput)
         {
             var result = new Result();
             //上传图片
@@ -108,7 +108,7 @@ namespace P9YS.Services.Carousel
             return result;
         }
 
-        public async Task<Result> UpdCarouselAsync(Carouselnput carouselnput)
+        public async Task<Result> UpdCarousel(Carouselnput carouselnput)
         {
             var result = new Result();
             var carousel = await _movieResourceContext.Carousels.FindAsync(carouselnput.Id);

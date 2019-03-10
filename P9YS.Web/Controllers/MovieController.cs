@@ -48,18 +48,18 @@ namespace P9YS.Web.Controllers
         public async Task<IActionResult> Index(int id)
         {
             var viewModel = new MovieViewModel();
-            var movie = await _movieService.GetMovieInfoAsync(id);
+            var movie = await _movieService.GetMovieInfo(id);
             if (movie == null)
                 return NotFound();
 
             viewModel.MovieInfo = movie;
-            viewModel.MovieSeries = await _movieService.GetMovieSeriesAsync(movie.SeriesId);
-            viewModel.MovieOrigin = await _movieService.GetMovieOriginAsync(id);
-            viewModel.MovieCommentsCount = await _movieCommentService.GetCommentsCountByMovieAsync(id);
+            viewModel.MovieSeries = await _movieService.GetMovieSeries(movie.SeriesId);
+            viewModel.MovieOrigin = await _movieService.GetMovieOrigin(id);
+            viewModel.MovieCommentsCount = await _movieCommentService.GetCommentsCountByMovie(id);
             viewModel.MovieComments = await _movieCommentService
-                .GetCommentsAndReplyAsync(new PagingInput<int> { Condition = id });
+                .GetCommentsAndReply(new PagingInput<int> { Condition = id });
             viewModel.QuestionTitles = await _movieQuestionService
-                .GetQuestionTitlesAsync(new PagingInput<int> { Condition = id, PageSize = 20 });
+                .GetQuestionTitles(new PagingInput<int> { Condition = id, PageSize = 20 });
 
             return View(viewModel);
         }
@@ -80,7 +80,7 @@ namespace P9YS.Web.Controllers
         {
             var result = new Result
             {
-                Content = await _movieService.GetMoviesByConditionAsync(pagingInput)
+                Content = await _movieService.GetMoviesByCondition(pagingInput)
             };
             return Json(result);
         }
@@ -90,7 +90,7 @@ namespace P9YS.Web.Controllers
         {
             var result = new Result
             {
-                Content = await _movieCommentService.GetCommentsAndReplyAsync(pagingInput)
+                Content = await _movieCommentService.GetCommentsAndReply(pagingInput)
             };
             return Json(result);
         }
@@ -102,7 +102,7 @@ namespace P9YS.Web.Controllers
         {
             var result = new Result
             {
-                Content = await _movieCommentService.AddMovieCommentAsync(movieCommentInput)
+                Content = await _movieCommentService.AddMovieComment(movieCommentInput)
             };
             return Json(result);
         }
@@ -116,7 +116,7 @@ namespace P9YS.Web.Controllers
         {
             var result = new Result
             {
-                Content = await _movieQuestionService.GetQuestionTitlesAsync(pagingInput)
+                Content = await _movieQuestionService.GetQuestionTitles(pagingInput)
             };
             return Json(result);
         }
@@ -128,7 +128,7 @@ namespace P9YS.Web.Controllers
         {
             var result = new Result
             {
-                Content = await _movieQuestionService.AddQuestionAsync(questionInput)
+                Content = await _movieQuestionService.AddQuestion(questionInput)
             };             
             return Json(result);
         }
@@ -136,17 +136,17 @@ namespace P9YS.Web.Controllers
         public async Task<IActionResult> Question(int id)
         {
             var viewModel = new MovieQuestionViewModel();
-            var question = await _movieQuestionService.GetQuestionAsync(id);
+            var question = await _movieQuestionService.GetQuestion(id);
             if (question == null)
                 return NotFound();
 
             var questions = await _movieQuestionService
-                .GetQuestionTitlesAsync(new PagingInput<int> { Condition = question.MovieId, PageSize = 10 });
+                .GetQuestionTitles(new PagingInput<int> { Condition = question.MovieId, PageSize = 10 });
             viewModel.QuestionInfo = question;
-            viewModel.MovieInfo = await _movieService.GetMovieInfoAsync(question.MovieId);
+            viewModel.MovieInfo = await _movieService.GetMovieInfo(question.MovieId);
             viewModel.QuestionTitles = questions.Data;
             viewModel.QuestionAnswers = await _movieQuestionService
-                .GetQuestionAnswersAsync(new PagingInput<int> { Condition= id, PageSize = 10 });
+                .GetQuestionAnswers(new PagingInput<int> { Condition= id, PageSize = 10 });
 
             return View(viewModel);
         }
@@ -156,7 +156,7 @@ namespace P9YS.Web.Controllers
         {
             var result = new Result
             {
-                Content = await _movieQuestionService.GetQuestionAnswersAsync(pagingInput)
+                Content = await _movieQuestionService.GetQuestionAnswers(pagingInput)
             };
             return Json(result);
         }
@@ -168,7 +168,7 @@ namespace P9YS.Web.Controllers
         {
             var result = new Result
             {
-                Content = await _movieQuestionService.AddQuestionAnswerAsync(questionAnswerInput)
+                Content = await _movieQuestionService.AddQuestionAnswer(questionAnswerInput)
             };
             return Json(result);
         }
@@ -192,7 +192,7 @@ namespace P9YS.Web.Controllers
         {
             var viewModel = new MovieResourceViewModel
             {
-                MovieInfo = await _movieService.GetMovieInfoAsync(id),
+                MovieInfo = await _movieService.GetMovieInfo(id),
                 MovieOnlinePlays = await _movieResourceService.GetMovieOnlinePlays(id),
                 MovieResources = await _movieResourceService.GetMovieResources(id)
             };

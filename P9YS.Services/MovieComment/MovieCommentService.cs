@@ -29,14 +29,14 @@ namespace P9YS.Services.MovieComment
             _userService = userService;
         }
 
-        public async Task<int> GetCommentsCountByMovieAsync(int movieId)
+        public async Task<int> GetCommentsCountByMovie(int movieId)
         {
             var count = await _movieResourceContext.MovieComments
                 .CountAsync(s => s.MovieId == movieId);
             return count;
         }
 
-        public async Task<PagingOutput<MovieCommentOutput>> GetCommentsAndReplyAsync(PagingInput<int> pagingInput)
+        public async Task<PagingOutput<MovieCommentOutput>> GetCommentsAndReply(PagingInput<int> pagingInput)
         {
             //comments
             var query = _movieResourceContext.MovieComments
@@ -78,7 +78,7 @@ namespace P9YS.Services.MovieComment
             return result;
         }
 
-        public async Task<bool> AddMovieCommentAsync(MovieCommentInput movieCommentInput)
+        public async Task<bool> AddMovieComment(MovieCommentInput movieCommentInput)
         {
             var user = _userService.GetCurrentUser();
             //Add
@@ -89,7 +89,7 @@ namespace P9YS.Services.MovieComment
             return rows > 0;
         }
 
-        public async Task<PagingOutput<MovieComment_Manage_Output>> GetCommentsAsync(
+        public async Task<PagingOutput<MovieComment_Manage_Output>> GetComments(
             PagingInput<GetRatingsInput> pagingInput)
         {
             var query = _movieResourceContext.MovieComments.AsQueryable();
@@ -126,7 +126,7 @@ namespace P9YS.Services.MovieComment
             return result;
         }
 
-        public async Task<Result> DelCommentAsync(int id)
+        public async Task<Result> DelComment(int id)
         {
             var result = new Result();
             _movieResourceContext.MovieComments.Remove(new EntityFramework.Models.MovieComment { Id = id });

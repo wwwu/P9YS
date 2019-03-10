@@ -24,15 +24,15 @@ namespace P9YS.Services.Base
         /// <summary>
         /// 上传文件到Cos，默认bucket
         /// </summary>
-        /// <param name="remotePath">相对路径 /文件夹名/文件名.jpg</param>
+        /// <param name="savePath">要保存的路径 /文件夹名/文件名.jpg</param>
         /// <param name="bytes"></param>
         /// <returns></returns>
-        public Result UploadFile(string remotePath, byte[] bytes)
+        public Result UploadFile(string savePath, byte[] bytes)
         {
             var result = new Result();
             try
             {
-                var str = _cosCloud.UploadFile(_options.CurrentValue.TxCos.Bucket, remotePath, bytes, null, false, 0);
+                var str = _cosCloud.UploadFile(_options.CurrentValue.TxCos.Bucket, savePath, bytes, null, false, 0);
                 var response = JsonConvert.DeserializeObject<TxCosResponse>(str);
                 result.Content = response;
                 if (response.Code != 0)
@@ -40,6 +40,28 @@ namespace P9YS.Services.Base
                     result.Code = CustomCodeEnum.Error;
                     result.Message = response.Message;
                 }
+            }
+            catch (Exception ex)
+            {
+                result.Code = CustomCodeEnum.Error;
+                result.Message = ex.Message;
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// 上传文件到Cos，默认bucket
+        /// </summary>
+        /// <param name="savePath">要保存的路径, /文件夹名/文件名.jpg</param>
+        /// <param name="sourcePath">要上传文件的完整url</param>
+        /// <returns></returns>
+        public Result UploadFile(string savePath, string sourcePath)
+        {
+            var result = new Result();
+            try
+            {
+                var bytes = new System.Net.WebClient().DownloadData(sourcePath);
+                result = UploadFile(savePath, bytes);
             }
             catch (Exception ex)
             {

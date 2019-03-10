@@ -6,10 +6,10 @@ namespace P9YS.Services.MovieComment
 {
     public interface IMovieCommentService
     {
-        Task<PagingOutput<MovieCommentOutput>> GetCommentsAndReplyAsync(PagingInput<int> pagingInput);
-        Task<int> GetCommentsCountByMovieAsync(int movieId);
-        Task<bool> AddMovieCommentAsync(MovieCommentInput movieCommentInput);
-        Task<PagingOutput<MovieComment_Manage_Output>> GetCommentsAsync(PagingInput<GetRatingsInput> pagingInput);
-        Task<Result> DelCommentAsync(int id);
+        Task<PagingOutput<MovieCommentOutput>> GetCommentsAndReply(PagingInput<int> pagingInput);
+        Task<int> GetCommentsCountByMovie(int movieId);
+        Task<bool> AddMovieComment(MovieCommentInput movieCommentInput);
+        Task<PagingOutput<MovieComment_Manage_Output>> GetComments(PagingInput<GetRatingsInput> pagingInput);
+        Task<Result> DelComment(int id);
     }
 }

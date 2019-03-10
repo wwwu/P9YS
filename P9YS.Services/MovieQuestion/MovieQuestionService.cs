@@ -27,7 +27,7 @@ namespace P9YS.Services.MovieQuestion
             _userService = userService;
         }
 
-        public async Task<PagingOutput<Dto.QuestionTitleOutput>> GetQuestionTitlesAsync(PagingInput<int> pagingInput)
+        public async Task<PagingOutput<Dto.QuestionTitleOutput>> GetQuestionTitles(PagingInput<int> pagingInput)
         {
             var query = _movieResourceContext.MovieQuestions
                 .Where(s => s.MovieId == pagingInput.Condition);
@@ -50,7 +50,7 @@ namespace P9YS.Services.MovieQuestion
             return result;
         }
 
-        public async Task<bool> AddQuestionAsync(Dto.QuestionInput questionInput)
+        public async Task<bool> AddQuestion(Dto.QuestionInput questionInput)
         {
             var user = _userService.GetCurrentUser();
             //Add
@@ -61,7 +61,7 @@ namespace P9YS.Services.MovieQuestion
             return rows > 0;
         }
 
-        public async Task<Dto.QuestionOutput> GetQuestionAsync(int questionId)
+        public async Task<Dto.QuestionOutput> GetQuestion(int questionId)
         {
             var question = await _movieResourceContext.MovieQuestions
                 .Where(s=>s.Id==questionId)
@@ -71,7 +71,7 @@ namespace P9YS.Services.MovieQuestion
             return question;
         }
 
-        public async Task<PagingOutput<Dto.QuestionAnswerOutput>> GetQuestionAnswersAsync(PagingInput<int> pagingInput)
+        public async Task<PagingOutput<Dto.QuestionAnswerOutput>> GetQuestionAnswers(PagingInput<int> pagingInput)
         {
             var query = _movieResourceContext.MovieQuestionAnswers
                 .Where(s => s.MovieQuestionId == pagingInput.Condition);
@@ -93,7 +93,7 @@ namespace P9YS.Services.MovieQuestion
             return result;
         }
 
-        public async Task<bool> AddQuestionAnswerAsync(Dto.QuestionAnswerInput questionAnswerInput)
+        public async Task<bool> AddQuestionAnswer(Dto.QuestionAnswerInput questionAnswerInput)
         {
             var user = _userService.GetCurrentUser();
             //Add

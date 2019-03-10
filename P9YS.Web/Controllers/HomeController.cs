@@ -39,13 +39,13 @@ namespace P9YS.Web.Controllers
         {
             var model = new IndexViewModel
             {
-                Carousels = await _carouselService.GetCarouselsAsync(),
-                MovieAreas = await _movieAreaService.GetMovieAreasAsync(),
-                MovieGenres = await _movieGenreService.GetMovieGenresAsync(),
-                AnnualRecommends = await _movieRecommendService.GetAnnualRecommendsAsync(),
-                RecentRecommends = await _movieRecommendService.GetRecentRecommendsAsync(),
-                MovieList = await _movieService
-                    .GetMoviesByConditionAsync(new PagingInput<Services.Movie.Dto.ConditionInput> { PageSize = 20 })
+                Carousels = await _carouselService.GetCarousels(),
+                MovieAreas = await _movieAreaService.GetMovieAreas(),
+                MovieGenres = await _movieGenreService.GetMovieGenres(),
+                AnnualRecommends = await _movieRecommendService.GetAnnualRecommends(),
+                RecentRecommends = await _movieRecommendService.GetRecentRecommends(),
+                MovieList = await _movieService.GetMoviesByCondition(
+                    new PagingInput<Services.Movie.Dto.ConditionInput> { PageSize = 20 })
             };
 
             return View(model);

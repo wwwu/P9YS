@@ -9,6 +9,7 @@ using P9YS.Services;
 using P9YS.Services.Movie;
 using P9YS.Services.Movie.Dto;
 using P9YS.Services.MovieComment;
+using P9YS.Services.MovieDraft;
 using P9YS.Services.MovieResource;
 using P9YS.Services.MovieResource.Dto;
 using P9YS.Services.RatingRecord;
@@ -25,18 +26,21 @@ namespace P9YS.Manage.Controllers
         private readonly IMovieResourceService _movieResourceService;
         private readonly IUserService _userService;
         private readonly IMovieService _movieService;
+        private readonly IMovieDraftService _movieDraftService;
 
         public MovieController(IRatingRecordService ratingRecordService
             , IMovieCommentService movieCommentService
             , IMovieResourceService movieResourceService
             , IUserService userService
-            , IMovieService movieService)
+            , IMovieService movieService
+            , IMovieDraftService movieDraftService)
         {
             _ratingRecordService = ratingRecordService;
             _movieCommentService = movieCommentService;
             _movieResourceService = movieResourceService;
             _userService = userService;
             _movieService = movieService;
+            _movieDraftService = movieDraftService;
         }
 
         #region 新片审核
@@ -44,6 +48,24 @@ namespace P9YS.Manage.Controllers
         public IActionResult Verify()
         {
             return View();
+        }
+
+        public async Task<JsonResult> GetVerifyList(PagingInput<Services.MovieDraft.Dto.ConditionInput> pagingInput)
+        {
+            var result = new Result
+            {
+                Content = await _movieDraftService.GetMovieDrafts(pagingInput)
+            };
+            return Json(result);
+        }
+
+        public async Task<JsonResult> GetMovieDraftDetail(int movieDraftId)
+        {
+            var result = new Result
+            {
+                Content = await _movieDraftService.GetMovieDraftDetail(movieDraftId)
+            };
+            return Json(result);
         }
 
         #endregion
@@ -64,7 +86,7 @@ namespace P9YS.Manage.Controllers
         {
             var result = new Result
             {
-                Content = await _movieService.GetMoviesAsync(pagingInput)
+                Content = await _movieService.GetMovies(pagingInput)
             };
             return Json(result);
         }
@@ -73,7 +95,7 @@ namespace P9YS.Manage.Controllers
         {
             var result = new Result
             {
-                Content = await _movieService.GetMovieAsync(movieId)
+                Content = await _movieService.GetMovie(movieId)
             };
             return Json(result);
         }
@@ -81,13 +103,13 @@ namespace P9YS.Manage.Controllers
         [HttpPost]
         public async Task<Result> UpdMovie(Movie_Manage_Input input)
         {
-            return await _movieService.UpdMovieAsync(input);
+            return await _movieService.UpdMovie(input);
         }
 
         [HttpDelete]
         public async Task<Result> DelMovie(int movieId)
         {
-            return await _movieService.DelMovieAsync(movieId);
+            return await _movieService.DelMovie(movieId);
         }
 
         #endregion
@@ -103,7 +125,7 @@ namespace P9YS.Manage.Controllers
         {
             var result = new Result
             {
-                Content = await _ratingRecordService.GetRatingsAsync(pagingInput)
+                Content = await _ratingRecordService.GetRatings(pagingInput)
             };
             return Json(result);
         }
@@ -121,14 +143,14 @@ namespace P9YS.Manage.Controllers
         {
             var result = new Result
             {
-                Content = await _movieCommentService.GetCommentsAsync(pagingInput)
+                Content = await _movieCommentService.GetComments(pagingInput)
             };
             return Json(result);
         }
 
         public async Task<JsonResult> DelComment(int id)
         {
-            var result = await _movieCommentService.DelCommentAsync(id);
+            var result = await _movieCommentService.DelComment(id);
             return Json(result);
         }
 
@@ -145,7 +167,7 @@ namespace P9YS.Manage.Controllers
         {
             var result = new Result
             {
-                Content = await _movieResourceService.GetResourcesAsync(pagingInput)
+                Content = await _movieResourceService.GetResources(pagingInput)
             };
             return Json(result);
         }
@@ -153,19 +175,19 @@ namespace P9YS.Manage.Controllers
         public async Task<JsonResult> AddResource(MovieResourceInput movieResourceInput)
         {
             movieResourceInput.UserId = _userService.GetCurrentUser()?.UserId ?? 0;
-            var result = await _movieResourceService.AddResourceAsync(movieResourceInput);
+            var result = await _movieResourceService.AddResource(movieResourceInput);
             return Json(result);
         }
 
         public async Task<JsonResult> UpdResource(MovieResourceInput movieResourceInput)
         {
-            var result = await _movieResourceService.UpdResourceAsync(movieResourceInput);
+            var result = await _movieResourceService.UpdResource(movieResourceInput);
             return Json(result);
         }
 
         public async Task<JsonResult> DelResource(int id)
         {
-            var result = await _movieResourceService.DelResourceAsync(id);
+            var result = await _movieResourceService.DelResource(id);
             return Json(result);
         }
 
