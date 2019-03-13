@@ -8,3 +8,4 @@ input:read-only { background-color: #eee; }
 .custom-radio-skin .layui-form-radio { line-height: 20px; margin:5px 0 0 10px; padding-right: 0px; }
     .custom-radio-skin .layui-form-radio > i { margin-right: 5px; font-size: 20px; }
 .custom-badge-skin .layui-badge { height: 25px; line-height: 25px; padding:0 10px; }
+.blockquote .quote-title { display: inline-block; font-size: 15px; position: relative; top: -7px; }

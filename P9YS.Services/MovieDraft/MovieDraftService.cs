@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using P9YS.EntityFramework;
 using P9YS.Services.MovieArea;
 using P9YS.Services.MovieDraft.Dto;
+using P9YS.Services.MovieResource.Dto;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -71,6 +72,7 @@ namespace P9YS.Services.MovieDraft
             var movieDraft = await _movieResourceContext.MovieDrafts.FindAsync(movieDraftId);
             movieDraftDetailOutput.Id = movieDraft.Id;
             movieDraftDetailOutput.ShortName = movieDraft.MovieName;
+            movieDraftDetailOutput.DoubanUrl = movieDraft.DoubanUrl;
 
             #region 解析html获取影片信息
             movieDraftDetailOutput.FullName = Regex.Match(movieDraft.DoubanHtml
@@ -84,6 +86,7 @@ namespace P9YS.Services.MovieDraft
                 , @"v:directedBy"">(.*?)</a>").Groups[1]?.Value;
             movieDraftDetailOutput.Score = decimal.Parse(Regex.Match(movieDraft.DoubanHtml
                 , @"v:average"">(.*?)</strong>").Groups[1]?.Value);
+            movieDraftDetailOutput.DoubanScore = movieDraftDetailOutput.Score;
             movieDraftDetailOutput.ImgUrl = Regex.Match(movieDraft.DoubanHtml
                 , @"<img.*?src=""(.*?)"".*?rel=""v:image").Groups[1]?.Value;
             //演员，取前10个
@@ -93,6 +96,7 @@ namespace P9YS.Services.MovieDraft
                 movieDraftDetailOutput.Actor += m.Groups[1]?.Value + "\r\n";
             }
             //类型，取前10个
+            movieDraftDetailOutput.MovieTypes = new List<string>();
             foreach (Match m in Regex.Matches(movieDraft.DoubanHtml
                 , @"v:genre"">(.*?)</span>").Take(10))
             {
@@ -104,7 +108,7 @@ namespace P9YS.Services.MovieDraft
                 , @"v:runtime""\s*?content=""(\d+)").Groups[1]?.Value);
             //简介
             movieDraftDetailOutput.Intro = Regex.Match(movieDraft.DoubanHtml
-                , @"property=""v: summary"".*?>([\w\W]+?)</span>").Groups[1]?.Value;
+                , @"property=""v:summary"".*?>([\w\W]+?)</span>").Groups[1]?.Value;
             movieDraftDetailOutput.Intro = Regex.Replace(movieDraftDetailOutput.Intro
                 , @"<[a-zA-Z/!][^<]*?>", "");//去掉所有html标签
             movieDraftDetailOutput.Intro = Regex.Replace(movieDraftDetailOutput.Intro
@@ -113,9 +117,38 @@ namespace P9YS.Services.MovieDraft
                 , @"\s*[\r\n]+\s*", "\r\n");//段中多行替换成一行，并去掉空格
             #endregion
 
-            movieDraftDetailOutput.MovieOnlinePlays = null;
-            movieDraftDetailOutput.MovieResource = null;
-            movieDraftDetailOutput.MovieSeries = null;
+            #region 解析html获取在线播放源
+            movieDraftDetailOutput.MovieOnlinePlays = new List<MovieOnlinePlayOutput>();
+            foreach (Match m in Regex.Matches(movieDraft.DoubanHtml
+                , @"class=""playBtn"".+?data-cn=""(.+?)"".+?href=""(.+?)""[\w\W]+?class=""buylink-price""><span>([\w\W]*?)</span></span>"))
+            {
+                var price = m.Groups[3]?.Value ?? "";
+                price = Regex.Replace(price, @"(?-ms:^\s*([\w\W]*?)\s*$)", "${1}");//去掉首尾空行空格 \s*[\n\r]+\s*
+                movieDraftDetailOutput.MovieOnlinePlays.Add(new MovieOnlinePlayOutput
+                {                    
+                    WebSiteName = m.Groups[1]?.Value ?? "",
+                    Url = m.Groups[2]?.Value ?? "",
+                    Price = price
+                });
+            }
+            #endregion
+
+            #region 下载资源
+            var link = movieDraft.Resoures;
+            if (link.StartsWith("ftp"))
+            {//原始路径转迅雷链接
+                var strArr = Encoding.UTF8.GetBytes($"AA{movieDraft.Resoures}ZZ");
+                link = "thunder://" + Convert.ToBase64String(strArr);
+            }
+            movieDraftDetailOutput.MovieResource = new MovieResourceInput
+            {
+                Dub = Regex.Match(movieDraft.DoubanHtml, @"语言:</span>\s*?(\w+).*?<br/>").Groups[1]?.Value,
+                Resolution = "DB-720P",
+                Size = 0,
+                Subtitle = "中",
+                Content = link,
+            };
+            #endregion
 
             return movieDraftDetailOutput;
         }

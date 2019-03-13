@@ -29,13 +29,15 @@ namespace P9YS.Services.MovieDraft.Dto
 
         public decimal Score { get; set; }
 
+        public decimal DoubanScore { get; set; }
+
+        public string DoubanUrl { get; set; }
+
         public int MovieAreaId { get; set; }
 
         public List<string> MovieTypes { get; set; }
 
-        public List<Movie.Dto.MovieSeriesOutput> MovieSeries { get; set; }
-
-        public MovieResource_Manage_Output MovieResource { get; set; }
+        public MovieResourceInput MovieResource { get; set; }
 
         public List<MovieOnlinePlayOutput> MovieOnlinePlays { get; set; }
     }

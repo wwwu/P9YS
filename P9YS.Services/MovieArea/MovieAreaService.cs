@@ -106,11 +106,9 @@ namespace P9YS.Services.MovieArea
         public async Task<int> GetMovieAreaId(string areaName)
         {
             areaName = areaName.Replace("中国大陆", "中国");
-            var movieAreas = await GetMovieAreas();
-            var result = movieAreas.First(s => s.Area == "其它").Id;
-            var area = movieAreas.FirstOrDefault(s => s.Area == areaName);
-            if (area != null)
-                result = area.Id;
+            var movieAreas = await GetMovieAreas(new PagingInput<string> { PageSize=999 });
+            var result = movieAreas.Data.FirstOrDefault(s => s.Area == areaName)?.Id
+                ?? movieAreas.Data.First(s => s.Area == "其它").Id;
             return result;
         }
     }

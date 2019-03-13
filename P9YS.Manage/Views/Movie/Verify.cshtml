@@ -121,11 +121,11 @@
                 <input type="number" name="seriesId" autocomplete="off" class="layui-input">
             </div>
         </div>
-        <div class="layui-inline custom-badge-skin">
-            <span class="layui-badge layui-bg-gray">复仇者联盟1</span>
-            <span class="layui-badge layui-bg-gray">复仇者联盟2</span>
-            <span class="layui-badge layui-bg-gray">复仇者联盟3</span>
-        </div>
+        @*<div class="layui-inline custom-badge-skin">
+                <span class="layui-badge layui-bg-gray">复仇者联盟1</span>
+                <span class="layui-badge layui-bg-gray">复仇者联盟2</span>
+                <span class="layui-badge layui-bg-gray">复仇者联盟3</span>
+            </div>*@
     </div>
     <div class="layui-form-item">
         <label class="layui-form-label">国家</label>
@@ -138,91 +138,75 @@
         <div class="layui-input-block custom-checkbox-skin">
         </div>
     </div>
+    <blockquote class="layui-elem-quote layui-quote-nm">
+        <span class="quote-title">资源：</span>
+        <div class="layui-form-item">
+            <div class="layui-inline">
+                <label class="layui-form-label">大小(MB)</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="movieResource.size" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label class="layui-form-label">分辨率</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="movieResource.resolution" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label class="layui-form-label">字幕(中)</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="movieResource.subtitle" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-inline">
+                <label class="layui-form-label">配音</label>
+                <div class="layui-input-inline">
+                    <input type="text" name="movieResource.dub" autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">链接</label>
+                <div class="layui-input-block">
+                    <input type="text" name="movieResource.content" autocomplete="off" class="layui-input" />
+                </div>
+            </div>
+        </div>
+    </blockquote>
+    <blockquote class="layui-elem-quote layui-quote-nm">
+        <span class="quote-title">在线播放源：</span>
+        <div class="layui-form-item" id="movieOnlinePlays">
+            @*<div class="layui-input-inline">
+                <input type="text" name="movieOnlinePlays.webSiteName" autocomplete="off" class="layui-input">
+            </div>
+            <div class="layui-input-inline">
+                <input type="text" name="movieOnlinePlays.price" autocomplete="off" class="layui-input">
+            </div>
+            <div class="layui-input-inline" style="width:410px">
+                <input type="text" name="movieOnlinePlays.url" autocomplete="off" class="layui-input" />
+            </div>*@
+        </div>
+    </blockquote>
     <div class="layui-form-item">
         <label class="layui-form-label">简介</label>
         <div class="layui-input-block">
             <textarea name="intro" rows="6" autocomplete="off" class="layui-textarea"></textarea>
         </div>
     </div>
-    <blockquote class="layui-elem-quote layui-quote-nm">
-        资源：
-        <div class="layui-form-item">
-            <div class="layui-inline">
-                <label class="layui-form-label">大小</label>
-                <div class="layui-input-inline">
-                    <input type="text" name="size" lay-verify="" autocomplete="off" placeholder="单位MB" class="layui-input">
-                </div>
-            </div>
-            <div class="layui-inline">
-                <label class="layui-form-label">分辨率</label>
-                <div class="layui-input-inline">
-                    <input type="text" name="resolution" lay-verify="" autocomplete="off" placeholder="1080P" class="layui-input">
-                </div>
-            </div>
-            <div class="layui-inline">
-                <label class="layui-form-label">字幕</label>
-                <div class="layui-input-inline">
-                    <input type="text" name="subtitle" lay-verify="" autocomplete="off" placeholder="中、英" class="layui-input">
-                </div>
-            </div>
-            <div class="layui-inline">
-                <label class="layui-form-label">配音</label>
-                <div class="layui-input-inline">
-                    <input type="text" name="dub" lay-verify="" autocomplete="off" placeholder="英" class="layui-input">
-                </div>
-            </div>
-            <div class="layui-form-item">
-                <label class="layui-form-label">链接</label>
-                <div class="layui-input-block">
-                    <input type="text" name="content" lay-verify="" autocomplete="off" placeholder="" class="layui-input" />
-                </div>
-            </div>
-        </div>
-    </blockquote>
-    <blockquote class="layui-elem-quote layui-quote-nm">
-        在线播放源：
-        <div class="layui-form-item">
-            <div class="layui-inline">
-                <label class="layui-form-label">网站名</label>
-                <div class="layui-input-inline">
-                    <input type="text" name="webSiteName" lay-verify="" autocomplete="off" placeholder="" class="layui-input">
-                </div>
-            </div>
-            <div class="layui-inline">
-                <label class="layui-form-label">收费方式</label>
-                <div class="layui-input-inline">
-                    <input type="text" name="price" lay-verify="" autocomplete="off" placeholder="" class="layui-input">
-                </div>
-            </div>
-            <div class="layui-form-item">
-                <label class="layui-form-label">链接</label>
-                <div class="layui-input-block">
-                    <input type="text" name="url" lay-verify="" autocomplete="off" placeholder="" class="layui-input" />
-                </div>
-            </div>
-        </div>
-        <div class="layui-form-item">
-            <div class="layui-inline">
-                <label class="layui-form-label">网站名</label>
-                <div class="layui-input-inline">
-                    <input type="text" name="webSiteName" lay-verify="" autocomplete="off" placeholder="" class="layui-input">
-                </div>
-            </div>
-            <div class="layui-inline">
-                <label class="layui-form-label">收费方式</label>
-                <div class="layui-input-inline">
-                    <input type="text" name="price" lay-verify="" autocomplete="off" placeholder="" class="layui-input">
-                </div>
-            </div>
-            <div class="layui-form-item">
-                <label class="layui-form-label">链接</label>
-                <div class="layui-input-block">
-                    <input type="text" name="url" lay-verify="" autocomplete="off" placeholder="" class="layui-input" />
-                </div>
-            </div>
-        </div>
-    </blockquote>
 </form>
+<script id="tpl_movieOnlinePlays" type="text/html">
+    {{#  layui.each(d, function(index, item){ }}
+    <div class="layui-input-inline">
+        <input type="text" name="movieOnlinePlays.webSiteName" value="{{ item.webSiteName }}" autocomplete="off" class="layui-input">
+    </div>
+    <div class="layui-input-inline">
+        <input type="text" name="movieOnlinePlays.price" value="{{ item.price }}" autocomplete="off" class="layui-input">
+    </div>
+    <div class="layui-input-inline" style="width:410px">
+        <input type="text" name="movieOnlinePlays.url" value="{{ item.url }}" autocomplete="off" class="layui-input" />
+    </div>
+    {{#  }); }}
+</script>
 
 @section Scripts{
     <script type="text/html" id="operation">
@@ -230,8 +214,8 @@
     </script>
 
     <script>
-        layui.use(['table', 'form', 'laydate'], function () {
-            var table = layui.table, form = layui.form, laydate = layui.laydate;
+        layui.use(['table', 'form', 'laydate', 'laytpl'], function () {
+            var table = layui.table, form = layui.form, laydate = layui.laydate, laytpl = layui.laytpl;
 
             //时间控件
             laydate.render({
@@ -293,25 +277,32 @@
                         type: "get",
                         dataType: "json",
                         url: "/Movie/GetMovieDraftDetail",
-                        data: { movieDraftId: $("#id").val() },
+                        data: { movieDraftId: obj.data.id },
                         success: function (result) {
                             if (result.code == 10000) {
                                 result.content.releaseDate = result.content.releaseDate.substr(0, 10);
                                 $("#imgBox").attr("src", result.content.imgUrl);
-                                form.val("lay_movie", result.content);
-                                //观影顺序
-                                $.each(result.content.movieSeries, function (idx, item) {
-                                    $(".custom-badge-skin").append('<span class="layui-badge layui-bg-gray">' + item.shortName + '</span>\n');
-                                });
+                                form.val("lay_add", result.content);
                                 //类型
                                 $.each(result.content.movieTypes, function (idx, item) {
-                                    $("input[name='movieTypes'][value='" + item + "']").attr("checked", true);
+                                    $("input[name='movieTypes'][title='" + item + "']").attr("checked", true);
                                 });
                                 form.render('checkbox');
+                                //movieOnlinePlays
+                                var getTpl = tpl_movieOnlinePlays.innerHTML
+                                laytpl(getTpl).render(result.content.movieOnlinePlays, function (html) {
+                                    $("#movieOnlinePlays").html(html);
+                                });
+                                //movieResource
+                                $("[name='movieResource.size']").val(result.content.movieResource.size);
+                                $("[name='movieResource.dub']").val(result.content.movieResource.dub);
+                                $("[name='movieResource.resolution']").val(result.content.movieResource.resolution);
+                                $("[name='movieResource.subtitle']").val(result.content.movieResource.subtitle);
+                                $("[name='movieResource.content']").val(result.content.movieResource.content);
 
                                 layer.open({
                                     title: "审核",
-                                    area: ["900px", "90%"],
+                                    area: ["900px", "88%"],
                                     shade: 0,
                                     type: 1,
                                     content: $form,
