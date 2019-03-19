@@ -30,7 +30,7 @@
 <table id="tb_movies" lay-filter="tb_movies"></table>
 
 <form class="layui-form layui-form-pane" id="lay_add" action="" lay-filter="lay_add" style="display:none;margin:15px;">
-    <input type="hidden" name="id" id="id" value="" />
+    <input type="hidden" name="movieDraftId" value="" />
     <div class="layui-form-item">
         <label class="layui-form-label">影片全名</label>
         <div class="layui-input-block">
@@ -197,13 +197,13 @@
 <script id="tpl_movieOnlinePlays" type="text/html">
     {{#  layui.each(d, function(index, item){ }}
     <div class="layui-input-inline">
-        <input type="text" name="movieOnlinePlays.webSiteName" value="{{ item.webSiteName }}" autocomplete="off" class="layui-input">
+        <input type="text" name="movieOnlinePlays[{{index}}].webSiteName" value="{{ item.webSiteName }}" autocomplete="off" class="layui-input">
     </div>
     <div class="layui-input-inline">
-        <input type="text" name="movieOnlinePlays.price" value="{{ item.price }}" autocomplete="off" class="layui-input">
+        <input type="text" name="movieOnlinePlays[{{index}}].price" value="{{ item.price }}" autocomplete="off" class="layui-input">
     </div>
     <div class="layui-input-inline" style="width:410px">
-        <input type="text" name="movieOnlinePlays.url" value="{{ item.url }}" autocomplete="off" class="layui-input" />
+        <input type="text" name="movieOnlinePlays[{{index}}].url" value="{{ item.url }}" autocomplete="off" class="layui-input" />
     </div>
     {{#  }); }}
 </script>
@@ -262,7 +262,7 @@
                             }
                         }
                     }
-                    , { field: 'addTime', title: '添加时间', width: 160, }
+                    , { field: 'addTime', title: '爬取时间', width: 160, }
                     , { title: '', width: 70, fixed: 'right', toolbar: '#operation' }
                 ]]
             });
@@ -282,6 +282,7 @@
                             if (result.code == 10000) {
                                 result.content.releaseDate = result.content.releaseDate.substr(0, 10);
                                 $("#imgBox").attr("src", result.content.imgUrl);
+                                result.content.scoreCount = 20;
                                 form.val("lay_add", result.content);
                                 //类型
                                 $.each(result.content.movieTypes, function (idx, item) {
@@ -293,12 +294,12 @@
                                 laytpl(getTpl).render(result.content.movieOnlinePlays, function (html) {
                                     $("#movieOnlinePlays").html(html);
                                 });
-                                //movieResource
-                                $("[name='movieResource.size']").val(result.content.movieResource.size);
-                                $("[name='movieResource.dub']").val(result.content.movieResource.dub);
-                                $("[name='movieResource.resolution']").val(result.content.movieResource.resolution);
-                                $("[name='movieResource.subtitle']").val(result.content.movieResource.subtitle);
-                                $("[name='movieResource.content']").val(result.content.movieResource.content);
+                                //movieResources
+                                $("[name='movieResources.size']").val(result.content.movieResource.size);
+                                $("[name='movieResources.dub']").val(result.content.movieResource.dub);
+                                $("[name='movieResources.resolution']").val(result.content.movieResource.resolution);
+                                $("[name='movieResources.subtitle']").val(result.content.movieResource.subtitle);
+                                $("[name='movieResources.content']").val(result.content.movieResource.content);
 
                                 layer.open({
                                     title: "审核",
@@ -309,18 +310,26 @@
                                     btn: ['添加', '取消'],
                                     yes: function () {
                                         var requestBody = $form.serialize();
+                                        requestBody += "&imgUrl=" + $("[name='imgUrl']").attr("src");
                                         var load = layer.load(2);
                                         $.ajax({
                                             type: "post",
-                                            url: "/Movie/UpdMovie",
+                                            url: "/Movie/AddMovie",
                                             dataType: "json",
                                             data: requestBody,
                                             success: function (result) {
                                                 if (result.code == 10000) {
                                                     layer.closeAll();
-                                                    obj.update(result.content);
-                                                    layer.msg("成功");
-                                                } else {
+                                                    layer.msg('成功', { time: 2000 }, function () {
+                                                        location.reload();
+                                                    });
+                                                } else if (result.code == 10004) {
+                                                    layer.closeAll();
+                                                    layer.msg(result.message, { time: 200 }, function () {
+                                                        location.reload();
+                                                    });
+                                                }
+                                                else {
                                                     layer.msg(result.message, function () { });
                                                 }
                                             },

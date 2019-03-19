@@ -10,6 +10,7 @@ using P9YS.Services.Movie;
 using P9YS.Services.Movie.Dto;
 using P9YS.Services.MovieComment;
 using P9YS.Services.MovieDraft;
+using P9YS.Services.MovieDraft.Dto;
 using P9YS.Services.MovieResource;
 using P9YS.Services.MovieResource.Dto;
 using P9YS.Services.RatingRecord;
@@ -67,6 +68,13 @@ namespace P9YS.Manage.Controllers
             };
             return Json(result);
         }
+        public async Task<JsonResult> AddMovie(MovieDraftDetailInput movieDraftDetailInput)
+        {
+            var user = _userService.GetCurrentUser();
+            movieDraftDetailInput.MovieResources.UserId = user.UserId;
+            var result = await _movieDraftService.AddMovie(movieDraftDetailInput);
+            return Json(result);
+        }
 
         #endregion
 
@@ -82,7 +90,7 @@ namespace P9YS.Manage.Controllers
             return View(id);
         }
 
-        public async Task<JsonResult> GetMovies(PagingInput<ConditionInput> pagingInput)
+        public async Task<JsonResult> GetMovies(PagingInput<Services.Movie.Dto.ConditionInput> pagingInput)
         {
             var result = new Result
             {

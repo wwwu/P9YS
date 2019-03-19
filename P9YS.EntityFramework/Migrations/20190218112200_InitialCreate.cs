@@ -84,7 +84,7 @@ namespace P9YS.EntityFramework.Migrations
                     OtherName = table.Column<string>(maxLength: 500, nullable: true),
                     Director = table.Column<string>(maxLength: 200, nullable: true),
                     Actor = table.Column<string>(maxLength: 500, nullable: true),
-                    ReleaseDate = table.Column<DateTime>(maxLength: 50, nullable: false),
+                    ReleaseDate = table.Column<DateTime>(nullable: false),
                     MovieTime = table.Column<int>(nullable: false),
                     ImgUrl = table.Column<string>(nullable: true),
                     Intro = table.Column<string>(nullable: true),

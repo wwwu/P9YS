@@ -7,6 +7,8 @@ namespace P9YS.Services.MovieDraft
     {
         Task<PagingOutput<MovieDraftOutput>> GetMovieDrafts(PagingInput<ConditionInput> pagingInput);
 
-        Task<MovieDraftDetailOutput> GetMovieDraftDetail(int movieDraftId);
+        Task<MovieDraftDetailInput> GetMovieDraftDetail(int movieDraftId);
+
+        Task<Result> AddMovie(MovieDraftDetailInput movieDraftDetailInput);
     }
 }

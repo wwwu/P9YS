@@ -1,4 +1,5 @@
-﻿using Microsoft.Extensions.Options;
+﻿using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using Newtonsoft.Json;
 using P9YS.Common;
 using QCloud.CosApi.Api;
@@ -12,10 +13,13 @@ namespace P9YS.Services.Base
     public class BaseService : IBaseService
     {
         private readonly IOptionsMonitor<AppSettings> _options;
+        private readonly ILogger<BaseService> _logger;
         private readonly CosCloud _cosCloud;
-        public BaseService(IOptionsMonitor<AppSettings> options)
+        public BaseService(IOptionsMonitor<AppSettings> options
+            , ILogger<BaseService> logger)
         {
             _options = options;
+            _logger = logger;
             //创建cos对象
             var txCos = _options.CurrentValue.TxCos;
             _cosCloud = new CosCloud(int.Parse(txCos.Appid), txCos.SecretID, txCos.SecretKey, txCos.Region);
@@ -39,12 +43,14 @@ namespace P9YS.Services.Base
                 {
                     result.Code = CustomCodeEnum.Error;
                     result.Message = response.Message;
+                    _logger.LogError($"Request_id:{response.Request_id}.Message:{response.Message}");
                 }
             }
             catch (Exception ex)
             {
                 result.Code = CustomCodeEnum.Error;
                 result.Message = ex.Message;
+                _logger.LogError(ex,ex.Message,null);
             }
             return result;
         }
@@ -67,6 +73,7 @@ namespace P9YS.Services.Base
             {
                 result.Code = CustomCodeEnum.Error;
                 result.Message = ex.Message;
+                _logger.LogError(ex, ex.Message, null);
             }
             return result;
         }

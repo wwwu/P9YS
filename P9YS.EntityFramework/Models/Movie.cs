@@ -27,7 +27,6 @@ namespace P9YS.EntityFramework.Models
         [StringLength(500)]
         public string Actor { get; set; }
 
-        [StringLength(50)]
         public DateTime ReleaseDate { get; set; }
 
         public int MovieTime { get; set; }
@@ -68,5 +67,7 @@ namespace P9YS.EntityFramework.Models
         public virtual IEnumerable<MovieComment> MovieComments { get; set; }
 
         public virtual IEnumerable<MovieQuestion> MovieQuestions { get; set; }
+
+        public virtual IEnumerable<MovieResource> MovieResources { get; set; }
     }
 }

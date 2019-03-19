@@ -17,8 +17,8 @@ namespace P9YS.Common.Enums
         Added,
 
         /// <summary>
-        /// 已更新
+        /// 重复
         /// </summary>
-        Updated,
+        Repeat,
     }
 }

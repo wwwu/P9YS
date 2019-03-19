@@ -54,6 +54,10 @@ namespace P9YS.Services.Base
                 .ForMember(s => s.MovieComments, opt => opt.Ignore())
                 .ForMember(s => s.MovieQuestions, opt => opt.Ignore());
 
+            CreateMap<MovieDraft.Dto.MovieDraftDetailInput, EntityFramework.Models.Movie>()
+                .BeforeMap((src, dest) => dest.AddTime = dest.UpdTime = DateTime.Now)
+                .ForMember(s => s.ScoreSum, opt => opt.MapFrom(m => m.Score * m.ScoreCount));
+
             #endregion
 
             #region MovieComment
@@ -89,6 +93,9 @@ namespace P9YS.Services.Base
             CreateMap<MovieGenres.Dto.MoiveGenreInput, EntityFramework.Models.MovieGenre>()
                 .ForMember(s => s.AddTime, option => option.MapFrom(s => DateTime.Now));
 
+            CreateMap<string, MovieType>()
+                .ForMember(s => s.MovieGenreId, opt => opt.MapFrom(m => int.Parse(m)));
+
             #endregion
 
             #region MovieResource
@@ -97,7 +104,13 @@ namespace P9YS.Services.Base
                 .ForMember(s => s.AddTime, option => option.MapFrom(s => DateTime.Now))
                 .ForMember(s => s.UpdTime, option => option.MapFrom(s => DateTime.Now));
 
-            #endregion  
+            #endregion
+
+            #region MovieOnlinePlay
+
+            CreateMap<MovieResource.Dto.MovieOnlinePlayOutput, MovieOnlinePlay>();
+
+            #endregion
         }
     }
 }

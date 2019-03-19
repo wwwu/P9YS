@@ -113,8 +113,11 @@ namespace P9YS.Services.Movie
 
         public async Task<List<MovieSeriesOutput>> GetMovieSeries(int seriesId)
         {
+            if (seriesId == 0)
+                return new List<MovieSeriesOutput>();
+
             var series = await _movieResourceContext.Movies
-                .Where(s => s.SeriesId==seriesId)
+                .Where(s => s.SeriesId == seriesId && s.Id != seriesId)
                 .OrderBy(m => m.ReleaseDate)
                 .ProjectTo<MovieSeriesOutput>(_mapper.ConfigurationProvider)
                 .AsNoTracking()
