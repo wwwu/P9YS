@@ -145,7 +145,7 @@ namespace P9YS.Services.MovieDraft
                 var strArr = Encoding.UTF8.GetBytes($"AA{movieDraft.Resoures}ZZ");
                 link = "thunder://" + Convert.ToBase64String(strArr);
             }
-            movieDraftDetailInput.MovieResources = new MovieResourceInput
+            movieDraftDetailInput.MovieResource = new MovieResourceInput
             {
                 Dub = Regex.Match(movieDraft.DoubanHtml, @"语言:</span>\s*?(\w+).*?<br/>").Groups[1]?.Value,
                 Resolution = "DB-720P",
@@ -181,6 +181,8 @@ namespace P9YS.Services.MovieDraft
                 movieDraftDetailInput.ImgUrl = imgUrl;
             }
             var movie = _mapper.Map<EntityFramework.Models.Movie>(movieDraftDetailInput);
+            movie.MovieResources = _mapper.Map<IEnumerable<EntityFramework.Models.MovieResource>>(
+                new List<MovieResourceInput> { movieDraftDetailInput.MovieResource });
             movie.MovieOrigins = new List<EntityFramework.Models.MovieOrigin>
             {
                 new EntityFramework.Models.MovieOrigin

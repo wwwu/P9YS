@@ -70,5 +70,7 @@ namespace P9YS.HangfireJobs
                     , TimeSpan.FromMinutes(delay));
             });
         }
+
+
     }
 }

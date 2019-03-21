@@ -53,7 +53,7 @@ namespace P9YS.Services.MovieDraft.Dto
         public List<string> MovieTypes { get; set; }
 
         [Required]
-        public MovieResourceInput MovieResources { get; set; }
+        public MovieResourceInput MovieResource { get; set; }
 
         public List<MovieOnlinePlayOutput> MovieOnlinePlays { get; set; }
     }

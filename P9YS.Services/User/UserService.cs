@@ -44,7 +44,6 @@ namespace P9YS.Services.User
         public async Task<Result<CurrentUser>> Login(LoginInput input)
         {
             var result = new Result<CurrentUser>();
-            //假装加个盐..
             input.Password = GetCiphertext(input.Password, _options.CurrentValue.PasswordSalt);
             var user = await _movieResourceContext.Users
                 .FirstOrDefaultAsync(u => u.Email == input.Email && u.Password == input.Password);

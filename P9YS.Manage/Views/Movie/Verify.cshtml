@@ -177,14 +177,14 @@
         <span class="quote-title">在线播放源：</span>
         <div class="layui-form-item" id="movieOnlinePlays">
             @*<div class="layui-input-inline">
-                <input type="text" name="movieOnlinePlays.webSiteName" autocomplete="off" class="layui-input">
-            </div>
-            <div class="layui-input-inline">
-                <input type="text" name="movieOnlinePlays.price" autocomplete="off" class="layui-input">
-            </div>
-            <div class="layui-input-inline" style="width:410px">
-                <input type="text" name="movieOnlinePlays.url" autocomplete="off" class="layui-input" />
-            </div>*@
+                    <input type="text" name="movieOnlinePlays.webSiteName" autocomplete="off" class="layui-input">
+                </div>
+                <div class="layui-input-inline">
+                    <input type="text" name="movieOnlinePlays.price" autocomplete="off" class="layui-input">
+                </div>
+                <div class="layui-input-inline" style="width:410px">
+                    <input type="text" name="movieOnlinePlays.url" autocomplete="off" class="layui-input" />
+                </div>*@
         </div>
     </blockquote>
     <div class="layui-form-item">
@@ -194,23 +194,23 @@
         </div>
     </div>
 </form>
-<script id="tpl_movieOnlinePlays" type="text/html">
-    {{#  layui.each(d, function(index, item){ }}
-    <div class="layui-input-inline">
-        <input type="text" name="movieOnlinePlays[{{index}}].webSiteName" value="{{ item.webSiteName }}" autocomplete="off" class="layui-input">
-    </div>
-    <div class="layui-input-inline">
-        <input type="text" name="movieOnlinePlays[{{index}}].price" value="{{ item.price }}" autocomplete="off" class="layui-input">
-    </div>
-    <div class="layui-input-inline" style="width:410px">
-        <input type="text" name="movieOnlinePlays[{{index}}].url" value="{{ item.url }}" autocomplete="off" class="layui-input" />
-    </div>
-    {{#  }); }}
-</script>
 
 @section Scripts{
     <script type="text/html" id="operation">
-        <a class="layui-btn layui-btn-xs" lay-event="edit">处理</a>
+        <a class="layui-btn layui-btn-xs{{d.status!=0?' layui-btn-disabled':''}}" lay-event="edit">处理</a>
+    </script>
+    <script id="tpl_movieOnlinePlays" type="text/html">
+        {{#  layui.each(d, function(index, item){ }}
+        <div class="layui-input-inline">
+            <input type="text" name="movieOnlinePlays[{{index}}].webSiteName" value="{{ item.webSiteName }}" autocomplete="off" class="layui-input">
+        </div>
+        <div class="layui-input-inline">
+            <input type="text" name="movieOnlinePlays[{{index}}].price" value="{{ item.price }}" autocomplete="off" class="layui-input">
+        </div>
+        <div class="layui-input-inline" style="width:410px">
+            <input type="text" name="movieOnlinePlays[{{index}}].url" value="{{ item.url }}" autocomplete="off" class="layui-input" />
+        </div>
+        {{#  }); }}
     </script>
 
     <script>
@@ -269,7 +269,7 @@
 
             //监听行工具事件
             table.on('tool(tb_movies)', function (obj) {
-                if (obj.event === 'edit') { //处理
+                if (obj.event === 'edit' && obj.data.status == 0) { //处理
                     var $form = $("#lay_add");
                     var load = layer.load(2);
                     //form.val("lay_add", obj.data);
@@ -295,11 +295,11 @@
                                     $("#movieOnlinePlays").html(html);
                                 });
                                 //movieResources
-                                $("[name='movieResources.size']").val(result.content.movieResource.size);
-                                $("[name='movieResources.dub']").val(result.content.movieResource.dub);
-                                $("[name='movieResources.resolution']").val(result.content.movieResource.resolution);
-                                $("[name='movieResources.subtitle']").val(result.content.movieResource.subtitle);
-                                $("[name='movieResources.content']").val(result.content.movieResource.content);
+                                $("[name='movieResource.size']").val(result.content.movieResource.size);
+                                $("[name='movieResource.dub']").val(result.content.movieResource.dub);
+                                $("[name='movieResource.resolution']").val(result.content.movieResource.resolution);
+                                $("[name='movieResource.subtitle']").val(result.content.movieResource.subtitle);
+                                $("[name='movieResource.content']").val(result.content.movieResource.content);
 
                                 layer.open({
                                     title: "审核",
@@ -320,12 +320,12 @@
                                             success: function (result) {
                                                 if (result.code == 10000) {
                                                     layer.closeAll();
-                                                    layer.msg('成功', { time: 2000 }, function () {
+                                                    layer.msg('成功', { time: 1000 }, function () {
                                                         location.reload();
                                                     });
                                                 } else if (result.code == 10004) {
                                                     layer.closeAll();
-                                                    layer.msg(result.message, { time: 200 }, function () {
+                                                    layer.msg(result.message, { icon: 2, time: 1500 }, function () {
                                                         location.reload();
                                                     });
                                                 }

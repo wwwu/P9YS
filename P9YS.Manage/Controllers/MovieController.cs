@@ -71,7 +71,7 @@ namespace P9YS.Manage.Controllers
         public async Task<JsonResult> AddMovie(MovieDraftDetailInput movieDraftDetailInput)
         {
             var user = _userService.GetCurrentUser();
-            movieDraftDetailInput.MovieResources.UserId = user.UserId;
+            movieDraftDetailInput.MovieResource.UserId = user.UserId;
             var result = await _movieDraftService.AddMovie(movieDraftDetailInput);
             return Json(result);
         }

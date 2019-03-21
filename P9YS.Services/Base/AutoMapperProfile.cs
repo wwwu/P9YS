@@ -56,7 +56,8 @@ namespace P9YS.Services.Base
 
             CreateMap<MovieDraft.Dto.MovieDraftDetailInput, EntityFramework.Models.Movie>()
                 .BeforeMap((src, dest) => dest.AddTime = dest.UpdTime = DateTime.Now)
-                .ForMember(s => s.ScoreSum, opt => opt.MapFrom(m => m.Score * m.ScoreCount));
+                .ForMember(s => s.ScoreSum, opt => opt.MapFrom(m => m.Score * m.ScoreCount))
+                .ForMember(s => s.MovieResources, opt => opt.Ignore());
 
             #endregion
 
