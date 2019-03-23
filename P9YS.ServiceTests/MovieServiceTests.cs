@@ -221,7 +221,7 @@ namespace P9YS.ServiceTests
         }
 
         [Fact]
-        public void GetMoviesByOriginUpdTime_Test()
+        public async Task GetMoviesByOriginUpdTime_Test()
         {
             //Arrange
             dbContext.MovieOrigins.AddRange(movieOrigins);
@@ -229,7 +229,7 @@ namespace P9YS.ServiceTests
             dbContext.SaveChanges();
             var movieService = new MovieService(mapper, dbContext, baseService.Object);
             //Act
-            var result = movieService.GetMoviesByOriginUpdTime(2);
+            var result = await movieService.GetMoviesByOriginUpdTime(2);
             //Assert
             Assert.True(result.Count == 2);
         }

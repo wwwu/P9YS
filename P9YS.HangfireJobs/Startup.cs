@@ -17,7 +17,12 @@ namespace P9YS.HangfireJobs
             app.UseHangfireDashboard("/hangfire", new DashboardOptions
             {
                 Authorization = new[] { new HangfireAuthorizationFilter() },
-                IsReadOnlyFunc = (DashboardContext context) => true //禁止删除排队作业
+                IsReadOnlyFunc = (DashboardContext context) => 
+                {
+                    var httpContext = context.GetHttpContext();
+                    //非Admin权限禁止删除排队作业
+                    return !httpContext.User.IsInRole(Common.UserRoleEnum.Admin.ToString());
+                }
             });
 
             #region 注册后台任务
@@ -33,6 +38,10 @@ namespace P9YS.HangfireJobs
             //更新豆瓣数据(评分、在线播放源)
             //RecurringJob.AddOrUpdate<IJobService>("Recurring_UpdDoubanDataJob"
             //    , s => s.UpdDoubanDataJob(), "0 0 18 * * ?"); //UTC时间
+
+            //清理数据，并整理碎片
+            RecurringJob.AddOrUpdate<IJobService>("Recurring_OptimizeDatabaseJob"
+                , s => s.OptimizeDatabaseJob(), "0 0 21 1 1/1 ?"); //每月1号21点整运行(北京时间05:00)
 
             #endregion
         }

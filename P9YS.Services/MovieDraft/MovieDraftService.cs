@@ -44,6 +44,10 @@ namespace P9YS.Services.MovieDraft
             {
                 query = query.Where(s => s.MovieName.Contains(condition.Keyword));
             }
+            if (condition.Status.HasValue)
+            {
+                query = query.Where(s => s.Status == condition.Status);
+            }
             if (condition.BeginDate.HasValue && condition.EndDate.HasValue)
             {
                 query = query.Where(s => s.AddTime >= condition.BeginDate.Value

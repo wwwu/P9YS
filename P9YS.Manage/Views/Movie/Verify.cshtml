@@ -219,7 +219,9 @@
 
             //时间控件
             laydate.render({
-                elem: '#releaseDate'
+                elem: '#addTime'
+                , range: true //或 range: '~' 来自定义分割字符
+                , max: 0//最大日期为当天
             });
 
             table.render({

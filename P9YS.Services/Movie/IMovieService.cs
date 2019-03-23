@@ -22,7 +22,7 @@ namespace P9YS.Services.Movie
 
         Task<Result> DelMovie(int movieId);
 
-        List<MovieDoubanOriginOutput> GetMoviesByOriginUpdTime(int count);
+        Task<List<MovieDoubanOriginOutput>> GetMoviesByOriginUpdTime(int count);
 
         Task UpdDoubanData(MovieDoubanOriginOutput movieDoubanOrigin);
     }

@@ -29,10 +29,6 @@ namespace P9YS.Manage
             {//只拦截ajax请求
                 string requestBody = string.Empty;
                 //context.HttpContext.Request.Body.Seek(0, System.IO.SeekOrigin.Begin);
-                //using (var stream = new System.IO.StreamReader(context.HttpContext.Request.Body))
-                //{
-                //    requestBody = stream.ReadToEnd();
-                //}
                 _logger.LogError(context.Exception, requestBody, null);
 
                 var result = new Result(Common.CustomCodeEnum.Error);

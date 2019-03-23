@@ -21,12 +21,11 @@ namespace P9YS.Web
                 var errors = context.ModelState.FirstOrDefault(r => r.Value.Errors.Count > 0);
                 var msg = errors.Value.Errors[0].ErrorMessage;
                 if (string.IsNullOrWhiteSpace(msg))
-                    msg = errors.Value.Errors[0].Exception.Message;
+                    msg = errors.Value.Errors[0].Exception?.Message;
 
-                var result = new Result(Common.CustomCodeEnum.Failed)
-                {
-                    Message = msg
-                };
+                var result = new Result(Common.CustomCodeEnum.Failed);
+                if (!string.IsNullOrWhiteSpace(msg))
+                    result.Message = msg;
                 context.Result = new Microsoft.AspNetCore.Mvc.JsonResult(result);
             }
 

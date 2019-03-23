@@ -90,24 +90,24 @@ namespace P9YS.Services.RatingRecord
         /// 更新评分数据
         /// </summary>
         /// <param name="endTime"></param>
-        public void UpdRatingsJob(DateTime endTime)
+        public async Task<int> UpdRatingsJob(DateTime endTime)
         {
             //取最后一次标记
-            var markTime = _movieResourceContext.RatingRecords.Max(s=>s.Mark);
+            var markTime = await _movieResourceContext.RatingRecords.MaxAsync(s=>s.Mark);
             //取时间段内数据
             var query = _movieResourceContext.RatingRecords
                 .Where(s => s.AddTime <= endTime);
             if (markTime.HasValue)
                 query = query.Where(s => s.AddTime > markTime.Value);
-            var ratingRecords = query.ToList();
+            var ratingRecords = await query.ToListAsync();
             //按movieId分组聚合
             var ratingGroups = ratingRecords.GroupBy(s => new { s.MovieId })
                 .Select(s => new { s.Key.MovieId, ScoreSum = s.Sum(g => g.Score), ScoreCount = s.Count() })
                 .ToList();
             //查出所有movie
-            var movies = _movieResourceContext.Movies
+            var movies = await _movieResourceContext.Movies
                 .Where(s => ratingGroups.Select(r => r.MovieId).Contains(s.Id))
-                .ToList();
+                .ToListAsync();
             movies.ForEach(movie =>
             {
                 var ratingGroup = ratingGroups.FirstOrDefault(s => s.MovieId == movie.Id);
@@ -116,11 +116,29 @@ namespace P9YS.Services.RatingRecord
                 movie.Score = movie.ScoreSum / movie.ScoreCount;
             });
             //更新标记
+            var rows = 0;
             if (ratingRecords.Count > 0)
             {
                 ratingRecords.Last().Mark = endTime;
-                var rows = _movieResourceContext.SaveChanges();
+                rows = await _movieResourceContext.SaveChangesAsync();
             }
+            return rows;
+        }
+
+        /// <summary>
+        /// 删除RatingRecords和SuportRecords一个月之前的数据,并optimize表
+        /// </summary>
+        /// <returns>删除行数</returns>
+        public async Task<int> OptimizeDatabase()
+        {
+            _movieResourceContext.RatingRecords.RemoveRange(_movieResourceContext.RatingRecords
+                .Where(s => s.AddTime < DateTime.Now.AddMonths(-1)));
+            _movieResourceContext.SuportRecords.RemoveRange(_movieResourceContext.SuportRecords
+                .Where(s => s.AddTime < DateTime.Now.AddMonths(-1)));
+            var rows = await _movieResourceContext.SaveChangesAsync();
+            await _movieResourceContext.Database
+                .ExecuteSqlCommandAsync($"optimize table RatingRecords;optimize table SuportRecords;");
+            return rows;
         }
     }
 }

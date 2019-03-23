@@ -1,4 +1,6 @@
-﻿using System.Threading.Tasks;
+﻿using P9YS.Services.Movie.Dto;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace P9YS.HangfireJobs
 {
@@ -8,16 +10,27 @@ namespace P9YS.HangfireJobs
         /// 更新评分数据
         /// </summary>
         /// <param name="jobId"></param>
-        void UpdRatingsJob(string jobId);
+        /// <returns></returns>
+        Task<int> UpdRatingsJob(string jobId);
+
         /// <summary>
         /// 更新点赞数据
         /// </summary>
         /// <param name="jobId"></param>
-        void UpdSuportsJob(string jobId);
+        /// <returns></returns>
+        Task<int> UpdSuportsJob(string jobId);
+
         /// <summary>
         /// 更新豆瓣数据(评分、在线播放源)
         /// 每次生成x个延迟任务
         /// </summary>
-        void UpdDoubanDataJob();
+        /// <returns></returns>
+        Task<List<MovieDoubanOriginOutput>> UpdDoubanDataJob();
+
+        /// <summary>
+        /// 清理数据，并整理碎片
+        /// </summary>
+        /// <returns></returns>
+        Task<int> OptimizeDatabaseJob();
     }
 }

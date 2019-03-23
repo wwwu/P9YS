@@ -8,6 +8,7 @@ namespace P9YS.Services.RatingRecord
     {
         Task<bool> AddRatingRecord(RatingRecordInput ratingRecordInput);
         Task<PagingOutput<RatingRecordOutput>> GetRatings(PagingInput<GetRatingsInput> pagingInput);
-        void UpdRatingsJob(DateTime endTime);
+        Task<int> UpdRatingsJob(DateTime endTime);
+        Task<int> OptimizeDatabase();
     }
 }

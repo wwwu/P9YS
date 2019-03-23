@@ -7,6 +7,6 @@ namespace P9YS.Services.SuportRecord
     public interface ISuportRecordService
     {
         Task<bool> AddSuportRecord(SuportRecordInput suportRecordInput);
-        void UpdSuportsJob(DateTime endTime);
+        Task<int> UpdSuportsJob(DateTime endTime);
     }
 }

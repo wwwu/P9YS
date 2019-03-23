@@ -248,9 +248,9 @@ namespace P9YS.Services.Movie
 
         #region 更新Douban数据
 
-        public List<MovieDoubanOriginOutput> GetMoviesByOriginUpdTime(int count)
+        public async Task<List<MovieDoubanOriginOutput>> GetMoviesByOriginUpdTime(int count)
         {
-            var entities = _movieResourceContext.Movies.Include(s => s.MovieOrigins)
+            var entities = await _movieResourceContext.Movies.Include(s => s.MovieOrigins)
                 .GroupJoin(_movieResourceContext.MovieOrigins, m => m.Id, mo => mo.MovieId
                     , (m, mo) => new MovieDoubanOriginOutput
                     {
@@ -261,7 +261,7 @@ namespace P9YS.Services.Movie
                     })
                 .OrderBy(s => s.UpdTime)
                 .Take(count)
-                .ToList();
+                .ToListAsync();
             return entities;
         }
 
