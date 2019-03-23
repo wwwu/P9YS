@@ -36,7 +36,7 @@ namespace P9YS.Services.MovieComment
             return count;
         }
 
-        public async Task<PagingOutput<MovieCommentOutput>> GetCommentsAndReply(PagingInput<int> pagingInput)
+        public async Task<PagingOutput<MovieComment_Output>> GetCommentsAndReply(PagingInput<int> pagingInput)
         {
             //comments
             var query = _movieResourceContext.MovieComments
@@ -44,7 +44,7 @@ namespace P9YS.Services.MovieComment
             var comments = await query.OrderByDescending(s => s.AddTime)
                 .Skip((pagingInput.PageIndex - 1) * pagingInput.PageSize)
                 .Take(pagingInput.PageSize)
-                .ProjectTo<MovieCommentOutput>(_mapper.ConfigurationProvider)
+                .ProjectTo<MovieComment_Output>(_mapper.ConfigurationProvider)
                 .AsNoTracking()
                 .ToListAsync();
             var totalCount = await query.CountAsync();
@@ -67,7 +67,7 @@ namespace P9YS.Services.MovieComment
                 comment.Content = comment.Content.Replace("\r\n", "<br />");
             });
 
-            var result = new PagingOutput<MovieCommentOutput>
+            var result = new PagingOutput<MovieComment_Output>
             {
                 PageIndex = pagingInput.PageIndex,
                 PageSize = pagingInput.PageSize,
@@ -78,7 +78,7 @@ namespace P9YS.Services.MovieComment
             return result;
         }
 
-        public async Task<bool> AddMovieComment(MovieCommentInput movieCommentInput)
+        public async Task<bool> AddMovieComment(MovieComment_Input movieCommentInput)
         {
             var user = _userService.GetCurrentUser();
             //Add
@@ -90,7 +90,7 @@ namespace P9YS.Services.MovieComment
         }
 
         public async Task<PagingOutput<MovieComment_Manage_Output>> GetComments(
-            PagingInput<GetRatingsInput> pagingInput)
+            PagingInput<GetRatings_Input> pagingInput)
         {
             var query = _movieResourceContext.MovieComments.AsQueryable();
 

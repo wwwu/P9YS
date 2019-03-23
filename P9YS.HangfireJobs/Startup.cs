@@ -36,8 +36,8 @@ namespace P9YS.HangfireJobs
                 , s => s.UpdSuportsJob("Recurring_UpdSuportsJob"), "0 0/5 * * * ?");
 
             //更新豆瓣数据(评分、在线播放源)
-            //RecurringJob.AddOrUpdate<IJobService>("Recurring_UpdDoubanDataJob"
-            //    , s => s.UpdDoubanDataJob(), "0 0 18 * * ?"); //UTC时间
+            RecurringJob.AddOrUpdate<IJobService>("Recurring_UpdDoubanDataJob"
+                , s => s.UpdDoubanDataJob(), "0 0 18 * * ?"); //UTC时间
 
             //清理数据，并整理碎片
             RecurringJob.AddOrUpdate<IJobService>("Recurring_OptimizeDatabaseJob"

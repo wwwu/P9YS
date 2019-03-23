@@ -38,7 +38,6 @@ namespace P9YS.HangfireJobs
             var job = connection.GetRecurringJobs().FirstOrDefault(s => s.Id == jobId);
             //本次运行时间
             var beginTime = job?.LastExecution ?? DateTime.Now;
-            //TODO: async会丢失上下文 why?
             return await _ratingRecordService.UpdRatingsJob(beginTime);
         }
 
@@ -59,7 +58,7 @@ namespace P9YS.HangfireJobs
         /// 更新豆瓣数据(评分、在线播放源)
         /// 每次生成x个延迟任务
         /// </summary>
-        public async Task<List<MovieDoubanOriginOutput>> UpdDoubanDataJob()
+        public async Task<List<MovieOrigin_Douban_Output>> UpdDoubanDataJob()
         {
             var movies = await _movieService.GetMoviesByOriginUpdTime(20);
             //5小时内随机分布抓取时间

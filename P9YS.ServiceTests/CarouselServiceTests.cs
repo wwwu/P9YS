@@ -69,7 +69,7 @@ namespace P9YS.ServiceTests
             baseService.Setup(s => s.UploadFile(It.IsAny<string>(), It.IsAny<byte[]>())).Returns(new Result());
             var carouselService = new CarouselService(mapper, dbContext, memoryCache, baseService.Object);
             //Act
-            var input = new Carouselnput
+            var input = new Carousel_Input
             {
                 ImgData = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==",
                 Link = "http://p9ys.com",
@@ -92,7 +92,7 @@ namespace P9YS.ServiceTests
             var uploadFailed = new Result();
             baseService.Setup(s => s.UploadFile(It.IsAny<string>(), It.IsAny<byte[]>())).Returns(uploadFailed);
             //Act
-            var input = new Carouselnput
+            var input = new Carousel_Input
             {
                 Id = 1,
                 ImgData = "iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVQImWNgYGBgAAAABQABh6FO1AAAAABJRU5ErkJggg==",

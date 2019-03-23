@@ -38,7 +38,7 @@ namespace P9YS.ServiceTests
             userService.Setup(s => s.GetCurrentUser()).Returns(new Services.User.Dto.CurrentUser { UserId = 1 });
             var service = new RatingRecordService(mapper, dbContext, userService.Object);
             //Act
-            var result = await service.AddRatingRecord(new RatingRecordInput
+            var result = await service.AddRatingRecord(new RatingRecord_Input
             {
                 MovieId = 1,
                 Score = 8
@@ -57,7 +57,7 @@ namespace P9YS.ServiceTests
             await dbContext.SaveChangesAsync();
             var service = new RatingRecordService(mapper, dbContext, null);
             //Act
-            var input = new PagingInput<GetRatingsInput> { PageSize = 2 };
+            var input = new PagingInput<GetRatings_Input> { PageSize = 2 };
             var result = await service.GetRatings(input);
             //Assert
             Assert.True(result.TotalCount == ratingRecords.Count);

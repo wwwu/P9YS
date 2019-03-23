@@ -27,12 +27,12 @@ namespace P9YS.Services.MovieGenres
             _memoryCache = memoryCache;
         }
 
-        public async Task<List<MovieGenreOutput>> GetMovieGenres()
+        public async Task<List<MovieGenre_Output>> GetMovieGenres()
         {
-            if (!_memoryCache.TryGetValue(CacheKeys.MovieGenres, out List<MovieGenreOutput> movieGenres))
+            if (!_memoryCache.TryGetValue(CacheKeys.MovieGenres, out List<MovieGenre_Output> movieGenres))
             {
                 movieGenres = await _movieResourceContext.MovieGenres
-                    .ProjectTo<MovieGenreOutput>(_mapper.ConfigurationProvider)
+                    .ProjectTo<MovieGenre_Output>(_mapper.ConfigurationProvider)
                     .AsNoTracking()
                     .ToListAsync();
 
@@ -64,7 +64,7 @@ namespace P9YS.Services.MovieGenres
             return result;
         }
 
-        public async Task<Result> AddMovieGenre(MoiveGenreInput moiveGenreInput)
+        public async Task<Result> AddMovieGenre(MoiveGenre_Input moiveGenreInput)
         {
             var result = new Result();
             var isRepeated = await _movieResourceContext.MovieGenres
@@ -83,7 +83,7 @@ namespace P9YS.Services.MovieGenres
             return result;
         }
 
-        public async Task<Result> UpdMovieGenre(MoiveGenreInput moiveGenreInput)
+        public async Task<Result> UpdMovieGenre(MoiveGenre_Input moiveGenreInput)
         {
             var result = new Result();
             var isRepeated = await _movieResourceContext.MovieGenres

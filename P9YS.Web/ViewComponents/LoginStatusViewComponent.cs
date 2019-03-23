@@ -16,7 +16,7 @@ namespace P9YS.Web.ViewComponents
             _userService = userService;
         }
 
-        /* 很难记住，手写方便理解
+        /* 
          * 约定的方法名称, Invoke / InvokeAsync
          * 页面文件的路径规则如下
          * /Views/{CurrentControllerName}/Components/{ComponentName}/Default.cshtml

@@ -11,15 +11,15 @@ namespace P9YS.Web.Models
 {
     public class MovieViewModel
     {
-        public MovieInfoOutput MovieInfo { get; set; }
+        public MovieInfo_Output MovieInfo { get; set; }
 
-        public List<MovieSeriesOutput> MovieSeries { get; set; }
+        public List<MovieSeries_Output> MovieSeries { get; set; }
 
-        public MovieOriginOutput MovieOrigin { get; set; }
+        public MovieOrigin_Output MovieOrigin { get; set; }
 
-        public PagingOutput<MovieCommentOutput> MovieComments { get; set; }
+        public PagingOutput<MovieComment_Output> MovieComments { get; set; }
         public int MovieCommentsCount { get; set; }
 
-        public PagingOutput<QuestionTitleOutput> QuestionTitles { get; set; }
+        public PagingOutput<QuestionTitle_Output> QuestionTitles { get; set; }
     }
 }

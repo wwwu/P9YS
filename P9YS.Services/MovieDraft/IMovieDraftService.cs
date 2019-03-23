@@ -5,10 +5,10 @@ namespace P9YS.Services.MovieDraft
 {
     public interface IMovieDraftService
     {
-        Task<PagingOutput<MovieDraftOutput>> GetMovieDrafts(PagingInput<ConditionInput> pagingInput);
+        Task<PagingOutput<MovieDraft_Output>> GetMovieDrafts(PagingInput<GetMovieDrafts_Condition_Input> pagingInput);
 
-        Task<MovieDraftDetailInput> GetMovieDraftDetail(int movieDraftId);
+        Task<MovieDraft_Detail_Input> GetMovieDraftDetail(int movieDraftId);
 
-        Task<Result> AddMovie(MovieDraftDetailInput movieDraftDetailInput);
+        Task<Result> AddMovie(MovieDraft_Detail_Input movieDraftDetailInput);
     }
 }

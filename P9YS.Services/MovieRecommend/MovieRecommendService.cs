@@ -31,15 +31,15 @@ namespace P9YS.Services.MovieRecommend
         /// 推荐列表
         /// </summary>
         /// <returns></returns>
-        public async Task<List<MovieRecommendOutput>> GetAnnualRecommends(int limit = 10)
+        public async Task<List<MovieRecommend_Output>> GetAnnualRecommends(int limit = 10)
         {
-            if (!_memoryCache.TryGetValue(CacheKeys.AnnualRecommends, out List<MovieRecommendOutput> annualRecommends))
+            if (!_memoryCache.TryGetValue(CacheKeys.AnnualRecommends, out List<MovieRecommend_Output> annualRecommends))
             {
                 annualRecommends = await _movieResourceContext.MovieRecommends.Include(s => s.Movie)
                     .Where(s=>s.Type== RecommendTypeEnum.Annual)
                     .OrderByDescending(s => s.Sort)
                     .Take(limit)
-                    .ProjectTo<MovieRecommendOutput>(_mapper.ConfigurationProvider)
+                    .ProjectTo<MovieRecommend_Output>(_mapper.ConfigurationProvider)
                     .AsNoTracking()
                     .ToListAsync();
 
@@ -53,15 +53,15 @@ namespace P9YS.Services.MovieRecommend
         /// 近期推荐列表
         /// </summary>
         /// <returns></returns>
-        public async Task<List<MovieRecommendOutput>> GetRecentRecommends(int limit = 10)
+        public async Task<List<MovieRecommend_Output>> GetRecentRecommends(int limit = 10)
         {
-            if (!_memoryCache.TryGetValue(CacheKeys.RecentRecommends, out List<MovieRecommendOutput> recentRecommends))
+            if (!_memoryCache.TryGetValue(CacheKeys.RecentRecommends, out List<MovieRecommend_Output> recentRecommends))
             {
                 recentRecommends = await _movieResourceContext.MovieRecommends.Include(s => s.Movie)
                     .Where(s => s.Type == RecommendTypeEnum.Recent)
                     .OrderByDescending(s => s.Sort)
                     .Take(limit)
-                    .ProjectTo<MovieRecommendOutput>(_mapper.ConfigurationProvider)
+                    .ProjectTo<MovieRecommend_Output>(_mapper.ConfigurationProvider)
                     .AsNoTracking()
                     .ToListAsync();
 
@@ -71,18 +71,18 @@ namespace P9YS.Services.MovieRecommend
             return recentRecommends;
         }
 
-        public async Task<List<RecommendOutput>> GetRecommends(RecommendTypeEnum recommendType)
+        public async Task<List<Recommend_Output>> GetRecommends(RecommendTypeEnum recommendType)
         {
             var recommends = await _movieResourceContext.MovieRecommends.Include(s => s.Movie)
                 .Where(s => s.Type == recommendType)
                 .OrderByDescending(s => s.Sort).ThenByDescending(s=>s.AddTime)
-                .ProjectTo<RecommendOutput>(_mapper.ConfigurationProvider)
+                .ProjectTo<Recommend_Output>(_mapper.ConfigurationProvider)
                 .AsNoTracking()
                 .ToListAsync();
             return recommends;
         }
 
-        public async Task<bool> AddRecommend(MovieRecommendInput recommendInput)
+        public async Task<bool> AddRecommend(MovieRecommend_Input recommendInput)
         {
             var recommend = Mapper.Map<EntityFramework.Models.MovieRecommend>(recommendInput);
             var entity = await _movieResourceContext.MovieRecommends.AddAsync(recommend);

@@ -8,7 +8,7 @@ namespace P9YS.Web.Models
 {
     public class LoginAndRegisterModalViewModel
     {
-        public LoginInput LoginInput { get; set; }
-        public RegisterInput RegisterInput { get; set; }
+        public Login_Input LoginInput { get; set; }
+        public Register_Input RegisterInput { get; set; }
     }
 }

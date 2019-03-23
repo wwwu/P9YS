@@ -9,10 +9,10 @@ namespace P9YS.Web.Models
 {
     public class MovieResourceViewModel
     {
-        public MovieInfoOutput MovieInfo { get; set; }
+        public MovieInfo_Output MovieInfo { get; set; }
 
-        public List<MovieOnlinePlayOutput> MovieOnlinePlays { get; set; }
+        public List<MovieOnlinePlay_Output> MovieOnlinePlays { get; set; }
 
-        public List<MovieResourceOutput> MovieResources { get; set; }
+        public List<MovieResource_Output> MovieResources { get; set; }
     }
 }

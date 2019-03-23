@@ -23,12 +23,12 @@ namespace P9YS.Services.MovieResource
             _movieResourceContext = movieResourceContext;
         }
 
-        public async Task<List<MovieResourceOutput>> GetMovieResources(int movieId)
+        public async Task<List<MovieResource_Output>> GetMovieResources(int movieId)
         {
             var movieResources = await _movieResourceContext.MovieResources
                 .Where(s => s.MovieId == movieId)
                 .OrderBy(s => s.Size)
-                .ProjectTo<MovieResourceOutput>(_mapper.ConfigurationProvider)
+                .ProjectTo<MovieResource_Output>(_mapper.ConfigurationProvider)
                 .AsNoTracking()
                 .ToListAsync();
             movieResources.ForEach(item =>
@@ -40,11 +40,11 @@ namespace P9YS.Services.MovieResource
             return movieResources;
         }
 
-        public async Task<List<MovieOnlinePlayOutput>> GetMovieOnlinePlays(int movieId)
+        public async Task<List<MovieOnlinePlay_Output>> GetMovieOnlinePlays(int movieId)
         {
             var movieOnlinePlays = await _movieResourceContext.MovieOnlinePlays
                 .Where(s => s.MovieId == movieId)
-                .ProjectTo<MovieOnlinePlayOutput>(_mapper.ConfigurationProvider)
+                .ProjectTo<MovieOnlinePlay_Output>(_mapper.ConfigurationProvider)
                 .AsNoTracking()
                 .ToListAsync();
             return movieOnlinePlays;
@@ -55,7 +55,6 @@ namespace P9YS.Services.MovieResource
             PagingInput<MovieResource_Search_Input> pagingInput)
         {
             var query = _movieResourceContext.MovieResources.AsQueryable();
-
             //条件
             if (pagingInput.Condition != null)
             {
@@ -88,7 +87,7 @@ namespace P9YS.Services.MovieResource
             return result;
         }
 
-        public async Task<Result> AddResource(MovieResourceInput movieResourceInput)
+        public async Task<Result> AddResource(MovieResource_Input movieResourceInput)
         {
             var result = new Result();
             var resource = Mapper.Map<EntityFramework.Models.MovieResource>(movieResourceInput);
@@ -98,14 +97,13 @@ namespace P9YS.Services.MovieResource
             return result;
         }
 
-        public async Task<Result> UpdResource(MovieResourceInput movieResourceInput)
+        public async Task<Result> UpdResource(MovieResource_Input movieResourceInput)
         {
             var result = new Result();
             var entity = await _movieResourceContext.MovieResources.FindAsync(movieResourceInput.Id);
             if (entity == null)
             {
-                result.Code = CustomCodeEnum.Failed;
-                result.Message = CustomCodeEnum.Failed.GetRemark();
+                result.SetCode(CustomCodeEnum.Failed);
                 return result;
             }
             entity.Content = movieResourceInput.Content;

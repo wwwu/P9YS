@@ -10,9 +10,9 @@ namespace P9YS.Web.Models
 {
     public class MovieQuestionViewModel
     {
-        public MovieInfoOutput MovieInfo { get; set; }
-        public QuestionOutput QuestionInfo { get; set; }
-        public List<QuestionTitleOutput> QuestionTitles { get; set; }
-        public PagingOutput<QuestionAnswerOutput> QuestionAnswers { get; set; }
+        public MovieInfo_Output MovieInfo { get; set; }
+        public Question_Output QuestionInfo { get; set; }
+        public List<QuestionTitle_Output> QuestionTitles { get; set; }
+        public PagingOutput<QuestionAnswer_Output> QuestionAnswers { get; set; }
     }
 }

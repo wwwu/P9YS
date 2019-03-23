@@ -1,5 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using P9YS.EntityFramework;
+using P9YS.Services.SuportRecord.Dto;
 using P9YS.Services.User;
 using System;
 using System.Collections.Generic;
@@ -20,7 +21,7 @@ namespace P9YS.Services.SuportRecord
             _userService = userService;
         }
 
-        public async Task<bool> AddSuportRecord(Dto.SuportRecordInput suportRecordInput)
+        public async Task<bool> AddSuportRecord(SuportRecord_Input suportRecordInput)
         {
             var result = false;
             var user = _userService.GetCurrentUser();

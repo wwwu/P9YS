@@ -41,7 +41,7 @@ namespace P9YS.Services.User
         #region 登录、注销
 
         public const string defaultAvatar = "/images/default.jpg";
-        public async Task<Result<CurrentUser>> Login(LoginInput input)
+        public async Task<Result<CurrentUser>> Login(Login_Input input)
         {
             var result = new Result<CurrentUser>();
             input.Password = GetCiphertext(input.Password, _options.CurrentValue.PasswordSalt);
@@ -65,7 +65,7 @@ namespace P9YS.Services.User
             user.LastLoginTime = DateTime.Now;
             await _movieResourceContext.SaveChangesAsync();
 
-            result.Content = Mapper.Map<CurrentUser>(user);
+            result.Content = _mapper.Map<CurrentUser>(user);
             return result;
         }
 
@@ -182,7 +182,7 @@ namespace P9YS.Services.User
             return result;
         }
 
-        public async Task<Result<bool>> Register(RegisterInput input)
+        public async Task<Result<bool>> Register(Register_Input input)
         {
             var result = new Result<bool>();
             //校验验证码
@@ -224,10 +224,10 @@ namespace P9YS.Services.User
 
         #region 闲聊么
 
-        public XianLiaoOutput GetXianLiaoUserInfo()
+        public XianLiao_Output GetXianLiaoUserInfo()
         {
             var user = GetCurrentUser();
-            XianLiaoOutput xianLiaoOutput = new XianLiaoOutput();
+            XianLiao_Output xianLiaoOutput = new XianLiao_Output();
             if (user == null)
             {//游客
                 var xlCookieName = "xl";
@@ -267,11 +267,11 @@ namespace P9YS.Services.User
 
         #endregion
 
-        public async Task<PagingOutput<UserManageOutput>> GetUsers(PagingInput<UserManage_Search_Input> pagingInput)
+        public async Task<PagingOutput<UserManage_Output>> GetUsers(PagingInput<UserManage_Search_Input> pagingInput)
         {
             var query = _movieResourceContext.Users.AsQueryable();
             
-            //TODO:有必要封装一下分页查询(条件拼接、分页、排序)
+            //TODO:封装分页查询(条件拼接、分页、排序)
 
             //条件
             if (pagingInput.Condition != null)
@@ -300,12 +300,12 @@ namespace P9YS.Services.User
             //分页
             var users = await query.Skip((pagingInput.PageIndex - 1) * pagingInput.PageSize)
                 .Take(pagingInput.PageSize)
-                .ProjectTo<UserManageOutput>(_mapper.ConfigurationProvider)
+                .ProjectTo<UserManage_Output>(_mapper.ConfigurationProvider)
                 .AsNoTracking()
                 .ToListAsync();
             var totalCount = await query.CountAsync();
 
-            var result = new PagingOutput<UserManageOutput>
+            var result = new PagingOutput<UserManage_Output>
             {
                 PageIndex = pagingInput.PageIndex,
                 PageSize = pagingInput.PageSize,

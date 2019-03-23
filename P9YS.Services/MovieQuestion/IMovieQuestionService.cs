@@ -5,10 +5,10 @@ namespace P9YS.Services.MovieQuestion
 {
     public interface IMovieQuestionService
     {
-        Task<bool> AddQuestion(QuestionInput questionInput);
-        Task<PagingOutput<QuestionTitleOutput>> GetQuestionTitles(PagingInput<int> pagingInput);
-        Task<QuestionOutput> GetQuestion(int questionId);
-        Task<PagingOutput<QuestionAnswerOutput>> GetQuestionAnswers(PagingInput<int> pagingInput);
-        Task<bool> AddQuestionAnswer(QuestionAnswerInput questionAnswerInput);
+        Task<bool> AddQuestion(Question_Input questionInput);
+        Task<PagingOutput<QuestionTitle_Output>> GetQuestionTitles(PagingInput<int> pagingInput);
+        Task<Question_Output> GetQuestion(int questionId);
+        Task<PagingOutput<QuestionAnswer_Output>> GetQuestionAnswers(PagingInput<int> pagingInput);
+        Task<bool> AddQuestionAnswer(QuestionAnswer_Input questionAnswerInput);
     }
 }

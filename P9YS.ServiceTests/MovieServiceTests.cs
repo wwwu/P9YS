@@ -84,9 +84,9 @@ namespace P9YS.ServiceTests
             dbContext.SaveChanges();
             var movieService = new MovieService(mapper, dbContext, baseService.Object);
             //Act
-            var input = new PagingInput<ConditionInput>
+            var input = new PagingInput<GetMovies_Condition_Input>
             {
-                Condition = new ConditionInput
+                Condition = new GetMovies_Condition_Input
                 {
                     Keyword = "复仇者",
                     MovieAreaId = areaId,
@@ -151,9 +151,9 @@ namespace P9YS.ServiceTests
             dbContext.SaveChanges();
             var movieService = new MovieService(mapper, dbContext, baseService.Object);
             //Act
-            var input = new PagingInput<ConditionInput>
+            var input = new PagingInput<GetMovies_Condition_Input>
             {
-                Condition = new ConditionInput
+                Condition = new GetMovies_Condition_Input
                 {
                     Keyword = "复仇者",
                 },
@@ -240,7 +240,7 @@ namespace P9YS.ServiceTests
             //Arrange
             var movieService = new MovieService(mapper, dbContext, baseService.Object);
             //Act
-            var input = new MovieDoubanOriginOutput
+            var input = new MovieOrigin_Douban_Output
             {
                 MovieId = 1,
                 FullName = "海王",                

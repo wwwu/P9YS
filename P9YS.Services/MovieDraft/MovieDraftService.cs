@@ -2,6 +2,7 @@
 using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Logging;
+using P9YS.Common;
 using P9YS.Common.Enums;
 using P9YS.EntityFramework;
 using P9YS.Services.Base;
@@ -35,36 +36,30 @@ namespace P9YS.Services.MovieDraft
             _baseService = baseService;
         }
 
-        public async Task<PagingOutput<MovieDraftOutput>> GetMovieDrafts(PagingInput<ConditionInput> pagingInput)
+        public async Task<PagingOutput<MovieDraft_Output>> GetMovieDrafts(PagingInput<GetMovieDrafts_Condition_Input> pagingInput)
         {
-            var condition = pagingInput.Condition ?? new ConditionInput();
             //条件
+            var condition = pagingInput.Condition ?? new GetMovieDrafts_Condition_Input();
             var query = _movieResourceContext.MovieDrafts.AsQueryable();
             if (!string.IsNullOrWhiteSpace(condition.Keyword))
-            {
                 query = query.Where(s => s.MovieName.Contains(condition.Keyword));
-            }
             if (condition.Status.HasValue)
-            {
                 query = query.Where(s => s.Status == condition.Status);
-            }
             if (condition.BeginDate.HasValue && condition.EndDate.HasValue)
-            {
                 query = query.Where(s => s.AddTime >= condition.BeginDate.Value
                     && s.AddTime < condition.EndDate.Value.AddDays(1));
-            }
             //排序
             query = query.OrderByDescending(s => s.Id).AsQueryable();
             //分页
             var movieDrafts = await query
                 .Skip((pagingInput.PageIndex - 1) * pagingInput.PageSize)
                 .Take(pagingInput.PageSize)
-                .ProjectTo<MovieDraftOutput>(_mapper.ConfigurationProvider)
+                .ProjectTo<MovieDraft_Output>(_mapper.ConfigurationProvider)
                 .AsNoTracking()
                 .ToListAsync();
             var totalCount = await query.CountAsync();
 
-            var result = new PagingOutput<MovieDraftOutput>
+            var result = new PagingOutput<MovieDraft_Output>
             {
                 PageIndex = pagingInput.PageIndex,
                 PageSize = pagingInput.PageSize,
@@ -75,9 +70,9 @@ namespace P9YS.Services.MovieDraft
             return result;
         }
 
-        public async Task<MovieDraftDetailInput> GetMovieDraftDetail(int movieDraftId)
+        public async Task<MovieDraft_Detail_Input> GetMovieDraftDetail(int movieDraftId)
         {
-            var movieDraftDetailInput = new MovieDraftDetailInput();
+            var movieDraftDetailInput = new MovieDraft_Detail_Input();
             var movieDraft = await _movieResourceContext.MovieDrafts.FindAsync(movieDraftId);
             movieDraftDetailInput.MovieDraftId = movieDraft.Id;
             movieDraftDetailInput.ShortName = movieDraft.MovieName;
@@ -127,13 +122,13 @@ namespace P9YS.Services.MovieDraft
             #endregion
 
             #region 解析html获取在线播放源
-            movieDraftDetailInput.MovieOnlinePlays = new List<MovieOnlinePlayOutput>();
+            movieDraftDetailInput.MovieOnlinePlays = new List<MovieOnlinePlay_Output>();
             foreach (Match m in Regex.Matches(movieDraft.DoubanHtml
                 , @"class=""playBtn"".+?data-cn=""(.+?)"".+?href=""(.+?)""[\w\W]+?class=""buylink-price""><span>([\w\W]*?)</span></span>"))
             {
                 var price = m.Groups[3]?.Value ?? "";
                 price = Regex.Replace(price, @"(?-ms:^\s*([\w\W]*?)\s*$)", "${1}");//去掉首尾空行空格 \s*[\n\r]+\s*
-                movieDraftDetailInput.MovieOnlinePlays.Add(new MovieOnlinePlayOutput
+                movieDraftDetailInput.MovieOnlinePlays.Add(new MovieOnlinePlay_Output
                 {                    
                     WebSiteName = m.Groups[1]?.Value ?? "",
                     Url = m.Groups[2]?.Value ?? "",
@@ -149,7 +144,7 @@ namespace P9YS.Services.MovieDraft
                 var strArr = Encoding.UTF8.GetBytes($"AA{movieDraft.Resoures}ZZ");
                 link = "thunder://" + Convert.ToBase64String(strArr);
             }
-            movieDraftDetailInput.MovieResource = new MovieResourceInput
+            movieDraftDetailInput.MovieResource = new MovieResource_Input
             {
                 Dub = Regex.Match(movieDraft.DoubanHtml, @"语言:</span>\s*?(\w+).*?<br/>").Groups[1]?.Value,
                 Resolution = "DB-720P",
@@ -162,7 +157,7 @@ namespace P9YS.Services.MovieDraft
             return movieDraftDetailInput;
         }
 
-        public async Task<Result> AddMovie(MovieDraftDetailInput movieDraftDetailInput)
+        public async Task<Result> AddMovie(MovieDraft_Detail_Input movieDraftDetailInput)
         {
             var result = new Result();
             //更改状态 乐观锁防止并发
@@ -170,8 +165,7 @@ namespace P9YS.Services.MovieDraft
                 s.Id == movieDraftDetailInput.MovieDraftId && s.Status == MovieDraftStatusEnum.Unverified);
             if (movieDraft == null)
             {
-                result.Code = Common.CustomCodeEnum.Failed;
-                result.Message = "操作失败：状态已变更！";
+                result.SetCode(CustomCodeEnum.StatusChanged);
                 return result;
             }
 
@@ -186,7 +180,7 @@ namespace P9YS.Services.MovieDraft
             }
             var movie = _mapper.Map<EntityFramework.Models.Movie>(movieDraftDetailInput);
             movie.MovieResources = _mapper.Map<IEnumerable<EntityFramework.Models.MovieResource>>(
-                new List<MovieResourceInput> { movieDraftDetailInput.MovieResource });
+                new List<MovieResource_Input> { movieDraftDetailInput.MovieResource });
             movie.MovieOrigins = new List<EntityFramework.Models.MovieOrigin>
             {
                 new EntityFramework.Models.MovieOrigin
@@ -205,9 +199,8 @@ namespace P9YS.Services.MovieDraft
                 result.Content = rows > 0;
             }
             catch (DbUpdateConcurrencyException)
-            {
-                result.Code = Common.CustomCodeEnum.Failed;
-                result.Message = "操作失败：状态已变更！";
+            {//触发乐观锁
+                result.SetCode(CustomCodeEnum.StatusChanged);
                 return result;
             }
 
@@ -215,7 +208,7 @@ namespace P9YS.Services.MovieDraft
             if (!string.IsNullOrWhiteSpace(imgUrl))
             {
                 var uploadResult = _baseService.UploadFile(imgUrl, sourcePath);
-                if (uploadResult.Code != Common.CustomCodeEnum.Success)
+                if (uploadResult.Code != CustomCodeEnum.Success)
                 {
                     uploadResult.Message = "添加成功，但图片上传失败。";
                     return uploadResult;

@@ -26,7 +26,7 @@ namespace P9YS.Services.RatingRecord
             _userService = userService;
         }
 
-        public async Task<bool> AddRatingRecord(RatingRecordInput ratingRecordInput)
+        public async Task<bool> AddRatingRecord(RatingRecord_Input ratingRecordInput)
         {
             var result = false;
             var user = _userService.GetCurrentUser();
@@ -50,10 +50,9 @@ namespace P9YS.Services.RatingRecord
             return result;
         }
 
-        public async Task<PagingOutput<RatingRecordOutput>> GetRatings(PagingInput<GetRatingsInput> pagingInput)
+        public async Task<PagingOutput<RatingRecord_Output>> GetRatings(PagingInput<GetRatings_Input> pagingInput)
         {
             var query = _movieResourceContext.RatingRecords.AsQueryable();
-
             //条件
             if (pagingInput.Condition != null)
             {
@@ -71,12 +70,12 @@ namespace P9YS.Services.RatingRecord
             //分页
             var ratingRecords = await query.Skip((pagingInput.PageIndex - 1) * pagingInput.PageSize)
                 .Take(pagingInput.PageSize)
-                .ProjectTo<RatingRecordOutput>(_mapper.ConfigurationProvider)
+                .ProjectTo<RatingRecord_Output>(_mapper.ConfigurationProvider)
                 .AsNoTracking()
                 .ToListAsync();
             var totalCount = await query.CountAsync();
 
-            var result = new PagingOutput<RatingRecordOutput>
+            var result = new PagingOutput<RatingRecord_Output>
             {
                 PageIndex = pagingInput.PageIndex,
                 PageSize = pagingInput.PageSize,

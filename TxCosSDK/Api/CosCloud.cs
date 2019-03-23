@@ -661,7 +661,7 @@ namespace QCloud.CosApi.Api
                 for (long offset = 0; offset < fileSize; offset += sliceSize)
                 {
                     long localOffset = offset;
-                    tasks.Add(Task.Factory.StartNew<string>(() => {
+                    tasks.Add(Task.Factory.StartNew(() => {
                         //Console.WriteLine(Thread.CurrentThread.ManagedThreadId.ToString());
                         return SliceUploadData(bucketName, remotePath, localPath, fileSha, session, localOffset, sliceSize, sign);
                     }

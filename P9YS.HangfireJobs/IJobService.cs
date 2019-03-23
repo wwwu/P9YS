@@ -25,7 +25,7 @@ namespace P9YS.HangfireJobs
         /// 每次生成x个延迟任务
         /// </summary>
         /// <returns></returns>
-        Task<List<MovieDoubanOriginOutput>> UpdDoubanDataJob();
+        Task<List<MovieOrigin_Douban_Output>> UpdDoubanDataJob();
 
         /// <summary>
         /// 清理数据，并整理碎片

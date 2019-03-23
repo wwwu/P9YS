@@ -27,13 +27,13 @@ namespace P9YS.Services.MovieArea
             _memoryCache = memoryCache;
         }
 
-        public async Task<List<MovieAreaOutput>> GetMovieAreas()
+        public async Task<List<MovieArea_Output>> GetMovieAreas()
         {
-            if (!_memoryCache.TryGetValue(CacheKeys.MovieAreas, out List<Dto.MovieAreaOutput> movieAreas))
+            if (!_memoryCache.TryGetValue(CacheKeys.MovieAreas, out List<MovieArea_Output> movieAreas))
             {
                 movieAreas = await _movieResourceContext.MovieAreas
                     .Where(s => s.Other == 0)
-                    .ProjectTo<MovieAreaOutput>(_mapper.ConfigurationProvider)
+                    .ProjectTo<MovieArea_Output>(_mapper.ConfigurationProvider)
                     .AsNoTracking()
                     .ToListAsync();
 
@@ -65,15 +65,14 @@ namespace P9YS.Services.MovieArea
             return result;
         }
 
-        public async Task<Result> AddMovieArea(MovieAreaInput movieAreaInput)
+        public async Task<Result> AddMovieArea(MovieArea_Input movieAreaInput)
         {
             var result = new Result();
             var isRepeated = await _movieResourceContext.MovieAreas
                 .AnyAsync(s => s.Area == movieAreaInput.Area.Trim());
             if (isRepeated)
             {
-                result.Code = CustomCodeEnum.Repeated;
-                result.Message = CustomCodeEnum.Repeated.GetRemark();
+                result.SetCode(CustomCodeEnum.Repeated);
                 return result;
             }
 
@@ -84,15 +83,14 @@ namespace P9YS.Services.MovieArea
             return result;
         }
 
-        public async Task<Result> UpdMovieArea(MovieAreaInput movieAreaInput)
+        public async Task<Result> UpdMovieArea(MovieArea_Input movieAreaInput)
         {
             var result = new Result();
             var isRepeated = await _movieResourceContext.MovieAreas
                 .AnyAsync(s => s.Area == movieAreaInput.Area.Trim() && s.Id != movieAreaInput.Id);
             if (isRepeated)
             {
-                result.Code = CustomCodeEnum.Repeated;
-                result.Message = CustomCodeEnum.Repeated.GetRemark();
+                result.SetCode(CustomCodeEnum.Repeated);
                 return result;
             }
 

@@ -46,6 +46,6 @@ namespace P9YS.Services.Movie.Dto
 
         public IEnumerable<int> MovieTypes { get; set; }
 
-        public IEnumerable<MovieSeriesOutput> MovieSeries { get; set; }
+        public IEnumerable<MovieSeries_Output> MovieSeries { get; set; }
     }
 }

@@ -36,9 +36,9 @@ namespace P9YS.Services.Carousel
         }
 
         private static readonly AsyncLock _carouselsLock = new AsyncLock();
-        public async Task<List<CarouselOutput>> GetCarousels()
+        public async Task<List<Carousel_Output>> GetCarousels()
         {
-            if (!_memoryCache.TryGetValue(CacheKeys.Carousels, out List<CarouselOutput> carousels))
+            if (!_memoryCache.TryGetValue(CacheKeys.Carousels, out List<Carousel_Output> carousels))
             {
                 using (await _carouselsLock.LockAsync())//测试一下AsyncLock
                 {
@@ -48,7 +48,7 @@ namespace P9YS.Services.Carousel
                             .Where(s => s.State == CarouselStateEnum.Show)
                             .OrderByDescending(s => s.Id)
                             .AsNoTracking()
-                            .ProjectTo<CarouselOutput>(_mapper.ConfigurationProvider)
+                            .ProjectTo<Carousel_Output>(_mapper.ConfigurationProvider)
                             .ToListAsync();
                         //图片地址
                         carousels.ForEach(s => s.ImgUrl = _baseService.GetCosAbsoluteUrl(s.ImgUrl));
@@ -81,7 +81,7 @@ namespace P9YS.Services.Carousel
             return result;
         }
 
-        public async Task<Result> AddCarousel(Carouselnput carouselnput)
+        public async Task<Result> AddCarousel(Carousel_Input carouselnput)
         {
             var result = new Result();
             //上传图片
@@ -98,7 +98,7 @@ namespace P9YS.Services.Carousel
                     return uploadResult;
             }
             //添加
-            var entity = _mapper.Map<Carouselnput, EntityFramework.Models.Carousel>(carouselnput);
+            var entity = _mapper.Map<Carousel_Input, EntityFramework.Models.Carousel>(carouselnput);
             entity.ImgUrl = imgUrl;
             var carousel = await _movieResourceContext.Carousels.AddAsync(entity);
             await _movieResourceContext.SaveChangesAsync();
@@ -108,14 +108,14 @@ namespace P9YS.Services.Carousel
             return result;
         }
 
-        public async Task<Result> UpdCarousel(Carouselnput carouselnput)
+        public async Task<Result> UpdCarousel(Carousel_Input carouselnput)
         {
             var result = new Result();
             var carousel = await _movieResourceContext.Carousels.FindAsync(carouselnput.Id);
             if (carousel == null)
             {
-                result.Code = CustomCodeEnum.Failed;
-                result.Message = CustomCodeEnum.Failed.GetRemark();
+                result.SetCode(CustomCodeEnum.Failed);
+                return result;
             }
 
             //上传新图片

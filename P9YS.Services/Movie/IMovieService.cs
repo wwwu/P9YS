@@ -6,15 +6,15 @@ namespace P9YS.Services.Movie
 {
     public interface IMovieService
     {
-        Task<PagingOutput<MovieListOutput>> GetMoviesByCondition(PagingInput<ConditionInput> pagingInput);
+        Task<PagingOutput<MovieList_Output>> GetMoviesByCondition(PagingInput<GetMovies_Condition_Input> pagingInput);
 
-        Task<MovieInfoOutput> GetMovieInfo(int movieId);
+        Task<MovieInfo_Output> GetMovieInfo(int movieId);
 
-        Task<List<MovieSeriesOutput>> GetMovieSeries(int seriesId);
+        Task<List<MovieSeries_Output>> GetMovieSeries(int seriesId);
 
-        Task<MovieOriginOutput> GetMovieOrigin(int movieId);
+        Task<MovieOrigin_Output> GetMovieOrigin(int movieId);
 
-        Task<PagingOutput<Movie_Manage_Output>> GetMovies(PagingInput<ConditionInput> pagingInput);
+        Task<PagingOutput<Movie_Manage_Output>> GetMovies(PagingInput<GetMovies_Condition_Input> pagingInput);
 
         Task<Movie_Manage_Output> GetMovie(int movieId);
 
@@ -22,8 +22,8 @@ namespace P9YS.Services.Movie
 
         Task<Result> DelMovie(int movieId);
 
-        Task<List<MovieDoubanOriginOutput>> GetMoviesByOriginUpdTime(int count);
+        Task<List<MovieOrigin_Douban_Output>> GetMoviesByOriginUpdTime(int count);
 
-        Task UpdDoubanData(MovieDoubanOriginOutput movieDoubanOrigin);
+        Task UpdDoubanData(MovieOrigin_Douban_Output movieDoubanOrigin);
     }
 }

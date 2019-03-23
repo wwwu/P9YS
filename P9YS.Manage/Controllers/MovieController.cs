@@ -51,7 +51,7 @@ namespace P9YS.Manage.Controllers
             return View();
         }
 
-        public async Task<JsonResult> GetVerifyList(PagingInput<Services.MovieDraft.Dto.ConditionInput> pagingInput)
+        public async Task<JsonResult> GetVerifyList(PagingInput<GetMovieDrafts_Condition_Input> pagingInput)
         {
             var result = new Result
             {
@@ -68,7 +68,7 @@ namespace P9YS.Manage.Controllers
             };
             return Json(result);
         }
-        public async Task<JsonResult> AddMovie(MovieDraftDetailInput movieDraftDetailInput)
+        public async Task<JsonResult> AddMovie(MovieDraft_Detail_Input movieDraftDetailInput)
         {
             var user = _userService.GetCurrentUser();
             movieDraftDetailInput.MovieResource.UserId = user.UserId;
@@ -90,7 +90,7 @@ namespace P9YS.Manage.Controllers
             return View(id);
         }
 
-        public async Task<JsonResult> GetMovies(PagingInput<Services.Movie.Dto.ConditionInput> pagingInput)
+        public async Task<JsonResult> GetMovies(PagingInput<GetMovies_Condition_Input> pagingInput)
         {
             var result = new Result
             {
@@ -129,7 +129,7 @@ namespace P9YS.Manage.Controllers
             return View();
         }
 
-        public async Task<JsonResult> GetRatings(PagingInput<GetRatingsInput> pagingInput)
+        public async Task<JsonResult> GetRatings(PagingInput<GetRatings_Input> pagingInput)
         {
             var result = new Result
             {
@@ -147,7 +147,7 @@ namespace P9YS.Manage.Controllers
             return View();
         }
 
-        public async Task<JsonResult> GetComments(PagingInput<GetRatingsInput> pagingInput)
+        public async Task<JsonResult> GetComments(PagingInput<GetRatings_Input> pagingInput)
         {
             var result = new Result
             {
@@ -180,14 +180,14 @@ namespace P9YS.Manage.Controllers
             return Json(result);
         }
 
-        public async Task<JsonResult> AddResource(MovieResourceInput movieResourceInput)
+        public async Task<JsonResult> AddResource(MovieResource_Input movieResourceInput)
         {
             movieResourceInput.UserId = _userService.GetCurrentUser()?.UserId ?? 0;
             var result = await _movieResourceService.AddResource(movieResourceInput);
             return Json(result);
         }
 
-        public async Task<JsonResult> UpdResource(MovieResourceInput movieResourceInput)
+        public async Task<JsonResult> UpdResource(MovieResource_Input movieResourceInput)
         {
             var result = await _movieResourceService.UpdResource(movieResourceInput);
             return Json(result);

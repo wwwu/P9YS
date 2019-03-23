@@ -35,12 +35,11 @@ namespace P9YS.Services.Movie
             _baseService = baseService;
         }
 
-        public async Task<PagingOutput<MovieListOutput>> GetMoviesByCondition(
-            PagingInput<ConditionInput> pagingInput)
+        public async Task<PagingOutput<MovieList_Output>> GetMoviesByCondition(
+            PagingInput<GetMovies_Condition_Input> pagingInput)
         {
-            var condition = pagingInput.Condition ?? new ConditionInput();
-
             #region 条件
+            var condition = pagingInput.Condition ?? new GetMovies_Condition_Input();
             var query = _movieResourceContext.Movies.AsQueryable();
             if (condition.MovieTypeId.HasValue)
                 query = query.Where(s => s.MovieTypes.Any(t => t.MovieGenreId == condition.MovieTypeId));
@@ -52,16 +51,11 @@ namespace P9YS.Services.Movie
                 query = query.Where(s => s.FullName.Contains(condition.Keyword) || s.OtherName.Contains(condition.Keyword));
             if (condition.MovieAreaId.HasValue)
             {
-                if (condition.MovieAreaId.Value == 0)
-                {//其它地区
+                if (condition.MovieAreaId.Value == 0)//其它地区
                     query = query.Where(s => s.MovieArea.Other == condition.MovieAreaId);
-                }
                 else
-                {
                     query = query.Where(s => s.MovieAreaId == condition.MovieAreaId);
-                }
             }
-
             //排序
             switch (condition.Sort)
             {
@@ -83,14 +77,14 @@ namespace P9YS.Services.Movie
             var movieList = await query
                 .Skip((pagingInput.PageIndex - 1) * pagingInput.PageSize)
                 .Take(pagingInput.PageSize)
-                .ProjectTo<MovieListOutput>(_mapper.ConfigurationProvider)
+                .ProjectTo<MovieList_Output>(_mapper.ConfigurationProvider)
                 .AsNoTracking()
                 .ToListAsync();
             //图片路径
             movieList.ForEach(s => s.ImgUrl = _baseService.GetCosAbsoluteUrl(s.ImgUrl));
             var totalCount = await query.CountAsync();
 
-            var result = new PagingOutput<MovieListOutput>
+            var result = new PagingOutput<MovieList_Output>
             {                
                 PageIndex = pagingInput.PageIndex,
                 PageSize = pagingInput.PageSize,
@@ -100,10 +94,10 @@ namespace P9YS.Services.Movie
             return result;
         }
 
-        public async Task<MovieInfoOutput> GetMovieInfo(int movieId)
+        public async Task<MovieInfo_Output> GetMovieInfo(int movieId)
         {
             var movie = await _movieResourceContext.Movies
-                .ProjectTo<MovieInfoOutput>(_mapper.ConfigurationProvider)
+                .ProjectTo<MovieInfo_Output>(_mapper.ConfigurationProvider)
                 .AsNoTracking()
                 .FirstOrDefaultAsync(s => s.Id == movieId);
             //图片路径
@@ -111,47 +105,42 @@ namespace P9YS.Services.Movie
             return movie;
         }
 
-        public async Task<List<MovieSeriesOutput>> GetMovieSeries(int seriesId)
+        public async Task<List<MovieSeries_Output>> GetMovieSeries(int seriesId)
         {
             if (seriesId == 0)
-                return new List<MovieSeriesOutput>();
+                return new List<MovieSeries_Output>();
 
             var series = await _movieResourceContext.Movies
                 .Where(s => s.SeriesId == seriesId && s.Id != seriesId)
                 .OrderBy(m => m.ReleaseDate)
-                .ProjectTo<MovieSeriesOutput>(_mapper.ConfigurationProvider)
+                .ProjectTo<MovieSeries_Output>(_mapper.ConfigurationProvider)
                 .AsNoTracking()
                 .ToListAsync();
 
             return series;
         }
 
-        public async Task<MovieOriginOutput> GetMovieOrigin(int movieId)
+        public async Task<MovieOrigin_Output> GetMovieOrigin(int movieId)
         {
             var movieOrigin = await _movieResourceContext.MovieOrigins
                 .Where(s => s.MovieId == movieId && s.OriginType == MovieOriginTypeEnum.DouBan)
-                .ProjectTo<MovieOriginOutput>(_mapper.ConfigurationProvider)
+                .ProjectTo<MovieOrigin_Output>(_mapper.ConfigurationProvider)
                 .AsNoTracking()
                 .FirstOrDefaultAsync();
 
             return movieOrigin;
         }
 
-        public async Task<PagingOutput<Movie_Manage_Output>> GetMovies(PagingInput<ConditionInput> pagingInput)
+        public async Task<PagingOutput<Movie_Manage_Output>> GetMovies(PagingInput<GetMovies_Condition_Input> pagingInput)
         {
-            var condition = pagingInput.Condition ?? new ConditionInput();
-
+            var condition = pagingInput.Condition ?? new GetMovies_Condition_Input();
             //条件
             var query = _movieResourceContext.Movies.AsQueryable();
             if (!string.IsNullOrWhiteSpace(condition.Keyword))
-            {
                 query = query.Where(s => s.FullName.Contains(condition.Keyword));
-            }
             if (condition.BeginDate.HasValue && condition.EndDate.HasValue)
-            {
                 query = query.Where(s => s.ReleaseDate>= condition.BeginDate.Value 
                     && s.ReleaseDate<condition.EndDate.Value.AddDays(1));
-            }
             //排序
             query = query.OrderByDescending(s => s.UpdTime).AsQueryable();
             //分页
@@ -248,11 +237,11 @@ namespace P9YS.Services.Movie
 
         #region 更新Douban数据
 
-        public async Task<List<MovieDoubanOriginOutput>> GetMoviesByOriginUpdTime(int count)
+        public async Task<List<MovieOrigin_Douban_Output>> GetMoviesByOriginUpdTime(int count)
         {
             var entities = await _movieResourceContext.Movies.Include(s => s.MovieOrigins)
                 .GroupJoin(_movieResourceContext.MovieOrigins, m => m.Id, mo => mo.MovieId
-                    , (m, mo) => new MovieDoubanOriginOutput
+                    , (m, mo) => new MovieOrigin_Douban_Output
                     {
                         MovieId = m.Id,
                         FullName = m.FullName,
@@ -265,7 +254,7 @@ namespace P9YS.Services.Movie
             return entities;
         }
 
-        public async Task UpdDoubanData(MovieDoubanOriginOutput movieDoubanOrigin)
+        public async Task UpdDoubanData(MovieOrigin_Douban_Output movieDoubanOrigin)
         {
             HttpClient client = new HttpClient();
             client.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64)");

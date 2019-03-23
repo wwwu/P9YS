@@ -9,6 +9,7 @@ using P9YS.Services;
 using P9YS.Services.Movie;
 using P9YS.Services.Movie.Dto;
 using P9YS.Services.MovieComment;
+using P9YS.Services.MovieComment.Dto;
 using P9YS.Services.MovieQuestion;
 using P9YS.Services.MovieQuestion.Dto;
 using P9YS.Services.MovieResource;
@@ -66,7 +67,7 @@ namespace P9YS.Web.Controllers
 
         [HttpPost]
         [Authorize]
-        public async Task<JsonResult> MovieRating([FromBody]RatingRecordInput ratingRecordInput)
+        public async Task<JsonResult> MovieRating([FromBody]RatingRecord_Input ratingRecordInput)
         {
             var result = new Result<bool>
             {
@@ -76,7 +77,7 @@ namespace P9YS.Web.Controllers
         }
         
         [HttpPost]
-        public async Task<JsonResult> GetPageList([FromBody]PagingInput<ConditionInput> pagingInput)
+        public async Task<JsonResult> GetPageList([FromBody]PagingInput<GetMovies_Condition_Input> pagingInput)
         {
             var result = new Result
             {
@@ -98,7 +99,7 @@ namespace P9YS.Web.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
-        public async Task<JsonResult> AddMovieComment([FromBody]Services.MovieComment.Dto.MovieCommentInput movieCommentInput)
+        public async Task<JsonResult> AddMovieComment([FromBody]MovieComment_Input movieCommentInput)
         {
             var result = new Result
             {
@@ -124,7 +125,7 @@ namespace P9YS.Web.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
-        public async Task<JsonResult> AddQuestion([FromBody]QuestionInput questionInput)
+        public async Task<JsonResult> AddQuestion([FromBody]Question_Input questionInput)
         {
             var result = new Result
             {
@@ -164,7 +165,7 @@ namespace P9YS.Web.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         [Authorize]
-        public async Task<JsonResult> AddQuestionAnswer([FromBody]QuestionAnswerInput questionAnswerInput)
+        public async Task<JsonResult> AddQuestionAnswer([FromBody]QuestionAnswer_Input questionAnswerInput)
         {
             var result = new Result
             {
@@ -175,7 +176,7 @@ namespace P9YS.Web.Controllers
 
         [HttpPost]
         [Authorize]
-        public async Task<JsonResult> SupportAnswer([FromBody]SuportRecordInput suportRecordInput)
+        public async Task<JsonResult> SupportAnswer([FromBody]SuportRecord_Input suportRecordInput)
         {
             var result = new Result<bool>
             {

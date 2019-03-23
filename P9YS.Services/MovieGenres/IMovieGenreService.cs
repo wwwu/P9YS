@@ -7,9 +7,9 @@ namespace P9YS.Services.MovieGenres
 {
     public interface IMovieGenreService
     {
-        Task<Result> AddMovieGenre(MoiveGenreInput moiveGenreInput);
-        Task<List<MovieGenreOutput>> GetMovieGenres();
+        Task<Result> AddMovieGenre(MoiveGenre_Input moiveGenreInput);
+        Task<List<MovieGenre_Output>> GetMovieGenres();
         Task<PagingOutput<MovieGenre>> GetMovieGenres(PagingInput<string> pagingInput);
-        Task<Result> UpdMovieGenre(MoiveGenreInput moiveGenreInput);
+        Task<Result> UpdMovieGenre(MoiveGenre_Input moiveGenreInput);
     }
 }

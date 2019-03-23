@@ -3,6 +3,7 @@ using AutoMapper.QueryableExtensions;
 using Microsoft.EntityFrameworkCore;
 using P9YS.Common;
 using P9YS.EntityFramework;
+using P9YS.Services.MovieQuestion.Dto;
 using P9YS.Services.SuportRecord;
 using P9YS.Services.User;
 using System;
@@ -27,19 +28,19 @@ namespace P9YS.Services.MovieQuestion
             _userService = userService;
         }
 
-        public async Task<PagingOutput<Dto.QuestionTitleOutput>> GetQuestionTitles(PagingInput<int> pagingInput)
+        public async Task<PagingOutput<QuestionTitle_Output>> GetQuestionTitles(PagingInput<int> pagingInput)
         {
             var query = _movieResourceContext.MovieQuestions
                 .Where(s => s.MovieId == pagingInput.Condition);
             var questions = await query.OrderByDescending(s => s.AddTime)
                 .Skip((pagingInput.PageIndex - 1) * pagingInput.PageSize)
                 .Take(pagingInput.PageSize)
-                .ProjectTo<Dto.QuestionTitleOutput>(_mapper.ConfigurationProvider)
+                .ProjectTo<QuestionTitle_Output>(_mapper.ConfigurationProvider)
                 .AsNoTracking()
                 .ToListAsync();
             var totalCount = await query.CountAsync();
 
-            var result = new PagingOutput<Dto.QuestionTitleOutput>
+            var result = new PagingOutput<QuestionTitle_Output>
             {
                 PageIndex = pagingInput.PageIndex,
                 PageSize = pagingInput.PageSize,
@@ -50,7 +51,7 @@ namespace P9YS.Services.MovieQuestion
             return result;
         }
 
-        public async Task<bool> AddQuestion(Dto.QuestionInput questionInput)
+        public async Task<bool> AddQuestion(Question_Input questionInput)
         {
             var user = _userService.GetCurrentUser();
             //Add
@@ -61,28 +62,28 @@ namespace P9YS.Services.MovieQuestion
             return rows > 0;
         }
 
-        public async Task<Dto.QuestionOutput> GetQuestion(int questionId)
+        public async Task<Question_Output> GetQuestion(int questionId)
         {
             var question = await _movieResourceContext.MovieQuestions
                 .Where(s=>s.Id==questionId)
-                .ProjectTo<Dto.QuestionOutput>(_mapper.ConfigurationProvider)
+                .ProjectTo<Question_Output>(_mapper.ConfigurationProvider)
                 .AsNoTracking()
                 .FirstOrDefaultAsync();
             return question;
         }
 
-        public async Task<PagingOutput<Dto.QuestionAnswerOutput>> GetQuestionAnswers(PagingInput<int> pagingInput)
+        public async Task<PagingOutput<QuestionAnswer_Output>> GetQuestionAnswers(PagingInput<int> pagingInput)
         {
             var query = _movieResourceContext.MovieQuestionAnswers
                 .Where(s => s.MovieQuestionId == pagingInput.Condition);
             var answers = await query.Skip((pagingInput.PageIndex - 1) * pagingInput.PageSize)
                 .Take(pagingInput.PageSize)
-                .ProjectTo<Dto.QuestionAnswerOutput>(_mapper.ConfigurationProvider)
+                .ProjectTo<QuestionAnswer_Output>(_mapper.ConfigurationProvider)
                 .AsNoTracking()
                 .ToListAsync();
             var totalCount = await query.CountAsync();
 
-            var result = new PagingOutput<Dto.QuestionAnswerOutput>
+            var result = new PagingOutput<QuestionAnswer_Output>
             {
                 PageIndex = pagingInput.PageIndex,
                 PageSize = pagingInput.PageSize,
@@ -93,7 +94,7 @@ namespace P9YS.Services.MovieQuestion
             return result;
         }
 
-        public async Task<bool> AddQuestionAnswer(Dto.QuestionAnswerInput questionAnswerInput)
+        public async Task<bool> AddQuestionAnswer(QuestionAnswer_Input questionAnswerInput)
         {
             var user = _userService.GetCurrentUser();
             //Add

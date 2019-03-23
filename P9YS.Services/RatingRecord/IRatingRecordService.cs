@@ -6,8 +6,8 @@ namespace P9YS.Services.RatingRecord
 {
     public interface IRatingRecordService
     {
-        Task<bool> AddRatingRecord(RatingRecordInput ratingRecordInput);
-        Task<PagingOutput<RatingRecordOutput>> GetRatings(PagingInput<GetRatingsInput> pagingInput);
+        Task<bool> AddRatingRecord(RatingRecord_Input ratingRecordInput);
+        Task<PagingOutput<RatingRecord_Output>> GetRatings(PagingInput<GetRatings_Input> pagingInput);
         Task<int> UpdRatingsJob(DateTime endTime);
         Task<int> OptimizeDatabase();
     }

@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 using P9YS.Services;
 using P9YS.Services.Carousel;
 using P9YS.Services.Movie;
+using P9YS.Services.Movie.Dto;
 using P9YS.Services.MovieArea;
 using P9YS.Services.MovieGenres;
 using P9YS.Services.MovieRecommend;
@@ -45,7 +46,7 @@ namespace P9YS.Web.Controllers
                 AnnualRecommends = await _movieRecommendService.GetAnnualRecommends(),
                 RecentRecommends = await _movieRecommendService.GetRecentRecommends(),
                 MovieList = await _movieService.GetMoviesByCondition(
-                    new PagingInput<Services.Movie.Dto.ConditionInput> { PageSize = 20 })
+                    new PagingInput<GetMovies_Condition_Input> { PageSize = 20 })
             };
 
             return View(model);

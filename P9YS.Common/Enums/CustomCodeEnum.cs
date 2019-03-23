@@ -69,5 +69,11 @@ namespace P9YS.Common
         /// </summary>
         [Description("已经存在")]
         Repeated = 12000,
+
+        /// <summary>
+        /// 状态已变更
+        /// </summary>
+        [Description("操作失败：状态已变更")]
+        StatusChanged = 12001,
     }
 }

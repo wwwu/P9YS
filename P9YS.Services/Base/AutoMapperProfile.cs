@@ -6,6 +6,14 @@ using P9YS.EntityFramework.Models;
 using P9YS.Services;
 using System.Linq;
 using P9YS.Common;
+using P9YS.Services.MovieArea.Dto;
+using P9YS.Services.MovieComment.Dto;
+using P9YS.Services.MovieDraft.Dto;
+using P9YS.Services.Movie.Dto;
+using P9YS.Services.MovieGenres.Dto;
+using P9YS.Services.MovieQuestion.Dto;
+using P9YS.Services.MovieRecommend.Dto;
+using P9YS.Services.MovieResource.Dto;
 
 namespace P9YS.Services.Base
 {
@@ -22,39 +30,39 @@ namespace P9YS.Services.Base
 
             #region Carousel
 
-            CreateMap<EntityFramework.Models.Carousel, Carousel.Dto.CarouselOutput>();
-            CreateMap<Carousel.Dto.Carouselnput, EntityFramework.Models.Carousel>();
+            CreateMap<EntityFramework.Models.Carousel, Carousel.Dto.Carousel_Output>();
+            CreateMap<Carousel.Dto.Carousel_Input, EntityFramework.Models.Carousel>();
                 //.ForAllMembers(opt => opt.Condition((s, d, sourceMember) => sourceMember != null)); //忽略空值映射
 
             #endregion
 
             #region MovieRecommend
 
-            CreateMap<EntityFramework.Models.MovieRecommend, MovieRecommend.Dto.MovieRecommendOutput>();
-            CreateMap<MovieRecommend.Dto.MovieRecommendInput, EntityFramework.Models.MovieRecommend>()
+            CreateMap<EntityFramework.Models.MovieRecommend, MovieRecommend_Output>();
+            CreateMap<MovieRecommend_Input, EntityFramework.Models.MovieRecommend>()
                 .ForMember(s => s.AddTime, option => option.MapFrom(s => DateTime.Now));
 
             #endregion
 
             #region Movie
 
-            CreateMap<EntityFramework.Models.Movie, Movie.Dto.MovieInfoOutput>()
+            CreateMap<EntityFramework.Models.Movie, MovieInfo_Output>()
                 .ForMember(s => s.MovieAreaName, option => option.MapFrom(m => m.MovieArea.Area))
                 .ForMember(s => s.MovieGenres, option => option.MapFrom(m =>
                     m.MovieTypes.Select(g => g.MovieGenre)));
 
-            CreateMap<EntityFramework.Models.Movie, Movie.Dto.Movie_Manage_Output>()
+            CreateMap<EntityFramework.Models.Movie, Movie_Manage_Output>()
                 .ForMember(s => s.MovieTypes, opt => opt.Ignore())
                 .ForMember(s => s.MovieSeries, opt => opt.Ignore());
 
-            CreateMap<Movie.Dto.Movie_Manage_Input, EntityFramework.Models.Movie>()
+            CreateMap<Movie_Manage_Input, EntityFramework.Models.Movie>()
                 .ForMember(s => s.MovieTypes, opt => opt.Ignore())
                 .ForMember(s => s.MovieArea, opt => opt.Ignore())
                 .ForMember(s => s.MovieOrigins, opt => opt.Ignore())
                 .ForMember(s => s.MovieComments, opt => opt.Ignore())
                 .ForMember(s => s.MovieQuestions, opt => opt.Ignore());
 
-            CreateMap<MovieDraft.Dto.MovieDraftDetailInput, EntityFramework.Models.Movie>()
+            CreateMap<MovieDraft_Detail_Input, EntityFramework.Models.Movie>()
                 .BeforeMap((src, dest) => dest.AddTime = dest.UpdTime = DateTime.Now)
                 .ForMember(s => s.ScoreSum, opt => opt.MapFrom(m => m.Score * m.ScoreCount))
                 .ForMember(s => s.MovieResources, opt => opt.Ignore());
@@ -63,17 +71,17 @@ namespace P9YS.Services.Base
 
             #region MovieComment
 
-            CreateMap<MovieComment.Dto.MovieCommentInput, EntityFramework.Models.MovieComment>()
+            CreateMap<MovieComment_Input, EntityFramework.Models.MovieComment>()
                 .BeforeMap((src,dest)=> dest.AddTime = dest.UpdTime = DateTime.Now);
 
             #endregion
 
             #region MovieQuestion
 
-            CreateMap<MovieQuestion.Dto.QuestionInput, EntityFramework.Models.MovieQuestion>()
+            CreateMap<Question_Input, EntityFramework.Models.MovieQuestion>()
                 .BeforeMap((src, dest) => dest.AddTime = dest.UpdTime = DateTime.Now);
 
-            CreateMap<MovieQuestion.Dto.QuestionAnswerInput, EntityFramework.Models.MovieQuestionAnswer>()
+            CreateMap<QuestionAnswer_Input, MovieQuestionAnswer>()
                 .BeforeMap((src, dest) => dest.AddTime = dest.UpdTime = DateTime.Now);
 
             //CreateMap<EntityFramework.Models.MovieQuestion, MovieQuestion.Dto.QuestionOutput>()
@@ -84,14 +92,14 @@ namespace P9YS.Services.Base
 
             #region MovieArea
 
-            CreateMap<MovieArea.Dto.MovieAreaInput, EntityFramework.Models.MovieArea>()
+            CreateMap<MovieArea_Input, EntityFramework.Models.MovieArea>()
                 .ForMember(s => s.AddTime, option => option.MapFrom(s => DateTime.Now));
 
             #endregion  
 
             #region MovieGenre
 
-            CreateMap<MovieGenres.Dto.MoiveGenreInput, EntityFramework.Models.MovieGenre>()
+            CreateMap<MoiveGenre_Input, MovieGenre>()
                 .ForMember(s => s.AddTime, option => option.MapFrom(s => DateTime.Now));
 
             CreateMap<string, MovieType>()
@@ -101,7 +109,7 @@ namespace P9YS.Services.Base
 
             #region MovieResource
 
-            CreateMap<MovieResource.Dto.MovieResourceInput, EntityFramework.Models.MovieResource>()
+            CreateMap<MovieResource_Input, EntityFramework.Models.MovieResource>()
                 .ForMember(s => s.AddTime, option => option.MapFrom(s => DateTime.Now))
                 .ForMember(s => s.UpdTime, option => option.MapFrom(s => DateTime.Now));
 
@@ -109,7 +117,7 @@ namespace P9YS.Services.Base
 
             #region MovieOnlinePlay
 
-            CreateMap<MovieResource.Dto.MovieOnlinePlayOutput, MovieOnlinePlay>();
+            CreateMap<MovieOnlinePlay_Output, MovieOnlinePlay>();
 
             #endregion
         }

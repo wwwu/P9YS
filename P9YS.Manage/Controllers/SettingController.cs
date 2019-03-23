@@ -59,14 +59,14 @@ namespace P9YS.Manage.Controllers
         }
 
         [HttpPost]
-        public async Task<JsonResult> AddCarousel(Carouselnput carouselnput)
+        public async Task<JsonResult> AddCarousel(Carousel_Input carouselnput)
         {
             var result = await _carouselService.AddCarousel(carouselnput);
             return Json(result);
         }
 
         [HttpPost]
-        public async Task<JsonResult> UpdCarousel(Carouselnput carouselnput)
+        public async Task<JsonResult> UpdCarousel(Carousel_Input carouselnput)
         {
             var result = await _carouselService.UpdCarousel(carouselnput);
             return Json(result);
@@ -92,7 +92,7 @@ namespace P9YS.Manage.Controllers
         }
 
         [HttpPost]
-        public async Task<JsonResult> AddRecommend(MovieRecommendInput movieRecommend)
+        public async Task<JsonResult> AddRecommend(MovieRecommend_Input movieRecommend)
         {
             var result = new Result
             {
@@ -131,14 +131,14 @@ namespace P9YS.Manage.Controllers
         }
 
         [HttpPost]
-        public async Task<JsonResult> AddArea(MovieAreaInput movieAreaInput)
+        public async Task<JsonResult> AddArea(MovieArea_Input movieAreaInput)
         {
             var result = await _movieAreaService.AddMovieArea(movieAreaInput);
             return Json(result);
         }
 
         [HttpPost]
-        public async Task<JsonResult> UpdArea(MovieAreaInput movieAreaInput)
+        public async Task<JsonResult> UpdArea(MovieArea_Input movieAreaInput)
         {
             var result = await _movieAreaService.UpdMovieArea(movieAreaInput);
             return Json(result);
@@ -164,14 +164,14 @@ namespace P9YS.Manage.Controllers
         }
 
         [HttpPost]
-        public async Task<JsonResult> AddGenre(MoiveGenreInput moiveGenreInput)
+        public async Task<JsonResult> AddGenre(MoiveGenre_Input moiveGenreInput)
         {
             var result = await _movieGenreService.AddMovieGenre(moiveGenreInput);
             return Json(result);
         }
 
         [HttpPost]
-        public async Task<JsonResult> UpdGenre(MoiveGenreInput moiveGenreInput)
+        public async Task<JsonResult> UpdGenre(MoiveGenre_Input moiveGenreInput)
         {
             var result = await _movieGenreService.UpdMovieGenre(moiveGenreInput);
             return Json(result);
