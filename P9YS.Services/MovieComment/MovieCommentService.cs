@@ -82,7 +82,7 @@ namespace P9YS.Services.MovieComment
         {
             var user = _userService.GetCurrentUser();
             //Add
-            var entity = Mapper.Map<EntityFramework.Models.MovieComment>(movieCommentInput);
+            var entity = _mapper.Map<EntityFramework.Models.MovieComment>(movieCommentInput);
             entity.UserId = user.UserId;
             await _movieResourceContext.MovieComments.AddAsync(entity);
             var rows = await _movieResourceContext.SaveChangesAsync();

@@ -90,7 +90,7 @@ namespace P9YS.Services.MovieResource
         public async Task<Result> AddResource(MovieResource_Input movieResourceInput)
         {
             var result = new Result();
-            var resource = Mapper.Map<EntityFramework.Models.MovieResource>(movieResourceInput);
+            var resource = _mapper.Map<EntityFramework.Models.MovieResource>(movieResourceInput);
             await _movieResourceContext.MovieResources.AddAsync(resource);
             var rows = await _movieResourceContext.SaveChangesAsync();
             result.Content = rows > 0;

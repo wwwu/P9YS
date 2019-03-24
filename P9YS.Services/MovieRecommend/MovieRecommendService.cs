@@ -84,7 +84,7 @@ namespace P9YS.Services.MovieRecommend
 
         public async Task<bool> AddRecommend(MovieRecommend_Input recommendInput)
         {
-            var recommend = Mapper.Map<EntityFramework.Models.MovieRecommend>(recommendInput);
+            var recommend = _mapper.Map<EntityFramework.Models.MovieRecommend>(recommendInput);
             var entity = await _movieResourceContext.MovieRecommends.AddAsync(recommend);
             var rows = await _movieResourceContext.SaveChangesAsync();
             return rows > 0;

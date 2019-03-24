@@ -55,7 +55,7 @@ namespace P9YS.Services.MovieQuestion
         {
             var user = _userService.GetCurrentUser();
             //Add
-            var entity = Mapper.Map<EntityFramework.Models.MovieQuestion>(questionInput);
+            var entity = _mapper.Map<EntityFramework.Models.MovieQuestion>(questionInput);
             entity.UserId = user.UserId;
             await _movieResourceContext.MovieQuestions.AddAsync(entity);
             var rows = await _movieResourceContext.SaveChangesAsync();
@@ -98,7 +98,7 @@ namespace P9YS.Services.MovieQuestion
         {
             var user = _userService.GetCurrentUser();
             //Add
-            var entity = Mapper.Map<EntityFramework.Models.MovieQuestionAnswer>(questionAnswerInput);
+            var entity = _mapper.Map<EntityFramework.Models.MovieQuestionAnswer>(questionAnswerInput);
             entity.UserId = user.UserId;
             await _movieResourceContext.MovieQuestionAnswers.AddAsync(entity);
             //更新AnswerCount

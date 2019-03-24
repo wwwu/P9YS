@@ -76,7 +76,7 @@ namespace P9YS.Services.MovieGenres
                 return result;
             }
 
-            var moiveGenre = Mapper.Map<EntityFramework.Models.MovieGenre>(moiveGenreInput);
+            var moiveGenre = _mapper.Map<EntityFramework.Models.MovieGenre>(moiveGenreInput);
             await _movieResourceContext.MovieGenres.AddAsync(moiveGenre);
             var rows = await _movieResourceContext.SaveChangesAsync();
             result.Content = rows > 0;
@@ -95,7 +95,7 @@ namespace P9YS.Services.MovieGenres
                 return result;
             }
 
-            var movieGenre = Mapper.Map<EntityFramework.Models.MovieGenre>(moiveGenreInput);
+            var movieGenre = _mapper.Map<EntityFramework.Models.MovieGenre>(moiveGenreInput);
             _movieResourceContext.MovieGenres.Update(movieGenre);
             var rows = await _movieResourceContext.SaveChangesAsync();
             result.Content = movieGenre;
