@@ -198,7 +198,7 @@ namespace P9YS.Services.User
             {
                 Avatar = defaultAvatar,
                 Email = input.Email,
-                NickName = input.Email,//Guid.NewGuid().ToString("N"),
+                NickName = "NoName",//Guid.NewGuid().ToString("N"),
                 Password = GetCiphertext(input.Password, _options.CurrentValue.PasswordSalt),
                 RegisterTime = DateTime.Now,
                 LastLoginTime = DateTime.Now,

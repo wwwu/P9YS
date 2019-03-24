@@ -2,11 +2,8 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using P9YS.Services;
 using P9YS.Services.User;
-using P9YS.Services.User.Dto;
 using P9YS.Web.Models;
 
 namespace P9YS.Web.Controllers
@@ -29,6 +26,7 @@ namespace P9YS.Web.Controllers
         public async Task<IActionResult> Login(LoginAndRegisterModalViewModel input)
         {
             var result = await _userService.Login(input.LoginInput);
+            result.Content.Email.HideEmail();
             return Json(result);
         }
 

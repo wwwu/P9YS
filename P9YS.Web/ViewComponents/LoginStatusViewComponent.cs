@@ -24,9 +24,12 @@ namespace P9YS.Web.ViewComponents
          */
         public IViewComponentResult Invoke()
         {
+            var user = _userService.GetCurrentUser();
+            if(user!=null)
+                user.Email = user.Email.HideEmail();
             var model = new CurrentUserViewModel
             {
-                CurrentUser = _userService.GetCurrentUser()
+                CurrentUser = user
             };
             return View(model);
         }
