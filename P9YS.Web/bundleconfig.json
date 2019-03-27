@@ -10,5 +10,11 @@
     "inputFiles": [
       "wwwroot/js/common.js"
     ]
+  },
+  {
+    "outputFileName": "wwwroot/js/gt.min.js",
+    "inputFiles": [
+      "wwwroot/js/gt.js"
+    ]
   }
 ]

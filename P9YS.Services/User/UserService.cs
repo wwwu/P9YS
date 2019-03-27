@@ -65,6 +65,7 @@ namespace P9YS.Services.User
             user.LastLoginTime = DateTime.Now;
             await _movieResourceContext.SaveChangesAsync();
 
+            user.Email.HideEmail();
             result.Content = _mapper.Map<CurrentUser>(user);
             return result;
         }

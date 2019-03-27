@@ -34,6 +34,8 @@
         var $form = $("#panel-login form");
         if (!$form.valid())
             return;
+        if ($("#embed-captcha").attr("validate") == null)
+            return;
         var data = $form.serialize();
         $.ajax({
             type: "post",
@@ -52,7 +54,9 @@
                             result.content.nickName, result.content.email, result.content.avatar));
                     }   
                 } else {
-                    layer.msg(result.message, function () { });             
+                    layer.msg(result.message, function () { });
+                    global_captchaObj.reset();
+                    $("#embed-captcha").removeAttr("validate");
                 }
             },
             error: function (ex) {
@@ -600,23 +604,6 @@ function search(keyword,pageIndex) {
             layer.msg("系统异常，请稍后再试！");
         }
     })
-}
-
-//获取验证码倒计时
-function countDown(time, btn, btn_txt, disabled_css) {
-    btn.addClass(disabled_css);
-    downTimer(time);
-
-    function downTimer(t) {
-        timer1 = setInterval(function () {
-            btn.val(btn_txt + "[" + --t + "]");
-            if (t < 1) {
-                btn.removeClass(disabled_css);
-                btn.val(btn_txt);
-                clearInterval(timer1);
-            }
-        }, 1000)
-    }
 }
 
 //String.format字符串拼接

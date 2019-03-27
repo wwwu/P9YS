@@ -16,6 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\GeetestSDK\GeetestSDK.csproj" />
     <ProjectReference Include="..\P9YS.Common\P9YS.Common.csproj" />
     <ProjectReference Include="..\P9YS.Services\P9YS.Services.csproj" />
   </ItemGroup>

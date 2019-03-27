@@ -29,38 +29,43 @@ namespace P9YS.Web
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            #region Cookies
+            #region Base
+            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
+            services.AddHttpContextAccessor();
+            //配置文件
+            services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
+            services.Configure<GeetestSDK.GeetestOptions>(Configuration.GetSection("GeetestOptions"));
+            //Json输出时间格式
+            services.AddMvc().AddJsonOptions(option =>
+            {
+                option.SerializerSettings.DateFormatString = "yyyy-MM-dd HH:mm:ss";
+            });
+            //缓存
+            services.AddMemoryCache();
+            //Session
+            services.AddSession();
+            #endregion
 
+            #region Cookies
             services.Configure<CookiePolicyOptions>(options =>
             {
                 // This lambda determines whether user consent for non-essential cookies is needed for a given request.
                 options.CheckConsentNeeded = context => true;
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
-
             //共享cookies
             services.AddDataProtection()
                 .SetApplicationName("cookieshare")
                 .PersistKeysToFileSystem(new System.IO.DirectoryInfo("C:\\P9ysCookieShare"));
-
             //设置身份验证服务
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, option =>
                 {
                     option.Cookie.Domain = Configuration.GetSection("CookieDomain").Value;
-                    option.LoginPath = "/Member/Login";
+                    option.LoginPath = "/Member/Login?returnUrl=/";
                     option.Cookie.HttpOnly = true;
                 });
-
-            //Session
-            services.AddSession();
-
             #endregion
-
-            //配置文件
-            services.Configure<AppSettings>(Configuration.GetSection("AppSettings"));
-
-            services.AddHttpContextAccessor();
 
             #region 配置DI
             services.AddScoped<EntityFramework.MovieResourceContext>();
@@ -76,7 +81,6 @@ namespace P9YS.Web
             #endregion
 
             #region AutoMapper
-
             var appSettings = Configuration.GetSection("AppSettings").Get<AppSettings>();
             AutoMapper.IConfigurationProvider mapperConfig = new MapperConfiguration(cfg =>
             {
@@ -84,22 +88,9 @@ namespace P9YS.Web
             });
             services.AddSingleton(mapperConfig);
             services.AddScoped<IMapper, Mapper>();
-            //AutoMapper静态实例导致无法进行单元测试
-            //Mapper.Initialize(cfg => cfg.AddProfile(new AutoMapperProfile(appSettings)));
-
             #endregion
 
-            //缓存
-            services.AddMemoryCache();
-
-            //Json输出时间格式
-            services.AddMvc().AddJsonOptions(option =>
-            {
-                option.SerializerSettings.DateFormatString = "yyyy-MM-dd HH:mm:ss";
-            });
-
             #region Filter
-
             services.AddMvc(option =>
             {
                 //自定义授权过滤器
@@ -109,10 +100,7 @@ namespace P9YS.Web
                 //未捕获异常
                 option.Filters.Add(typeof(CustomExceptionFilterAttribute));
             });
-
             #endregion
-
-            services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
