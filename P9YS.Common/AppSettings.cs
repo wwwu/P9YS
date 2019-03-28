@@ -12,6 +12,7 @@ namespace P9YS.Common
         public EmailServer EmailServer { get; set; }
         public TxCos TxCos { get; set; }
         public XianLiao XianLiao { get; set; }
+        public string LoginUrl { get; set; }
     }
 
     public class EmailServer

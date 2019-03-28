@@ -59,7 +59,7 @@ namespace P9YS.Manage
                 .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, option =>
                 {
                     option.Cookie.Domain = Configuration.GetSection("CookieDomain").Value;
-                    option.LoginPath = "/User/Login";
+                    option.LoginPath = "/Member/Login/?returnurl=/";
                     option.Cookie.HttpOnly = true;
                 });
             //Session
