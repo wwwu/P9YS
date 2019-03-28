@@ -3,6 +3,11 @@
     $(document).on("mouseover", "[data-toggle='tooltip']", function () {
         $(this).tooltip('show')
     })
+    $(".modal").on("shown.bs.modal", function () {
+        $(".modal-open").attr( "style","initial!importan");
+        document.activeElement.blur()
+        $(this).find(".modal-body :input:visible:first").focus();
+    });
 
     //#region 顶部搜索
     $("#btn_global_search").click(function () {
@@ -503,14 +508,6 @@
                 //
             }
         });
-    })
-
-    //数字输入框
-    $(document).on("keyup", ".only-num", function (event) {
-        //先把非数字的都替换掉,保证第一个为数字而不是0
-        //if (event.keyCode < 45 || event.keyCode > 57)
-        //    return false;
-        $(this).val($(this).val().replace(/[^\d]|^0/g, ""));
     })
 })
 

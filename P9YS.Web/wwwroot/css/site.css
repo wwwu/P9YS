@@ -9,6 +9,7 @@ body { font-size: 15px; }
 .img-size-1 { max-height: 300px; max-width: 220px; }
 .img-size-2 { max-height: 185px; max-width: 150px; }
 pre { background-color: #fff; border: 0; margin: 0; font-size: 15px; font-family: 'Microsoft Yahei',sans-serif; }
+.modal-open { padding-right:0!important }
 
 /*头尾*/
 body { padding-top: 90px; font-family: 'Microsoft Yahei',sans-serif; }
