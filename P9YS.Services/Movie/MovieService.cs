@@ -256,29 +256,23 @@ namespace P9YS.Services.Movie
 
         public async Task UpdDoubanData(MovieOrigin_Douban_Output movieDoubanOrigin)
         {
-            HttpClient client = new HttpClient();
-            client.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64)");
-            //没有url，根据片名搜索
-            if (string.IsNullOrWhiteSpace(movieDoubanOrigin.Url))
-            {
-                var searchPageUrl = $"https://www.douban.com/search?cat=1002&q={movieDoubanOrigin.FullName}";
-                var searchPageHtml = await client.GetStringAsync(searchPageUrl);
-                var sid = Regex.Match(searchPageHtml, @"sid:\s*?(\d+)\s*?,").Groups[1]?.Value;
-                if (string.IsNullOrWhiteSpace(sid))
-                    return;
-                movieDoubanOrigin.Url = $"https://movie.douban.com/subject/{sid}/";
-            }
-            //影片内容页
-            var html = await client.GetStringAsync(movieDoubanOrigin.Url);
+            var urlAndHtml = await _baseService
+                .DownloadDoubanHtml(movieDoubanOrigin.Url, movieDoubanOrigin.FullName);
+            movieDoubanOrigin.Url = urlAndHtml.url;
+            if (string.IsNullOrWhiteSpace(urlAndHtml.html))
+                return;
             //评分
-            var score = Regex.Match(html, @"<strong.*?rating_num.*?>([\d.]+?)</strong>").Groups[1]?.Value;
+            var score = Regex.Match(urlAndHtml.html
+                , @"<strong.*?rating_num.*?>([\d.]+?)</strong>").Groups[1]?.Value;
             //在线播放源
-            var matches = Regex.Matches(html, @"class=""playBtn"".+?data-cn=""(.+?)"".+?href=""(.+?)""[\w\W]+?class=""buylink-price""><span>([\w\W]*?)</span></span>");
+            var matches = Regex.Matches(urlAndHtml.html
+                , @"class=""playBtn"".+?data-cn=""(.+?)"".+?href=""(.+?)""[\w\W]+?class=""buylink-price""><span>([\w\W]*?)</span></span>");
             var movieOnlinePlays = new List<MovieOnlinePlay>();
             foreach (Match match in matches)
             {
                 var price = match.Groups[3]?.Value ?? "";
-                price = Regex.Replace(price, @"(?-ms:^\s*([\w\W]*?)\s*$)", "${1}");//去掉首尾空行空格 \s*[\n\r]+\s*
+                price = Regex.Replace(price
+                    , @"(?-ms:^\s*([\w\W]*?)\s*$)", "${1}");//去掉首尾空行空格 \s*[\n\r]+\s*
                 movieOnlinePlays.Add(new MovieOnlinePlay
                 {
                     MovieId = movieDoubanOrigin.MovieId,

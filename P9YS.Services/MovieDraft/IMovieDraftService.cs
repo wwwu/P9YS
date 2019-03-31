@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 using P9YS.Services.MovieDraft.Dto;
 
 namespace P9YS.Services.MovieDraft
@@ -10,5 +11,7 @@ namespace P9YS.Services.MovieDraft
         Task<MovieDraft_Detail_Input> GetMovieDraftDetail(int movieDraftId);
 
         Task<Result> AddMovie(MovieDraft_Detail_Input movieDraftDetailInput);
+
+        Task<List<string>> AddMovieDraft(int maxCount);
     }
 }

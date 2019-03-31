@@ -1,4 +1,6 @@
-﻿namespace P9YS.Services.Base
+﻿using System.Threading.Tasks;
+
+namespace P9YS.Services.Base
 {
     public interface IBaseService
     {
@@ -20,5 +22,15 @@
         /// <param name="sourcePath">要上传文件的完整url</param>
         /// <returns></returns>
         Result UploadFile(string savePath, string sourcePath);
+
+        Task<string> WebClientGetStringAsync(string url, string encoding = null);
+
+        /// <summary>
+        /// 抓取豆瓣html,优先根据url下载，没有url则根据movieName搜索
+        /// </summary>
+        /// <param name="url"></param>
+        /// <param name="movieName"></param>
+        /// <returns></returns>
+        Task<(string url, string html)> DownloadDoubanHtml(string url, string movieName);
     }
 }

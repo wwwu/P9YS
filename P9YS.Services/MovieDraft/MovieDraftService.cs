@@ -12,8 +12,10 @@ using P9YS.Services.MovieResource.Dto;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace P9YS.Services.MovieDraft
@@ -214,6 +216,63 @@ namespace P9YS.Services.MovieDraft
                     return uploadResult;
                 }
             }
+            return result;
+        }
+
+        public async Task<List<string>> AddMovieDraft(int maxCount)
+        {
+            var result = new List<string>();
+
+            #region 获取dytt最新电影链接，跟数据库中的比对取差集
+            var dyDomain = "https://www.dytt8.net/";
+            var encoding = "gb2312";
+            var dyListHtml = await _baseService.WebClientGetStringAsync(dyDomain, encoding);
+            var newUrls = Regex.Matches(dyListHtml
+                , @"(?<=start:最新电影下载-->[\w\W]*?)href='(.*?/\d+?/\d+?.html)'(?=[\w\W]*?end:最新电影下载--->)")
+                .Select(s => dyDomain + s.Groups[1].Value).Distinct().ToList();
+            var oldUrls = await _movieResourceContext.MovieDrafts
+                .Where(s => s.AddTime > DateTime.Now.AddMonths(-2) && newUrls.Contains(s.DyUrl))
+                .Select(s => s.DyUrl).Distinct().AsNoTracking().ToListAsync();
+            newUrls = newUrls.Except(oldUrls).Take(maxCount).ToList();
+            #endregion
+
+            #region 得到的新链接去豆瓣获取详情
+            var moviesDrafts = new List<EntityFramework.Models.MovieDraft>();
+            foreach (var dyUrl in newUrls)
+            {
+                var dyContentHtml = await _baseService.WebClientGetStringAsync(dyUrl, encoding);
+                var movieName = Regex.Match(dyContentHtml
+                    , @"<h1>.*?《(.+?)》").Groups[1]?.Value;
+                if (string.IsNullOrWhiteSpace(movieName))
+                    continue;
+                result.Add(movieName);
+                var resource =  Regex.Match(dyContentHtml
+                    , @"<a\s+?href=""(ftp://.+?)""").Groups[1]?.Value;
+                var (doubanUrl, doubanHtml) = await _baseService.DownloadDoubanHtml(null, movieName);
+                //清理垃圾
+                doubanHtml = Regex.Replace(doubanHtml ?? ""  
+                    , @"<script.*?>[\w\W]*?</script>|<link.+?>|<style.*?>[\w\W]*?</style>","");
+                moviesDrafts.Add(new EntityFramework.Models.MovieDraft
+                {
+                    MovieName = movieName,
+                    DyUrl = dyUrl,
+                    Resoures = resource,
+                    DoubanUrl = doubanUrl,
+                    DoubanHtml = doubanHtml,
+                    AddTime = DateTime.Now,
+                });
+
+                Thread.Sleep(10000);
+            }
+
+            #endregion
+
+            if (moviesDrafts.Any())
+            {
+                await _movieResourceContext.MovieDrafts.AddRangeAsync(moviesDrafts);
+                await _movieResourceContext.SaveChangesAsync();
+            }
+
             return result;
         }
     }

@@ -3,6 +3,7 @@ using Hangfire.Common;
 using Hangfire.Storage;
 using P9YS.Services.Movie;
 using P9YS.Services.Movie.Dto;
+using P9YS.Services.MovieDraft;
 using P9YS.Services.RatingRecord;
 using P9YS.Services.SuportRecord;
 using System;
@@ -18,14 +19,17 @@ namespace P9YS.HangfireJobs
         private readonly IRatingRecordService _ratingRecordService;
         private readonly ISuportRecordService _suportRecordService;
         private readonly IMovieService _movieService;
+        private readonly IMovieDraftService _movieDraftService;
 
         public JobService(IRatingRecordService ratingRecordService
             , ISuportRecordService suportRecordService
-            , IMovieService movieService)
+            , IMovieService movieService
+            , IMovieDraftService movieDraftService)
         {
             _ratingRecordService = ratingRecordService;
             _suportRecordService = suportRecordService;
             _movieService = movieService;
+            _movieDraftService = movieDraftService;
         }
 
         /// <summary>
@@ -55,6 +59,15 @@ namespace P9YS.HangfireJobs
         }
 
         /// <summary>
+        /// 清理数据，并整理碎片
+        /// </summary>
+        /// <returns></returns>
+        public async Task<int> OptimizeDatabaseJob()
+        {
+            return await _ratingRecordService.OptimizeDatabase();
+        }
+
+        /// <summary>
         /// 更新豆瓣数据(评分、在线播放源)
         /// 每次生成x个延迟任务
         /// </summary>
@@ -74,13 +87,12 @@ namespace P9YS.HangfireJobs
         }
 
         /// <summary>
-        /// 清理数据，并整理碎片
+        /// 抓取影片信息 每次最多5个
         /// </summary>
         /// <returns></returns>
-        public async Task<int> OptimizeDatabaseJob()
+        public async Task<List<string>> DownloadMovieInfoJob()
         {
-            return await _ratingRecordService.OptimizeDatabase();
+            return await _movieDraftService.AddMovieDraft(5);
         }
-
     }
 }

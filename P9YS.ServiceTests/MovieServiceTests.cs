@@ -235,10 +235,10 @@ namespace P9YS.ServiceTests
         }
 
         [Fact]
-        public async Task UpdDoubanDataAsync_Test()
+        public async Task UpdDoubanData_Test()
         {
             //Arrange
-            var movieService = new MovieService(mapper, dbContext, baseService.Object);
+            var movieService = new MovieService(mapper, dbContext, baseService.Object);//new Services.Base.BaseService(null,null)
             //Act
             var input = new MovieOrigin_Douban_Output
             {

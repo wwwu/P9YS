@@ -32,5 +32,11 @@ namespace P9YS.HangfireJobs
         /// </summary>
         /// <returns></returns>
         Task<int> OptimizeDatabaseJob();
+
+        /// <summary>
+        /// 抓取影片信息 每次最多5个
+        /// </summary>
+        /// <returns></returns>
+        Task<List<string>> DownloadMovieInfoJob();
     }
 }

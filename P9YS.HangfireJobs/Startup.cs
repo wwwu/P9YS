@@ -43,6 +43,10 @@ namespace P9YS.HangfireJobs
             RecurringJob.AddOrUpdate<IJobService>("Recurring_OptimizeDatabaseJob"
                 , s => s.OptimizeDatabaseJob(), "0 0 21 1 1/1 ?"); //每月1号21点整运行(北京时间05:00)
 
+            //抓取影片资源
+            RecurringJob.AddOrUpdate<IJobService>("Recurring_DownloadMovieInfoJob"
+                , s => s.DownloadMovieInfoJob(), "0 0/10 * * * ?");
+
             #endregion
         }
     }

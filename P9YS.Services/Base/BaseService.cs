@@ -6,7 +6,10 @@ using QCloud.CosApi.Api;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Net;
 using System.Text;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
 namespace P9YS.Services.Base
 {
@@ -14,15 +17,11 @@ namespace P9YS.Services.Base
     {
         private readonly IOptionsMonitor<AppSettings> _options;
         private readonly ILogger<BaseService> _logger;
-        private readonly CosCloud _cosCloud;
         public BaseService(IOptionsMonitor<AppSettings> options
             , ILogger<BaseService> logger)
         {
             _options = options;
             _logger = logger;
-            //创建cos对象
-            var txCos = _options.CurrentValue.TxCos;
-            _cosCloud = new CosCloud(int.Parse(txCos.Appid), txCos.SecretID, txCos.SecretKey, txCos.Region);
         }
 
         /// <summary>
@@ -36,7 +35,9 @@ namespace P9YS.Services.Base
             var result = new Result();
             try
             {
-                var str = _cosCloud.UploadFile(_options.CurrentValue.TxCos.Bucket, savePath, bytes, null, false, 0);
+                var txCos = _options.CurrentValue.TxCos;
+                var cosCloud = new CosCloud(int.Parse(txCos.Appid), txCos.SecretID, txCos.SecretKey, txCos.Region);
+                var str = cosCloud.UploadFile(_options.CurrentValue.TxCos.Bucket, savePath, bytes, null, false, 0);
                 var response = JsonConvert.DeserializeObject<TxCosResponse>(str);
                 result.Content = response;
                 if (response.Code != 0)
@@ -86,6 +87,70 @@ namespace P9YS.Services.Base
         public string GetCosAbsoluteUrl(string relativeUrl)
         {
             return _options.CurrentValue.TxCos.CosDomain + relativeUrl;
+        }
+
+        public string WebClientGetString(string url, string encoding = null)
+        {
+            var result = string.Empty;
+            WebClient webClient = new WebClient();
+            try
+            {
+                webClient.Headers.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64)");
+                if (encoding != null)
+                {
+                    Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+                    webClient.Encoding = Encoding.GetEncoding(encoding);
+                }
+                result = webClient.DownloadString(url);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex.ToString());
+            }
+            return result;
+        }
+
+        public async Task<string> WebClientGetStringAsync(string url, string encoding = null)
+        {
+            var result = string.Empty;
+            WebClient webClient = new WebClient();
+            try
+            {
+                webClient.Headers.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64)");
+                if (encoding != null)
+                {
+                    Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+                    webClient.Encoding = Encoding.GetEncoding(encoding);
+                }
+                result = await webClient.DownloadStringTaskAsync(url);
+            }
+            catch(Exception ex)
+            {
+                _logger.LogError(ex.ToString());
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// 抓取豆瓣html,优先根据url下载，没有url则根据movieName搜索
+        /// </summary>
+        /// <param name="url"></param>
+        /// <param name="movieName"></param>
+        /// <returns></returns>
+        public async Task<(string url,string html)> DownloadDoubanHtml(string url,string movieName)
+        {
+            if (string.IsNullOrWhiteSpace(url))
+            {
+                var searchPageUrl = $"https://www.douban.com/search?cat=1002&q={movieName}";
+                var searchPageHtml = await WebClientGetStringAsync(searchPageUrl);
+                var sid = Regex.Match(searchPageHtml, @"sid:\s*?(\d+)\s*?,").Groups[1]?.Value;
+                if (string.IsNullOrWhiteSpace(sid))
+                    return (url, string.Empty);
+                url = $"https://movie.douban.com/subject/{sid}/";
+            }
+            //影片内容页
+            var html = await WebClientGetStringAsync(url);
+            return (url,html);
         }
     }
 
