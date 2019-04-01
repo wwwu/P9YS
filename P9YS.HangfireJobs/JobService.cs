@@ -87,12 +87,12 @@ namespace P9YS.HangfireJobs
         }
 
         /// <summary>
-        /// 抓取影片信息 每次最多5个
+        /// 抓取影片信息 每次最多2个
         /// </summary>
         /// <returns></returns>
         public async Task<List<string>> DownloadMovieInfoJob()
         {
-            return await _movieDraftService.AddMovieDraft(5);
+            return await _movieDraftService.AddMovieDraft(2);
         }
     }
 }

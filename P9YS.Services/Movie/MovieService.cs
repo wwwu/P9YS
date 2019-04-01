@@ -256,16 +256,16 @@ namespace P9YS.Services.Movie
 
         public async Task UpdDoubanData(MovieOrigin_Douban_Output movieDoubanOrigin)
         {
-            var urlAndHtml = await _baseService
+            var (url, html) = await _baseService
                 .DownloadDoubanHtml(movieDoubanOrigin.Url, movieDoubanOrigin.FullName);
-            movieDoubanOrigin.Url = urlAndHtml.url;
-            if (string.IsNullOrWhiteSpace(urlAndHtml.html))
+            movieDoubanOrigin.Url = url;
+            if (string.IsNullOrWhiteSpace(html))
                 return;
             //评分
-            var score = Regex.Match(urlAndHtml.html
+            var score = Regex.Match(html
                 , @"<strong.*?rating_num.*?>([\d.]+?)</strong>").Groups[1]?.Value;
             //在线播放源
-            var matches = Regex.Matches(urlAndHtml.html
+            var matches = Regex.Matches(html
                 , @"class=""playBtn"".+?data-cn=""(.+?)"".+?href=""(.+?)""[\w\W]+?class=""buylink-price""><span>([\w\W]*?)</span></span>");
             var movieOnlinePlays = new List<MovieOnlinePlay>();
             foreach (Match match in matches)

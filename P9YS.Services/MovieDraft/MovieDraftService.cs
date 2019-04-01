@@ -95,6 +95,9 @@ namespace P9YS.Services.MovieDraft
             movieDraftDetailInput.DoubanScore = movieDraftDetailInput.Score;
             movieDraftDetailInput.ImgUrl = Regex.Match(movieDraft.DoubanHtml
                 , @"<img.*?src=""(.*?)"".*?rel=""v:image").Groups[1]?.Value;
+            //if (!string.IsNullOrWhiteSpace(movieDraftDetailInput.ImgUrl))
+            //    movieDraftDetailInput.ImgUrl = movieDraftDetailInput.ImgUrl.Replace(".jpg", ".webp");
+
             //演员，取前10个
             foreach (Match m in Regex.Matches(movieDraft.DoubanHtml
                 , @"v:starring"">(.*?)</a>").Take(10))
@@ -252,6 +255,9 @@ namespace P9YS.Services.MovieDraft
                 //清理垃圾
                 doubanHtml = Regex.Replace(doubanHtml ?? ""  
                     , @"<script.*?>[\w\W]*?</script>|<link.+?>|<style.*?>[\w\W]*?</style>","");
+                doubanHtml = Regex.Replace(doubanHtml
+                    , @"\s*[\r\n]+\s*", "\r\n");//段中多行替换成一行，并去掉空格 
+                doubanHtml = System.Web.HttpUtility.HtmlDecode(doubanHtml);
                 moviesDrafts.Add(new EntityFramework.Models.MovieDraft
                 {
                     MovieName = movieName,

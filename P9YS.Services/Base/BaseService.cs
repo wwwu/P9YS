@@ -67,7 +67,7 @@ namespace P9YS.Services.Base
             var result = new Result();
             try
             {
-                var bytes = new System.Net.WebClient().DownloadData(sourcePath);
+                var bytes = new WebClient().DownloadData(sourcePath);
                 result = UploadFile(savePath, bytes);
             }
             catch (Exception ex)
