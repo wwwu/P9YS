@@ -18,7 +18,7 @@ namespace P9YS.Web.ViewComponents
         public IViewComponentResult Invoke()
         {
             var model = _userService.GetXianLiaoUserInfo();
-            return View();
+            return View(model);
         }
     }
 }

@@ -45,9 +45,16 @@ namespace P9YS.Web.Controllers
                 MovieGenres = await _movieGenreService.GetMovieGenres(),
                 AnnualRecommends = await _movieRecommendService.GetAnnualRecommends(),
                 RecentRecommends = await _movieRecommendService.GetRecentRecommends(),
-                MovieList = await _movieService.GetMoviesByCondition(
-                    new PagingInput<GetMovies_Condition_Input> { PageSize = 20 })
+                MovieList = new PagingOutput<MovieList_Output>
+                {
+                    Data = new List<MovieList_Output>()
+                }
             };
+            if (HttpContext.Request.Query.Keys.Count == 0)
+            {
+                model.MovieList = await _movieService.GetMoviesByCondition(
+                    new PagingInput<GetMovies_Condition_Input> { PageSize = 20 });
+            }
 
             return View(model);
         }
