@@ -196,6 +196,8 @@ namespace P9YS.EntityFramework.Migrations
                         .IsRequired()
                         .HasMaxLength(50);
 
+                    b.Property<string>("ImgData");
+
                     b.Property<string>("Resoures");
 
                     b.Property<int>("Status");

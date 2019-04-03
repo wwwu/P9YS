@@ -186,7 +186,7 @@
             $("#imgFile").change(function () {
                 ImageToBase64(this, function (data) {
                     $('#imgBox').attr('src', data);
-                    $('[name="imgData"]').val(data.replace(/data:image\/.+?base64,/, ""));
+                    $('[name="imgData"]').val(encodeURIComponent(data));
                 });
             });
         });

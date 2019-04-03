@@ -17,6 +17,7 @@ namespace P9YS.EntityFramework.Migrations
                     DyUrl = table.Column<string>(maxLength: 200, nullable: false),
                     DoubanUrl = table.Column<string>(maxLength: 200, nullable: false),
                     MovieName = table.Column<string>(maxLength: 50, nullable: false),
+                    ImgData = table.Column<string>(nullable: true),
                     Resoures = table.Column<string>(nullable: true),
                     DoubanHtml = table.Column<string>(nullable: true),
                     Status = table.Column<int>(nullable: false),

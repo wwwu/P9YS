@@ -12,6 +12,7 @@ using P9YS.Services.MovieResource.Dto;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -79,6 +80,7 @@ namespace P9YS.Services.MovieDraft
             movieDraftDetailInput.MovieDraftId = movieDraft.Id;
             movieDraftDetailInput.ShortName = movieDraft.MovieName;
             movieDraftDetailInput.DoubanUrl = movieDraft.DoubanUrl;
+            movieDraftDetailInput.ImgData = movieDraft.ImgData;
 
             #region 解析html获取影片信息
             movieDraftDetailInput.FullName = Regex.Match(movieDraft.DoubanHtml
@@ -93,8 +95,8 @@ namespace P9YS.Services.MovieDraft
             movieDraftDetailInput.Score = decimal.Parse(Regex.Match(movieDraft.DoubanHtml
                 , @"v:average"">(.*?)</strong>").Groups[1]?.Value);
             movieDraftDetailInput.DoubanScore = movieDraftDetailInput.Score;
-            movieDraftDetailInput.ImgUrl = Regex.Match(movieDraft.DoubanHtml
-                , @"<img.*?src=""(.*?)"".*?rel=""v:image").Groups[1]?.Value;
+            //movieDraftDetailInput.ImgUrl = Regex.Match(movieDraft.DoubanHtml
+            //    , @"<img.*?src=""(.*?)"".*?rel=""v:image").Groups[1]?.Value;
             //if (!string.IsNullOrWhiteSpace(movieDraftDetailInput.ImgUrl))
             //    movieDraftDetailInput.ImgUrl = movieDraftDetailInput.ImgUrl.Replace(".jpg", ".webp");
 
@@ -149,12 +151,13 @@ namespace P9YS.Services.MovieDraft
                 var strArr = Encoding.UTF8.GetBytes($"AA{movieDraft.Resoures}ZZ");
                 link = "thunder://" + Convert.ToBase64String(strArr);
             }
+            var match = Regex.Match(movieDraft.Resoures, @".+\.(.+?\.\d+?p)\.(\w+?)\.\w+$");
             movieDraftDetailInput.MovieResource = new MovieResource_Input
             {
                 Dub = Regex.Match(movieDraft.DoubanHtml, @"语言:</span>\s*?(\w+).*?<br/>").Groups[1]?.Value,
-                Resolution = "DB-720P",
-                Size = 0,
-                Subtitle = "中",
+                Resolution = match.Groups[1]?.Value,
+                Size = 0, //TODO: 获取文件大小，ftp GetFileSize行不通
+                Subtitle = match.Groups[2]?.Value?.ToUpper(),
                 Content = link,
             };
             #endregion
@@ -177,13 +180,15 @@ namespace P9YS.Services.MovieDraft
             movieDraft.Status = MovieDraftStatusEnum.Added;
             //添加成功后再上传图片
             var imgUrl = string.Empty;
-            var sourcePath = movieDraftDetailInput.ImgUrl;
-            if (!string.IsNullOrWhiteSpace(sourcePath))
+            byte[] imgBytes = null;
+            if (!string.IsNullOrWhiteSpace(movieDraftDetailInput.ImgData))
             {
-                imgUrl = $"/poster/{Guid.NewGuid().ToString("N")}{sourcePath.Substring(sourcePath.LastIndexOf("."))}";
-                movieDraftDetailInput.ImgUrl = imgUrl;
+                var (imgName, dataBytes) = _baseService.Base64ToBytes(movieDraftDetailInput.ImgData);
+                imgUrl = $"/poster/{imgName}";
+                imgBytes = dataBytes;
             }
             var movie = _mapper.Map<EntityFramework.Models.Movie>(movieDraftDetailInput);
+            movie.ImgUrl = imgUrl;
             movie.MovieResources = _mapper.Map<IEnumerable<EntityFramework.Models.MovieResource>>(
                 new List<MovieResource_Input> { movieDraftDetailInput.MovieResource });
             movie.MovieOrigins = new List<EntityFramework.Models.MovieOrigin>
@@ -212,7 +217,7 @@ namespace P9YS.Services.MovieDraft
             //图片上传
             if (!string.IsNullOrWhiteSpace(imgUrl))
             {
-                var uploadResult = _baseService.UploadFile(imgUrl, sourcePath);
+                var uploadResult = _baseService.UploadFile(imgUrl, imgBytes);
                 if (uploadResult.Code != CustomCodeEnum.Success)
                 {
                     uploadResult.Message = "添加成功，但图片上传失败。";
@@ -258,9 +263,18 @@ namespace P9YS.Services.MovieDraft
                 doubanHtml = Regex.Replace(doubanHtml
                     , @"\s*[\r\n]+\s*", "\r\n");//段中多行替换成一行，并去掉空格 
                 doubanHtml = System.Web.HttpUtility.HtmlDecode(doubanHtml);
+                //获取图片，转base64
+                var imgUrl = Regex.Match(doubanHtml
+                    , @"<img.*?src=""(.*?)"".*?rel=""v:image").Groups[1]?.Value;
+                var bytes = await new WebClient().DownloadDataTaskAsync(imgUrl);
+                var base64String = Convert.ToBase64String(bytes);
+                var suffix = imgUrl.Substring(imgUrl.LastIndexOf(".") + 1);
+                var imgBase64String =$"data:image/{suffix};base64,{base64String}";
+
                 moviesDrafts.Add(new EntityFramework.Models.MovieDraft
                 {
                     MovieName = movieName,
+                    ImgData = imgBase64String,
                     DyUrl = dyUrl,
                     Resoures = resource,
                     DoubanUrl = doubanUrl,

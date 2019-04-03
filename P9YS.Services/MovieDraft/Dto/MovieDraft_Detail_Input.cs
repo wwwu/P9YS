@@ -32,7 +32,7 @@ namespace P9YS.Services.MovieDraft.Dto
 
         public int MovieTime { get; set; }
 
-        public string ImgUrl { get; set; }
+        public string ImgData { get; set; }
 
         [Required]
         public string Intro { get; set; }

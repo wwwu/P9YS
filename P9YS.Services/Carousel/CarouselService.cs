@@ -13,6 +13,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace P9YS.Services.Carousel
@@ -88,12 +89,8 @@ namespace P9YS.Services.Carousel
             var imgUrl = string.Empty;
             if (!string.IsNullOrWhiteSpace(carouselnput.ImgData))
             {
-                var dataBytes = Convert.FromBase64String(carouselnput.ImgData);
-                MemoryStream ms = new MemoryStream(dataBytes);
-                var suffix = ImageHelper.GetSuffix(ms);
-                ms.Dispose();
-                imgUrl = $"/carousel/{Guid.NewGuid().ToString("N")}{suffix}";
-                var uploadResult = _baseService.UploadFile(imgUrl, dataBytes);
+                var (imgName, dataBytes) = _baseService.Base64ToBytes(carouselnput.ImgData);
+                var uploadResult = _baseService.UploadFile($"/carousel/{imgName}", dataBytes);
                 if (uploadResult.Code != CustomCodeEnum.Success)
                     return uploadResult;
             }
@@ -122,12 +119,8 @@ namespace P9YS.Services.Carousel
             var imgUrl = string.Empty;
             if (!string.IsNullOrWhiteSpace(carouselnput.ImgData))
             {
-                var dataBytes = Convert.FromBase64String(carouselnput.ImgData);
-                MemoryStream ms = new MemoryStream(dataBytes);
-                var suffix = ImageHelper.GetSuffix(ms);
-                ms.Dispose();
-                imgUrl = $"/carousel/{Guid.NewGuid().ToString("N")}{suffix}";
-                var uploadResult = _baseService.UploadFile(imgUrl, dataBytes);
+                var (imgName, dataBytes) = _baseService.Base64ToBytes(carouselnput.ImgData);
+                var uploadResult = _baseService.UploadFile($"/carousel/{imgName}", dataBytes);
                 if (uploadResult.Code != CustomCodeEnum.Success)
                     return uploadResult;
             }

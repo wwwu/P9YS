@@ -32,5 +32,7 @@ namespace P9YS.Services.Base
         /// <param name="movieName"></param>
         /// <returns></returns>
         Task<(string url, string html)> DownloadDoubanHtml(string url, string movieName);
+
+        (string imgName, byte[] dataBytes) Base64ToBytes(string base64String);
     }
 }

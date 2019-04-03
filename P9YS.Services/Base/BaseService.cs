@@ -152,6 +152,14 @@ namespace P9YS.Services.Base
             var html = await WebClientGetStringAsync(url);
             return (url,html);
         }
+
+        public (string imgName, byte[] dataBytes) Base64ToBytes(string base64String)
+        {
+            var match = Regex.Match(base64String, @".*?:image/(.+?);base64,(.+)");
+            var dataBytes = Convert.FromBase64String(match.Groups[2]?.Value);
+            var imgName = $"{Guid.NewGuid().ToString("N")}.{match.Groups[1]?.Value}";
+            return (imgName, dataBytes);
+        }
     }
 
     public class TxCosResponse

@@ -54,7 +54,7 @@
     <div class="layui-form-item" style="position:absolute;right:25px;top:63px;">
         <div class="layui-inline">
             <div class="layui-input-inline">
-                <img id="imgBox" name="imgUrl" style="max-width:220px;max-height:300px" src="" />
+                <img id="imgBox" style="max-width:220px;max-height:300px" src="" />
             </div>
         </div>
     </div>
@@ -283,7 +283,7 @@
                         success: function (result) {
                             if (result.code == 10000) {
                                 result.content.releaseDate = result.content.releaseDate.substr(0, 10);
-                                $("#imgBox").attr("src", result.content.imgUrl);
+                                $("#imgBox").attr("src", result.content.imgData);
                                 result.content.scoreCount = 20;
                                 form.val("lay_add", result.content);
                                 //类型
@@ -313,7 +313,7 @@
                                     btn: ['添加', '取消'],
                                     yes: function () {
                                         var requestBody = $form.serialize();
-                                        requestBody += "&imgUrl=" + $("[name='imgUrl']").attr("src");
+                                        requestBody += "&imgData=" + encodeURIComponent($("#imgBox").attr("src"));
                                         var load = layer.load(2);
                                         $.ajax({
                                             type: "post",

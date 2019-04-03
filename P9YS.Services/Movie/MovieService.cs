@@ -196,12 +196,8 @@ namespace P9YS.Services.Movie
             var imgUrl = string.Empty;
             if (!string.IsNullOrWhiteSpace(input.ImgData))
             {
-                var dataBytes = Convert.FromBase64String(input.ImgData);
-                MemoryStream ms = new MemoryStream(dataBytes);
-                var suffix = ImageHelper.GetSuffix(ms);
-                ms.Dispose();
-                imgUrl = $"/poster/{Guid.NewGuid().ToString("N")}{suffix}";
-                var uploadResult = _baseService.UploadFile(imgUrl, dataBytes);
+                var (imgName, dataBytes) = _baseService.Base64ToBytes(input.ImgData);
+                var uploadResult = _baseService.UploadFile($"/poster/{imgName}", dataBytes);
                 if (uploadResult.Code != CustomCodeEnum.Success)
                     return uploadResult;
             }

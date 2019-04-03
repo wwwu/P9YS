@@ -22,6 +22,8 @@ namespace P9YS.EntityFramework.Models
         [StringLength(50)]
         public string MovieName { get; set; }
 
+        public string ImgData { get; set; }
+
         public string Resoures { get; set; }
 
         public string DoubanHtml { get; set; }
