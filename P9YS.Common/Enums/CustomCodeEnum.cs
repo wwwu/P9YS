@@ -65,6 +65,12 @@ namespace P9YS.Common
         Unauthorized = 11005,
 
         /// <summary>
+        /// 没有权限
+        /// </summary>
+        [Description("没有权限")]
+        PermissionDenied = 11006,
+
+        /// <summary>
         /// 已经存在
         /// </summary>
         [Description("已经存在")]

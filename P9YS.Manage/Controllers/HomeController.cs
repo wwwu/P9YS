@@ -10,9 +10,9 @@ using P9YS.Manage.Models;
 
 namespace P9YS.Manage.Controllers
 {
+    [Authorize]
     public class HomeController : Controller
     {
-        [Authorize(Roles = UserRoleConst.Admin)]
         public IActionResult Index()
         {
             return View();

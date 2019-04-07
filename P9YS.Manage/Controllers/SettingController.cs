@@ -19,7 +19,7 @@ using P9YS.Services.MovieRecommend.Dto;
 
 namespace P9YS.Manage.Controllers
 {
-    [Authorize(Roles = UserRoleConst.Admin)]
+    [Authorize]
     public class SettingController : Controller
     {
         private readonly IMovieService _movieService;
@@ -58,6 +58,7 @@ namespace P9YS.Manage.Controllers
             return Json(result);
         }
 
+        [Authorize(Roles = UserRoleConst.Admin)]
         [HttpPost]
         public async Task<JsonResult> AddCarousel(Carousel_Input carouselnput)
         {
@@ -65,6 +66,7 @@ namespace P9YS.Manage.Controllers
             return Json(result);
         }
 
+        [Authorize(Roles = UserRoleConst.Admin)]
         [HttpPost]
         public async Task<JsonResult> UpdCarousel(Carousel_Input carouselnput)
         {
@@ -91,6 +93,7 @@ namespace P9YS.Manage.Controllers
             return Json(result);
         }
 
+        [Authorize(Roles = UserRoleConst.Admin)]
         [HttpPost]
         public async Task<JsonResult> AddRecommend(MovieRecommend_Input movieRecommend)
         {
@@ -101,6 +104,7 @@ namespace P9YS.Manage.Controllers
             return Json(result);
         }
 
+        [Authorize(Roles = UserRoleConst.Admin)]
         [HttpDelete]
         public async Task<JsonResult> DelRecommend(int id)
         {
@@ -130,6 +134,7 @@ namespace P9YS.Manage.Controllers
             return Json(result);
         }
 
+        [Authorize(Roles = UserRoleConst.Admin)]
         [HttpPost]
         public async Task<JsonResult> AddArea(MovieArea_Input movieAreaInput)
         {
@@ -137,6 +142,7 @@ namespace P9YS.Manage.Controllers
             return Json(result);
         }
 
+        [Authorize(Roles = UserRoleConst.Admin)]
         [HttpPost]
         public async Task<JsonResult> UpdArea(MovieArea_Input movieAreaInput)
         {
@@ -163,6 +169,7 @@ namespace P9YS.Manage.Controllers
             return Json(result);
         }
 
+        [Authorize(Roles = UserRoleConst.Admin)]
         [HttpPost]
         public async Task<JsonResult> AddGenre(MoiveGenre_Input moiveGenreInput)
         {
@@ -170,6 +177,7 @@ namespace P9YS.Manage.Controllers
             return Json(result);
         }
 
+        [Authorize(Roles = UserRoleConst.Admin)]
         [HttpPost]
         public async Task<JsonResult> UpdGenre(MoiveGenre_Input moiveGenreInput)
         {

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
@@ -19,7 +20,7 @@ using P9YS.Services.User;
 
 namespace P9YS.Manage.Controllers
 {
-    [Authorize(Roles = UserRoleConst.Admin)]
+    [Authorize]
     public class MovieController : Controller
     {
         private readonly IRatingRecordService _ratingRecordService;
@@ -68,6 +69,8 @@ namespace P9YS.Manage.Controllers
             };
             return Json(result);
         }
+
+        [Authorize(Roles = UserRoleConst.Admin)]
         public async Task<JsonResult> AddMovie(MovieDraft_Detail_Input movieDraftDetailInput)
         {
             var user = _userService.GetCurrentUser();
@@ -108,12 +111,14 @@ namespace P9YS.Manage.Controllers
             return Json(result);
         }
 
+        [Authorize(Roles = UserRoleConst.Admin)]
         [HttpPost]
         public async Task<Result> UpdMovie(Movie_Manage_Input input)
         {
             return await _movieService.UpdMovie(input);
         }
 
+        [Authorize(Roles = UserRoleConst.Admin)]
         [HttpDelete]
         public async Task<Result> DelMovie(int movieId)
         {
@@ -156,6 +161,7 @@ namespace P9YS.Manage.Controllers
             return Json(result);
         }
 
+        [Authorize(Roles = UserRoleConst.Admin)]
         public async Task<JsonResult> DelComment(int id)
         {
             var result = await _movieCommentService.DelComment(id);
@@ -180,6 +186,7 @@ namespace P9YS.Manage.Controllers
             return Json(result);
         }
 
+        [Authorize(Roles = UserRoleConst.Admin)]
         public async Task<JsonResult> AddResource(MovieResource_Input movieResourceInput)
         {
             movieResourceInput.UserId = _userService.GetCurrentUser()?.UserId ?? 0;
@@ -187,12 +194,14 @@ namespace P9YS.Manage.Controllers
             return Json(result);
         }
 
+        [Authorize(Roles = UserRoleConst.Admin)]
         public async Task<JsonResult> UpdResource(MovieResource_Input movieResourceInput)
         {
             var result = await _movieResourceService.UpdResource(movieResourceInput);
             return Json(result);
         }
 
+        [Authorize(Roles = UserRoleConst.Admin)]
         public async Task<JsonResult> DelResource(int id)
         {
             var result = await _movieResourceService.DelResource(id);

@@ -56,7 +56,7 @@
                 , parseData: function (res) { //将原始数据解析成 table 组件所规定的数据
                     return {
                         "code": res.code,
-                        "msg": res.message,
+                        "msg": res.message || res,
                         "count": res.content.totalCount,
                         "data": res.content.data
                     };
@@ -105,12 +105,6 @@
                                 } else {
                                     layer.msg(result.message, function () { });
                                 }
-                            },
-                            error: function (ex) {
-                                layer.msg("异常", function () { });
-                            },
-                            complete: function () {
-                                layer.close(load);
                             }
                         })
                     });

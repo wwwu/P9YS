@@ -11,7 +11,7 @@ using P9YS.Services.User.Dto;
 
 namespace P9YS.Manage.Controllers
 {
-    [Authorize(Roles = UserRoleConst.Admin)]
+    [Authorize]
     public class UserController : Controller
     {
         private readonly IUserService _userService;
@@ -26,6 +26,7 @@ namespace P9YS.Manage.Controllers
             return View();
         }
 
+        [Authorize(Roles = UserRoleConst.Admin)]
         [HttpGet]
         public async Task<JsonResult> GetUsers(PagingInput<UserManage_Search_Input> pagingInput)
         {

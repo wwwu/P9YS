@@ -93,7 +93,7 @@ namespace P9YS.Web
             #region Filter
             services.AddMvc(option =>
             {
-                //自定义授权过滤器
+                //自定义Authrize
                 option.Filters.Add(typeof(CustomAuthorizeFilter));
                 //模型验证
                 option.Filters.Add(typeof(ModelStateFilterAttribute));
