@@ -42,7 +42,7 @@ namespace P9YS.EntityFramework
         {
             if (!optionsBuilder.IsConfigured)
             {
-                var envName = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
+                var envName = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")?? "Development";
                 Configuration = new ConfigurationBuilder()
                     .Add(new JsonConfigurationSource { Path = $"appsettings.{envName}.json", ReloadOnChange = true })
                     .Build();

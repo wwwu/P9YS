@@ -235,7 +235,7 @@ namespace P9YS.Services.Movie
 
         public async Task<List<MovieOrigin_Douban_Output>> GetMoviesByOriginUpdTime(int count)
         {
-            var entities = await _movieResourceContext.Movies.Include(s => s.MovieOrigins)
+            var entities = await _movieResourceContext.Movies
                 .GroupJoin(_movieResourceContext.MovieOrigins, m => m.Id, mo => mo.MovieId
                     , (m, mo) => new MovieOrigin_Douban_Output
                     {

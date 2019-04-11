@@ -268,6 +268,8 @@ namespace P9YS.Services.User
 
         #endregion
 
+        #region 列表
+
         public async Task<PagingOutput<UserManage_Output>> GetUsers(PagingInput<UserManage_Search_Input> pagingInput)
         {
             var query = _movieResourceContext.Users.AsQueryable();
@@ -287,17 +289,14 @@ namespace P9YS.Services.User
                     query = query.Where(s => s.Role == pagingInput.Condition.Role.Value);
             }
             //排序
-            if (!string.IsNullOrWhiteSpace(pagingInput.OrderBy?.Field))
-            {
-                var orderByField = typeof(EntityFramework.Models.User).GetProperty(pagingInput.OrderBy.Field);
-                if (orderByField != null)
-                {
-                    if (orderByField != null && pagingInput.OrderBy?.Type == "desc")
-                        query = query.OrderByDescending(s => orderByField);
-                    else
-                        query = query.OrderBy(s => orderByField);
-                }
-            }
+            if (pagingInput.OrderBy == null)
+                pagingInput.OrderBy = new OrderBy { Field = "RegisterTime", Type = "desc" };
+            var orderByField = typeof(EntityFramework.Models.User).GetProperty(pagingInput.OrderBy.Field);
+            if (pagingInput.OrderBy.Type == "desc")
+                query = query.OrderByDescending(s => orderByField);
+            else
+                query = query.OrderBy(s => orderByField);
+
             //分页
             var users = await query.Skip((pagingInput.PageIndex - 1) * pagingInput.PageSize)
                 .Take(pagingInput.PageSize)
@@ -315,5 +314,7 @@ namespace P9YS.Services.User
             };
             return result;
         }
+
+        #endregion
     }
 }

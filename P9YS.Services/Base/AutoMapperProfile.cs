@@ -32,13 +32,15 @@ namespace P9YS.Services.Base
 
             CreateMap<EntityFramework.Models.Carousel, Carousel.Dto.Carousel_Output>();
             CreateMap<Carousel.Dto.Carousel_Input, EntityFramework.Models.Carousel>();
-                //.ForAllMembers(opt => opt.Condition((s, d, sourceMember) => sourceMember != null)); //忽略空值映射
+            //.ForAllMembers(opt => opt.Condition((s, d, sourceMember) => sourceMember != null)); //忽略空值映射
 
             #endregion
 
             #region MovieRecommend
 
-            CreateMap<EntityFramework.Models.MovieRecommend, MovieRecommend_Output>();
+            CreateMap<EntityFramework.Models.MovieRecommend, MovieRecommend_Output>()
+                .ForMember(s => s.MovieImgUrl, option => option.MapFrom(s => appSettings.TxCos.CosDomain + s.Movie.ImgUrl))
+                .ForMember(s => s.MovieActor, option => option.MapFrom(s => s.Movie.Actor.Replace("\r\n","、")));
             CreateMap<MovieRecommend_Input, EntityFramework.Models.MovieRecommend>()
                 .ForMember(s => s.AddTime, option => option.MapFrom(s => DateTime.Now));
 

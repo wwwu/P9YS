@@ -202,6 +202,11 @@ namespace P9YS.Services.MovieDraft
                     UpdTime = DateTime.Now
                 }
             };
+            if (movie.SeriesId != 0)
+            {
+                var seriesMovie = await _movieResourceContext.Movies.FindAsync(movie.SeriesId);
+                seriesMovie.SeriesId = movie.SeriesId;
+            }
             await _movieResourceContext.AddAsync(movie);
             try
             {

@@ -37,7 +37,7 @@ namespace P9YS.Services.MovieRecommend
             {
                 annualRecommends = await _movieResourceContext.MovieRecommends.Include(s => s.Movie)
                     .Where(s=>s.Type== RecommendTypeEnum.Annual)
-                    .OrderByDescending(s => s.Sort)
+                    .OrderByDescending(s => s.Sort).ThenByDescending(s => s.AddTime)
                     .Take(limit)
                     .ProjectTo<MovieRecommend_Output>(_mapper.ConfigurationProvider)
                     .AsNoTracking()
@@ -59,7 +59,7 @@ namespace P9YS.Services.MovieRecommend
             {
                 recentRecommends = await _movieResourceContext.MovieRecommends.Include(s => s.Movie)
                     .Where(s => s.Type == RecommendTypeEnum.Recent)
-                    .OrderByDescending(s => s.Sort)
+                    .OrderByDescending(s => s.Sort).ThenByDescending(s=>s.AddTime)
                     .Take(limit)
                     .ProjectTo<MovieRecommend_Output>(_mapper.ConfigurationProvider)
                     .AsNoTracking()

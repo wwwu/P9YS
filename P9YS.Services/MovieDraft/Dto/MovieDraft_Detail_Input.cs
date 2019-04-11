@@ -34,6 +34,8 @@ namespace P9YS.Services.MovieDraft.Dto
 
         public string ImgData { get; set; }
 
+        public int SeriesId { get; set; }
+
         [Required]
         public string Intro { get; set; }
 
