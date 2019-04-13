@@ -28,24 +28,24 @@ namespace P9YS.HangfireJobs
             #region 注册后台任务
 
             //更新评分数据
-            //RecurringJob.AddOrUpdate<IJobService>("Recurring_UpdRatingsJob"
-            //    , s => s.UpdRatingsJob("Recurring_UpdRatingsJob"), "0 0/10 * * * ?");
+            RecurringJob.AddOrUpdate<IJobService>("Recurring_UpdRatingsJob"
+                , s => s.UpdRatingsJob("Recurring_UpdRatingsJob"), "0 0/10 * * * ?");
 
-            ////更新点赞数据
-            //RecurringJob.AddOrUpdate<IJobService>("Recurring_UpdSuportsJob"
-            //    , s => s.UpdSuportsJob("Recurring_UpdSuportsJob"), "0 0/5 * * * ?");
+            //更新点赞数据
+            RecurringJob.AddOrUpdate<IJobService>("Recurring_UpdSuportsJob"
+                , s => s.UpdSuportsJob("Recurring_UpdSuportsJob"), "0 0/20 * * * ?");
 
-            ////更新豆瓣数据(评分、在线播放源)
-            //RecurringJob.AddOrUpdate<IJobService>("Recurring_UpdDoubanDataJob"
-            //    , s => s.UpdDoubanDataJob(), "0 0 18 * * ?"); //UTC时间
+            //更新豆瓣数据(评分、在线播放源)
+            RecurringJob.AddOrUpdate<IJobService>("Recurring_UpdDoubanDataJob"
+                , s => s.UpdDoubanDataJob(), "0 0 18 * * ?"); //UTC时间
 
-            ////清理数据，并整理碎片
-            //RecurringJob.AddOrUpdate<IJobService>("Recurring_OptimizeDatabaseJob"
-            //    , s => s.OptimizeDatabaseJob(), "0 0 21 1 1/1 ?"); //每月1号21点整运行(北京时间05:00)
+            //清理数据，并整理碎片
+            RecurringJob.AddOrUpdate<IJobService>("Recurring_OptimizeDatabaseJob"
+                , s => s.OptimizeDatabaseJob(), "0 0 21 1 1/1 ?"); //每月1号21点整运行(北京时间05:00)
 
-            ////抓取影片资源
-            //RecurringJob.AddOrUpdate<IJobService>("Recurring_DownloadMovieInfoJob"
-            //    , s => s.DownloadMovieInfoJob(), "0 0/10 * * * ?");
+            //抓取影片资源
+            RecurringJob.AddOrUpdate<IJobService>("Recurring_DownloadMovieInfoJob"
+                , s => s.DownloadMovieInfoJob(), "0 0/10 * * * ?");
 
             #endregion
         }

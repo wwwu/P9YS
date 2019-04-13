@@ -686,3 +686,20 @@ function paging(pageIndex, total, pageSize, groups) {
 
     return result;
 }
+
+function copyText(element) {
+    if (document.body.createTextRange) {
+        var range = document.body.createTextRange();
+        range.moveToElementText(element);
+        range.select();
+    } else if (window.getSelection) {
+        var selection = window.getSelection();
+        var range = document.createRange();
+        range.selectNodeContents(element);
+        selection.removeAllRanges();
+        selection.addRange(range);
+    } else {
+        layer.msg("浏览器不支持");
+        return;
+    }
+}

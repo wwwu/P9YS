@@ -16,8 +16,7 @@
                 @Model.CurrentUser.NickName <br />
                 @Model.CurrentUser.Email <a asp-controller="Member" asp-action="Logout">退出</a>
             </p>
-            @*<a asp-controller="Account" asp-action="Index"><img class="avatar" src="@Model.CurrentUser.Avatar" height="42" width="42" /></a>*@
-            <a href="javascript:layer.msg('暂未开放')"><img class="avatar" src="@Model.CurrentUser.Avatar" height="42" width="42" /></a>
+            <a asp-controller="Account" asp-action="Index"><img class="avatar" src="@Model.CurrentUser.Avatar" height="42" width="42" /></a>
         }
     }
 </div>

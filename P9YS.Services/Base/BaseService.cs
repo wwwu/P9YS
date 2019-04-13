@@ -89,27 +89,6 @@ namespace P9YS.Services.Base
             return _options.CurrentValue.TxCos.CosDomain + relativeUrl;
         }
 
-        public string WebClientGetString(string url, string encoding = null)
-        {
-            var result = string.Empty;
-            WebClient webClient = new WebClient();
-            try
-            {
-                webClient.Headers.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64)");
-                if (encoding != null)
-                {
-                    Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-                    webClient.Encoding = Encoding.GetEncoding(encoding);
-                }
-                result = webClient.DownloadString(url);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex.ToString());
-            }
-            return result;
-        }
-
         public async Task<string> WebClientGetStringAsync(string url, string encoding = null)
         {
             var result = string.Empty;
@@ -124,9 +103,13 @@ namespace P9YS.Services.Base
                 }
                 result = await webClient.DownloadStringTaskAsync(url);
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 _logger.LogError(ex.ToString());
+            }
+            finally
+            {
+                webClient.Dispose();
             }
             return result;
         }

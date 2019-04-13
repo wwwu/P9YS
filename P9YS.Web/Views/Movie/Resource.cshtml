@@ -33,7 +33,7 @@
                 <img class="avatar pull-left" src="@movieResource.UserAvatar" height="38" width="38">
                 <p class="u-info">
                     <a class="pull-right btn btn-default btn-sm" target="_blank" href="@movieResource.Content">点击下载</a>
-                    <a class="pull-right btn btn-default btn-sm btn-copy" href="javascript:void(0)">复制链接</a>@movieResource.UserNickName &nbsp;&nbsp; @movieResource.UpdTime.ToString("yyyy-MM-dd HH:mm:ss")
+                    <a class="pull-right btn btn-default btn-sm btn-copy" href="javascript:copyText($('.link')[0])">选中链接</a>@movieResource.UserNickName &nbsp;&nbsp; @movieResource.UpdTime.ToString("yyyy-MM-dd HH:mm:ss")
                 </p>
                 <p class="link">@movieResource.Content</p>
                 <div style="margin:15px 0 0 48px; clear:both;">

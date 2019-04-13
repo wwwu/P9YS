@@ -238,7 +238,8 @@ namespace P9YS.ServiceTests
         public async Task UpdDoubanData_Test()
         {
             //Arrange
-            var movieService = new MovieService(mapper, dbContext, baseService.Object);//new Services.Base.BaseService(null,null)
+            var movieService = new MovieService(mapper, dbContext, baseService.Object);
+            //var movieService = new MovieService(mapper, dbContext, new Services.Base.BaseService(null, null));
             //Act
             var input = new MovieOrigin_Douban_Output
             {
