@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Reflection;
 using System.Threading.Tasks;
 using AutoMapper;
@@ -45,6 +46,13 @@ namespace P9YS.Web
             //Session
             services.AddSession();
             services.AddHttpClient();
+            services.AddHttpClient("tls").ConfigurePrimaryHttpMessageHandler(() =>
+            {
+                return new HttpClientHandler
+                {
+                    SslProtocols = System.Security.Authentication.SslProtocols.Tls
+                };
+            });
             #endregion
 
             #region Cookies

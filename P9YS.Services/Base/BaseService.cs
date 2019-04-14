@@ -97,7 +97,11 @@ namespace P9YS.Services.Base
             var result = string.Empty;
             try
             {
-                var client = _httpClientFactory.CreateClient();
+                HttpClient client;
+                if (url.StartsWith("https"))
+                    client = _httpClientFactory.CreateClient("tls"); //TODO: 奇怪，服务器上这里如果不指定ssl协议，会报异常，本地环境则不会。
+                else
+                    client = _httpClientFactory.CreateClient();
                 client.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64)");
                 var bytes = await client.GetByteArrayAsync(url);
                 Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);

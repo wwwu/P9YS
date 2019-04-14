@@ -16,6 +16,7 @@ using P9YS.Services.Base;
 using Hangfire;
 using P9YS.HangfireJobs;
 using Hangfire.MySql.Core;
+using System.Net.Http;
 
 namespace P9YS.Manage
 {
@@ -42,6 +43,13 @@ namespace P9YS.Manage
                 option.SerializerSettings.DateFormatString = "yyyy-MM-dd HH:mm:ss";
             });
             services.AddHttpClient();
+            services.AddHttpClient("tls").ConfigurePrimaryHttpMessageHandler(() =>
+            {
+                return new HttpClientHandler
+                {
+                    SslProtocols = System.Security.Authentication.SslProtocols.Tls
+                };
+            });
             #endregion
 
             #region Cookies
