@@ -239,7 +239,7 @@ namespace P9YS.Services.MovieDraft
             #region 获取dytt最新电影链接，跟数据库中的比对取差集
             var dyDomain = "https://www.dytt8.net/";
             var encoding = "gb2312";
-            var dyListHtml = await _baseService.WebClientGetStringAsync(dyDomain, encoding);
+            var dyListHtml = await _baseService.GetClientStringAsync(dyDomain, encoding);
             var newUrls = Regex.Matches(dyListHtml
                 , @"(?<=start:最新电影下载-->[\w\W]*?)href='(.*?/\d+?/\d+?.html)'(?=[\w\W]*?end:最新电影下载--->)")
                 .Select(s => dyDomain + s.Groups[1].Value).Distinct().ToList();
@@ -253,7 +253,7 @@ namespace P9YS.Services.MovieDraft
             var moviesDrafts = new List<EntityFramework.Models.MovieDraft>();
             foreach (var dyUrl in newUrls)
             {
-                var dyContentHtml = await _baseService.WebClientGetStringAsync(dyUrl, encoding);
+                var dyContentHtml = await _baseService.GetClientStringAsync(dyUrl, encoding);
                 var movieName = Regex.Match(dyContentHtml
                     , @"<h1>.*?《(.+?)》").Groups[1]?.Value;
                 if (string.IsNullOrWhiteSpace(movieName))

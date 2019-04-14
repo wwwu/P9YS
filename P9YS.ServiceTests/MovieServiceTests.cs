@@ -11,6 +11,8 @@ using System.Threading.Tasks;
 using Xunit;
 using System.Linq;
 using P9YS.Common;
+using System.Net.Http;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace P9YS.ServiceTests
 {
@@ -239,7 +241,11 @@ namespace P9YS.ServiceTests
         {
             //Arrange
             var movieService = new MovieService(mapper, dbContext, baseService.Object);
-            //var movieService = new MovieService(mapper, dbContext, new Services.Base.BaseService(null, null));
+            //var serviceCollection = new ServiceCollection();
+            //serviceCollection.AddHttpClient();
+            //var clientFactory = serviceCollection.BuildServiceProvider().GetService<IHttpClientFactory>();
+            //var movieService = new MovieService(mapper, dbContext
+            //    , new Services.Base.BaseService(null, null, clientFactory));
             //Act
             var input = new MovieOrigin_Douban_Output
             {

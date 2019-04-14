@@ -21,9 +21,9 @@ namespace P9YS.Services.Base
         /// <param name="savePath">要保存的路径, /文件夹名/文件名.jpg</param>
         /// <param name="sourcePath">要上传文件的完整url</param>
         /// <returns></returns>
-        Result UploadFile(string savePath, string sourcePath);
+        Task<Result> UploadFileAsync(string savePath, string sourcePath);
 
-        Task<string> WebClientGetStringAsync(string url, string encoding = null);
+        Task<string> GetClientStringAsync(string url, string encoding = null);
 
         /// <summary>
         /// 抓取豆瓣html,优先根据url下载，没有url则根据movieName搜索

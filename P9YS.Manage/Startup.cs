@@ -41,6 +41,7 @@ namespace P9YS.Manage
             {
                 option.SerializerSettings.DateFormatString = "yyyy-MM-dd HH:mm:ss";
             });
+            services.AddHttpClient();
             #endregion
 
             #region Cookies

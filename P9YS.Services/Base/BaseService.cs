@@ -4,9 +4,7 @@ using Newtonsoft.Json;
 using P9YS.Common;
 using QCloud.CosApi.Api;
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Net;
+using System.Net.Http;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
@@ -17,11 +15,15 @@ namespace P9YS.Services.Base
     {
         private readonly IOptionsMonitor<AppSettings> _options;
         private readonly ILogger<BaseService> _logger;
+        private readonly IHttpClientFactory _httpClientFactory;
+
         public BaseService(IOptionsMonitor<AppSettings> options
-            , ILogger<BaseService> logger)
+            , ILogger<BaseService> logger
+            , IHttpClientFactory httpClientFactory)
         {
             _options = options;
             _logger = logger;
+            _httpClientFactory = httpClientFactory;
         }
 
         /// <summary>
@@ -62,12 +64,13 @@ namespace P9YS.Services.Base
         /// <param name="savePath">要保存的路径, /文件夹名/文件名.jpg</param>
         /// <param name="sourcePath">要上传文件的完整url</param>
         /// <returns></returns>
-        public Result UploadFile(string savePath, string sourcePath)
+        public async Task<Result> UploadFileAsync(string savePath, string sourcePath)
         {
             var result = new Result();
             try
             {
-                var bytes = new WebClient().DownloadData(sourcePath);
+                var client = _httpClientFactory.CreateClient();
+                var bytes = await client.GetByteArrayAsync(sourcePath);
                 result = UploadFile(savePath, bytes);
             }
             catch (Exception ex)
@@ -89,27 +92,20 @@ namespace P9YS.Services.Base
             return _options.CurrentValue.TxCos.CosDomain + relativeUrl;
         }
 
-        public async Task<string> WebClientGetStringAsync(string url, string encoding = null)
+        public async Task<string> GetClientStringAsync(string url, string encoding = "utf-8")
         {
             var result = string.Empty;
-            WebClient webClient = new WebClient();
             try
             {
-                webClient.Headers.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64)");
-                if (encoding != null)
-                {
-                    Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-                    webClient.Encoding = Encoding.GetEncoding(encoding);
-                }
-                result = await webClient.DownloadStringTaskAsync(url);
+                var client = _httpClientFactory.CreateClient();
+                client.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64)");
+                var bytes = await client.GetByteArrayAsync(url);
+                Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+                result = Encoding.GetEncoding(encoding).GetString(bytes);
             }
             catch (Exception ex)
             {
                 _logger.LogError(ex.ToString());
-            }
-            finally
-            {
-                webClient.Dispose();
             }
             return result;
         }
@@ -125,14 +121,14 @@ namespace P9YS.Services.Base
             if (string.IsNullOrWhiteSpace(url))
             {
                 var searchPageUrl = $"https://www.douban.com/search?cat=1002&q={movieName}";
-                var searchPageHtml = await WebClientGetStringAsync(searchPageUrl);
+                var searchPageHtml = await GetClientStringAsync(searchPageUrl);
                 var sid = Regex.Match(searchPageHtml, @"sid:\s*?(\d+)\s*?,").Groups[1]?.Value;
                 if (string.IsNullOrWhiteSpace(sid))
                     return (url, string.Empty);
                 url = $"https://movie.douban.com/subject/{sid}/";
             }
             //影片内容页
-            var html = await WebClientGetStringAsync(url);
+            var html = await GetClientStringAsync(url);
             return (url,html);
         }
 

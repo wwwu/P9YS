@@ -44,6 +44,7 @@ namespace P9YS.Web
             services.AddMemoryCache();
             //Session
             services.AddSession();
+            services.AddHttpClient();
             #endregion
 
             #region Cookies
