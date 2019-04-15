@@ -19,9 +19,6 @@ ASP.NET Core 2 + EF Core 2 + Bootstrap + LayUI
 6. appsettings配置文件中TxCos（腾讯云对象存储，指定额度内免费），会影响图片上传和显示。
 7. P9YS.Web项目d的appsettings配置文件中GeetestOptions（极验验证），会影响登录。
 
-### 项目结构
-待补充
-
 ### 知识点
 > * [ASP.NET Core入门](https://docs.microsoft.com/zh-cn/aspnet/core/getting-started/?view=aspnetcore-2.1&tabs=windows)  
 有这种文档简直幸福。
