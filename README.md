@@ -4,7 +4,7 @@ ASP.NET Core 2 + EF Core 2 + Bootstrap + LayUI
 
 ### 预览
 > 生产环境  
-  Web：[http://www.p9ys.com](http://www.p9ys.com)  
+  Web：[http://www.p9ys.com](http://www.p9ys.com) （账号：test 密码：test）  
   后台：[http://ht.p9ys.com](http://ht.p9ys.com) 从Web端登录也可进入，共享cookie  
   配置：单核、1G内存、1M独享带宽  
   
