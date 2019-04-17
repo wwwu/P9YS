@@ -4,7 +4,7 @@ ASP.NET Core 2 + EF Core 2 + Bootstrap + LayUI
 
 ### 预览
 > 生产环境  
-  Web：[http://www.p9ys.com](http://www.p9ys.com)  
+  Web：[http://www.p9ys.com](http://www.p9ys.com) （账号：test@p9ys.com 密码：123456）  
   后台：[http://ht.p9ys.com](http://ht.p9ys.com) 从Web端登录也可进入，共享cookie  
   配置：单核、1G内存、1M独享带宽  
   
@@ -18,9 +18,6 @@ ASP.NET Core 2 + EF Core 2 + Bootstrap + LayUI
 5. appsettings配置文件中EmailServer（邮件服务），会影响注册邮件的发送。
 6. appsettings配置文件中TxCos（腾讯云对象存储，指定额度内免费），会影响图片上传和显示。
 7. P9YS.Web项目d的appsettings配置文件中GeetestOptions（极验验证），会影响登录。
-
-### 项目结构
-待补充
 
 ### 知识点
 > * [ASP.NET Core入门](https://docs.microsoft.com/zh-cn/aspnet/core/getting-started/?view=aspnetcore-2.1&tabs=windows)  
