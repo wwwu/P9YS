@@ -293,9 +293,9 @@ namespace P9YS.Services.User
                 pagingInput.OrderBy = new OrderBy { Field = "RegisterTime", Type = "desc" };
             var orderByField = typeof(EntityFramework.Models.User).GetProperty(pagingInput.OrderBy.Field);
             if (pagingInput.OrderBy.Type == "desc")
-                query = query.OrderByDescending(s => orderByField);
+                query = query.OrderByDescending(s => orderByField.GetValue(s));
             else
-                query = query.OrderBy(s => orderByField);
+                query = query.OrderBy(s => orderByField.GetValue(s));
 
             //分页
             var users = await query.Skip((pagingInput.PageIndex - 1) * pagingInput.PageSize)

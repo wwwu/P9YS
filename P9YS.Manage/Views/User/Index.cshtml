@@ -80,7 +80,7 @@
             //监听排序事件 
             table.on('sort(tb_users)', function (obj) {
                 var key = {
-                    "OrderBy.Field": obj.field,
+                    "OrderBy.Field": obj.field.replace(obj.field[0], obj.field[0].toUpperCase()),
                     "OrderBy.Type":obj.type
                 }
 
