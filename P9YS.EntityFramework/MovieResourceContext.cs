@@ -54,6 +54,11 @@ namespace P9YS.EntityFramework
         {
             #region 索引
 
+            modelBuilder.Entity<Movie>().HasIndex(s => s.AddTime);
+            modelBuilder.Entity<Movie>().HasIndex(s => s.UpdTime);
+            modelBuilder.Entity<Movie>().HasIndex(s => s.Score);
+            modelBuilder.Entity<Movie>().HasIndex(s => s.Hot);
+
             #endregion
 
             #region 种子数据
