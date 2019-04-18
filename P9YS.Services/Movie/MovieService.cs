@@ -256,7 +256,19 @@ namespace P9YS.Services.Movie
                 .DownloadDoubanHtml(movieDoubanOrigin.Url, movieDoubanOrigin.FullName);
             movieDoubanOrigin.Url = url;
             if (string.IsNullOrWhiteSpace(html))
+            {
+                _movieResourceContext.MovieOrigins.Add(new MovieOrigin
+                {
+                    MovieId = movieDoubanOrigin.MovieId,
+                    OriginType = MovieOriginTypeEnum.DouBan,
+                    Score = 0,
+                    Url = movieDoubanOrigin.Url,
+                    AddTime = DateTime.Now,
+                    UpdTime = DateTime.Now,
+                });
+                await _movieResourceContext.SaveChangesAsync();
                 return;
+            }
             //评分
             var score = Regex.Match(html
                 , @"<strong.*?rating_num.*?>([\d.]+?)</strong>").Groups[1]?.Value;
@@ -278,29 +290,26 @@ namespace P9YS.Services.Movie
                 });
             }
             //MovieOrigins
-            if (!string.IsNullOrWhiteSpace(score))
-            {
-                var movieOrigin = _movieResourceContext.MovieOrigins
-                    .FirstOrDefault(s => s.MovieId == movieDoubanOrigin.MovieId && s.OriginType == MovieOriginTypeEnum.DouBan);
-                if (movieOrigin != null)
-                {//修改
-                    movieOrigin.Score = decimal.Parse(score);
-                    movieOrigin.UpdTime = DateTime.Now;
-                }
-                else
-                {//新增
-                    _movieResourceContext.MovieOrigins.Add(new MovieOrigin
-                    {
-                        MovieId = movieDoubanOrigin.MovieId,
-                        OriginType = MovieOriginTypeEnum.DouBan,
-                        Score = decimal.Parse(score),
-                        Url = movieDoubanOrigin.Url,
-                        AddTime = DateTime.Now,
-                        UpdTime = DateTime.Now,
-                    });
-                }
-                await _movieResourceContext.SaveChangesAsync();
+            var movieOrigin = _movieResourceContext.MovieOrigins
+                .FirstOrDefault(s => s.MovieId == movieDoubanOrigin.MovieId && s.OriginType == MovieOriginTypeEnum.DouBan);
+            if (movieOrigin != null)
+            {//修改
+                movieOrigin.Score = decimal.Parse(score);
+                movieOrigin.UpdTime = DateTime.Now;
             }
+            else
+            {//新增
+                _movieResourceContext.MovieOrigins.Add(new MovieOrigin
+                {
+                    MovieId = movieDoubanOrigin.MovieId,
+                    OriginType = MovieOriginTypeEnum.DouBan,
+                    Score = decimal.Parse(score ?? "0"),
+                    Url = movieDoubanOrigin.Url,
+                    AddTime = DateTime.Now,
+                    UpdTime = DateTime.Now,
+                });
+            }
+
             //MovieOnlinePlays
             if (movieOnlinePlays.Any())
             {
@@ -309,8 +318,8 @@ namespace P9YS.Services.Movie
                     .ToList();
                 _movieResourceContext.MovieOnlinePlays.RemoveRange(oldDatas);
                 _movieResourceContext.MovieOnlinePlays.AddRange(movieOnlinePlays);
-                await _movieResourceContext.SaveChangesAsync();
             }
+            await _movieResourceContext.SaveChangesAsync();
         }
 
         #endregion
