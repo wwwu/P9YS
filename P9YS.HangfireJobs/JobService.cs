@@ -73,13 +73,14 @@ namespace P9YS.HangfireJobs
         /// </summary>
         public async Task<List<MovieOrigin_Douban_Output>> UpdDoubanDataJob()
         {
-            var movies = await _movieService.GetMoviesByOriginUpdTime(20);
-            //5小时内随机分布抓取时间
-            var totalMinutes = 300;
+            var count = 20;
+            var movies = await _movieService.GetMoviesByOriginUpdTime(count);
+            //2~10分钟一次
             var random = new Random();
+            var delay = 0;
             movies.ForEach(movie =>
             {
-                var delay = random.Next(1, totalMinutes);
+                delay += random.Next(2, 11);
                 BackgroundJob.Schedule<IMovieService>(s => s.UpdDoubanData(movie)
                     , TimeSpan.FromMinutes(delay));
             });
