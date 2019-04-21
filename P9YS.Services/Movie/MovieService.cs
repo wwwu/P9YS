@@ -111,7 +111,7 @@ namespace P9YS.Services.Movie
                 return new List<MovieSeries_Output>();
 
             var series = await _movieResourceContext.Movies
-                .Where(s => s.SeriesId == seriesId && s.Id != seriesId)
+                .Where(s => s.SeriesId == seriesId)
                 .OrderBy(m => m.ReleaseDate)
                 .ProjectTo<MovieSeries_Output>(_mapper.ConfigurationProvider)
                 .AsNoTracking()
@@ -271,21 +271,22 @@ namespace P9YS.Services.Movie
             }
             //评分
             var score = Regex.Match(html
-                , @"<strong.*?rating_num.*?>([\d.]+?)</strong>").Groups[1]?.Value;
+                , @"<strong.*?rating_num.*?>([\d.]+?)</strong>").Groups[1].Value;
+            score = string.IsNullOrWhiteSpace(score) ? "0" : score;
             //在线播放源
             var matches = Regex.Matches(html
                 , @"class=""playBtn"".+?data-cn=""(.+?)"".+?href=""(.+?)""[\w\W]+?class=""buylink-price""><span>([\w\W]*?)</span></span>");
             var movieOnlinePlays = new List<MovieOnlinePlay>();
             foreach (Match match in matches)
             {
-                var price = match.Groups[3]?.Value ?? "";
+                var price = match.Groups[3].Value;
                 price = Regex.Replace(price
                     , @"(?-ms:^\s*([\w\W]*?)\s*$)", "${1}");//去掉首尾空行空格 \s*[\n\r]+\s*
                 movieOnlinePlays.Add(new MovieOnlinePlay
                 {
                     MovieId = movieDoubanOrigin.MovieId,
-                    WebSiteName = match.Groups[1]?.Value ?? "",
-                    Url = match.Groups[2]?.Value ?? "",
+                    WebSiteName = match.Groups[1].Value,
+                    Url = match.Groups[2].Value,
                     Price = price
                 });
             }
@@ -303,7 +304,7 @@ namespace P9YS.Services.Movie
                 {
                     MovieId = movieDoubanOrigin.MovieId,
                     OriginType = MovieOriginTypeEnum.DouBan,
-                    Score = decimal.Parse(score ?? "0"),
+                    Score = decimal.Parse(score),
                     Url = movieDoubanOrigin.Url,
                     AddTime = DateTime.Now,
                     UpdTime = DateTime.Now,

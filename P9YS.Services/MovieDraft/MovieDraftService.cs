@@ -84,19 +84,19 @@ namespace P9YS.Services.MovieDraft
 
             #region 解析html获取影片信息
             movieDraftDetailInput.FullName = Regex.Match(movieDraft.DoubanHtml
-                , @"<h1>[\w\W]*?<span.*?>(.*?)</span>").Groups[1]?.Value;
+                , @"<h1>[\w\W]*?<span.*?>(.*?)</span>").Groups[1].Value;
             movieDraftDetailInput.OtherName = Regex.Match(movieDraft.DoubanHtml
-                , @"又名:</span>(.*?)<br").Groups[1]?.Value.Trim().Replace(" / ", "\r\n");
+                , @"又名:</span>(.*?)<br").Groups[1].Value.Trim().Replace(" / ", "\r\n");
             var areaName = Regex.Match(movieDraft.DoubanHtml
-                , @"制片国家/地区:</span>\s*?([\u4E00-\u9FFF]+).*?<br").Groups[1]?.Value;
+                , @"制片国家/地区:</span>\s*?([\u4E00-\u9FFF]+).*?<br").Groups[1].Value;
             movieDraftDetailInput.MovieAreaId = await _movieAreaService.GetMovieAreaId(areaName);
             movieDraftDetailInput.Director = Regex.Match(movieDraft.DoubanHtml
-                , @"v:directedBy"">(.*?)</a>").Groups[1]?.Value;
+                , @"v:directedBy"">(.*?)</a>").Groups[1].Value;
             movieDraftDetailInput.Score = decimal.Parse(Regex.Match(movieDraft.DoubanHtml
-                , @"v:average"">(.*?)</strong>").Groups[1]?.Value);
+                , @"v:average"">(.*?)</strong>").Groups[1].Value);
             movieDraftDetailInput.DoubanScore = movieDraftDetailInput.Score;
             //movieDraftDetailInput.ImgUrl = Regex.Match(movieDraft.DoubanHtml
-            //    , @"<img.*?src=""(.*?)"".*?rel=""v:image").Groups[1]?.Value;
+            //    , @"<img.*?src=""(.*?)"".*?rel=""v:image").Groups[1].Value;
             //if (!string.IsNullOrWhiteSpace(movieDraftDetailInput.ImgUrl))
             //    movieDraftDetailInput.ImgUrl = movieDraftDetailInput.ImgUrl.Replace(".jpg", ".webp");
 
@@ -104,22 +104,22 @@ namespace P9YS.Services.MovieDraft
             foreach (Match m in Regex.Matches(movieDraft.DoubanHtml
                 , @"v:starring"">(.*?)</a>").Take(10))
             {
-                movieDraftDetailInput.Actor += m.Groups[1]?.Value + "\r\n";
+                movieDraftDetailInput.Actor += m.Groups[1].Value + "\r\n";
             }
             //类型，取前10个
             movieDraftDetailInput.MovieTypes = new List<string>();
             foreach (Match m in Regex.Matches(movieDraft.DoubanHtml
                 , @"v:genre"">(.*?)</span>").Take(10))
             {
-                movieDraftDetailInput.MovieTypes.Add(m.Groups[1]?.Value);
+                movieDraftDetailInput.MovieTypes.Add(m.Groups[1].Value);
             }
             movieDraftDetailInput.ReleaseDate = DateTime.Parse(Regex.Match(movieDraft.DoubanHtml
-                , @"content=""(\d\d\d\d-\d\d-\d\d)").Groups[1]?.Value);
+                , @"content=""(\d\d\d\d-\d\d-\d\d)").Groups[1].Value);
             movieDraftDetailInput.MovieTime = int.Parse(Regex.Match(movieDraft.DoubanHtml
-                , @"v:runtime""\s*?content=""(\d+)").Groups[1]?.Value);
+                , @"v:runtime""\s*?content=""(\d+)").Groups[1].Value);
             //简介
             movieDraftDetailInput.Intro = Regex.Match(movieDraft.DoubanHtml
-                , @"property=""v:summary"".*?>([\w\W]+?)</span>").Groups[1]?.Value;
+                , @"property=""v:summary"".*?>([\w\W]+?)</span>").Groups[1].Value;
             movieDraftDetailInput.Intro = Regex.Replace(movieDraftDetailInput.Intro
                 , @"<[a-zA-Z/!][^<]*?>", "");//去掉所有html标签
             movieDraftDetailInput.Intro = Regex.Replace(movieDraftDetailInput.Intro
@@ -133,12 +133,12 @@ namespace P9YS.Services.MovieDraft
             foreach (Match m in Regex.Matches(movieDraft.DoubanHtml
                 , @"class=""playBtn"".+?data-cn=""(.+?)"".+?href=""(.+?)""[\w\W]+?class=""buylink-price""><span>([\w\W]*?)</span></span>"))
             {
-                var price = m.Groups[3]?.Value ?? "";
+                var price = m.Groups[3].Value;
                 price = Regex.Replace(price, @"(?-ms:^\s*([\w\W]*?)\s*$)", "${1}");//去掉首尾空行空格 \s*[\n\r]+\s*
                 movieDraftDetailInput.MovieOnlinePlays.Add(new MovieOnlinePlay_Output
                 {                    
-                    WebSiteName = m.Groups[1]?.Value ?? "",
-                    Url = m.Groups[2]?.Value ?? "",
+                    WebSiteName = m.Groups[1].Value,
+                    Url = m.Groups[2].Value,
                     Price = price
                 });
             }
@@ -154,10 +154,10 @@ namespace P9YS.Services.MovieDraft
             var match = Regex.Match(movieDraft.Resoures, @".+\.(.+?\.\d+?p)\.(\w+?)\.\w+$");
             movieDraftDetailInput.MovieResource = new MovieResource_Input
             {
-                Dub = Regex.Match(movieDraft.DoubanHtml, @"语言:</span>\s*?(\w+).*?<br/>").Groups[1]?.Value,
-                Resolution = match.Groups[1]?.Value,
+                Dub = Regex.Match(movieDraft.DoubanHtml, @"语言:</span>\s*?(\w+).*?<br/>").Groups[1].Value,
+                Resolution = match.Groups[1].Value,
                 Size = 0, //TODO: 获取文件大小，ftp GetFileSize行不通
-                Subtitle = match.Groups[2]?.Value?.ToUpper(),
+                Subtitle = match.Groups[2].Value.ToUpper(),
                 Content = link,
             };
             #endregion
@@ -255,12 +255,12 @@ namespace P9YS.Services.MovieDraft
             {
                 var dyContentHtml = await _baseService.GetClientStringAsync(dyUrl, encoding);
                 var movieName = Regex.Match(dyContentHtml
-                    , @"<h1>.*?《(.+?)》").Groups[1]?.Value;
+                    , @"<h1>.*?《(.+?)》").Groups[1].Value;
                 if (string.IsNullOrWhiteSpace(movieName))
                     continue;
                 result.Add(movieName);
                 var resource =  Regex.Match(dyContentHtml
-                    , @"<a\s+?href=""(ftp://.+?)""").Groups[1]?.Value;
+                    , @"<a\s+?href=""(ftp://.+?)""").Groups[1].Value;
                 var (doubanUrl, doubanHtml) = await _baseService.DownloadDoubanHtml(null, movieName);
                 //清理垃圾
                 doubanHtml = Regex.Replace(doubanHtml ?? ""  
@@ -270,7 +270,7 @@ namespace P9YS.Services.MovieDraft
                 doubanHtml = System.Web.HttpUtility.HtmlDecode(doubanHtml);
                 //获取图片，转base64
                 var imgUrl = Regex.Match(doubanHtml
-                    , @"<img.*?src=""(.*?)"".*?rel=""v:image").Groups[1]?.Value;
+                    , @"<img.*?src=""(.*?)"".*?rel=""v:image").Groups[1].Value;
                 var bytes = await new WebClient().DownloadDataTaskAsync(imgUrl);
                 var base64String = Convert.ToBase64String(bytes);
                 var suffix = imgUrl.Substring(imgUrl.LastIndexOf(".") + 1);

@@ -126,7 +126,7 @@ namespace P9YS.Services.Base
             {
                 var searchPageUrl = $"https://www.douban.com/search?cat=1002&q={movieName}";
                 var searchPageHtml = await GetClientStringAsync(searchPageUrl);
-                var sid = Regex.Match(searchPageHtml, @"sid:\s*?(\d+)\s*?,").Groups[1]?.Value;
+                var sid = Regex.Match(searchPageHtml, @"sid:\s*?(\d+)\s*?,").Groups[1].Value;
                 if (string.IsNullOrWhiteSpace(sid))
                     return (url, string.Empty);
                 url = $"https://movie.douban.com/subject/{sid}/";
@@ -139,8 +139,8 @@ namespace P9YS.Services.Base
         public (string imgName, byte[] dataBytes) Base64ToBytes(string base64String)
         {
             var match = Regex.Match(base64String, @".*?:image/(.+?);base64,(.+)");
-            var dataBytes = Convert.FromBase64String(match.Groups[2]?.Value);
-            var imgName = $"{Guid.NewGuid().ToString("N")}.{match.Groups[1]?.Value}";
+            var dataBytes = Convert.FromBase64String(match.Groups[2].Value);
+            var imgName = $"{Guid.NewGuid().ToString("N")}.{match.Groups[1].Value}";
             return (imgName, dataBytes);
         }
     }
