@@ -90,7 +90,8 @@ namespace P9YS.Services.Carousel
             if (!string.IsNullOrWhiteSpace(carouselnput.ImgData))
             {
                 var (imgName, dataBytes) = _baseService.Base64ToBytes(carouselnput.ImgData);
-                var uploadResult = _baseService.UploadFile($"/carousel/{imgName}", dataBytes);
+                imgUrl = $"/carousel/{imgName}";
+                var uploadResult = _baseService.UploadFile(imgUrl, dataBytes);
                 if (uploadResult.Code != CustomCodeEnum.Success)
                     return uploadResult;
             }
@@ -120,14 +121,17 @@ namespace P9YS.Services.Carousel
             if (!string.IsNullOrWhiteSpace(carouselnput.ImgData))
             {
                 var (imgName, dataBytes) = _baseService.Base64ToBytes(carouselnput.ImgData);
-                var uploadResult = _baseService.UploadFile($"/carousel/{imgName}", dataBytes);
+                imgUrl = $"/carousel/{imgName}";
+                var uploadResult = _baseService.UploadFile(imgUrl, dataBytes);
                 if (uploadResult.Code != CustomCodeEnum.Success)
                     return uploadResult;
             }
             //TODO:删除原图，异常流程
 
-            //更新实体            
+            //更新实体
             carousel = _mapper.Map(carouselnput, carousel);
+            if (!string.IsNullOrWhiteSpace(imgUrl))
+                carousel.ImgUrl = imgUrl;
             await _movieResourceContext.SaveChangesAsync();
             //返回
             carousel.ImgUrl = _baseService.GetCosAbsoluteUrl(carousel.ImgUrl);

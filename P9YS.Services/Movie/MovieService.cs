@@ -197,7 +197,8 @@ namespace P9YS.Services.Movie
             if (!string.IsNullOrWhiteSpace(input.ImgData))
             {
                 var (imgName, dataBytes) = _baseService.Base64ToBytes(input.ImgData);
-                var uploadResult = _baseService.UploadFile($"/poster/{imgName}", dataBytes);
+                imgUrl = $"/poster/{imgName}";
+                var uploadResult = _baseService.UploadFile(imgUrl, dataBytes);
                 if (uploadResult.Code != CustomCodeEnum.Success)
                     return uploadResult;
             }
@@ -244,6 +245,7 @@ namespace P9YS.Services.Movie
                         Url = mo.FirstOrDefault().Url,
                         UpdTime = mo.FirstOrDefault().UpdTime
                     })
+                .Where(s=> !string.IsNullOrWhiteSpace(s.Url))
                 .OrderBy(s => s.UpdTime)
                 .Take(count)
                 .ToListAsync();
