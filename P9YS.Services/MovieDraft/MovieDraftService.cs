@@ -115,8 +115,9 @@ namespace P9YS.Services.MovieDraft
             }
             movieDraftDetailInput.ReleaseDate = DateTime.Parse(Regex.Match(movieDraft.DoubanHtml
                 , @"content=""(\d\d\d\d-\d\d-\d\d)").Groups[1].Value);
-            movieDraftDetailInput.MovieTime = int.Parse(Regex.Match(movieDraft.DoubanHtml
-                , @"v:runtime""\s*?content=""(\d+)").Groups[1].Value);
+            int.TryParse(Regex.Match(movieDraft.DoubanHtml
+                , @"v:runtime""\s*?content=""(\d+)").Groups[1].Value,out int movieTime);
+            movieDraftDetailInput.MovieTime = movieTime;
             //简介
             movieDraftDetailInput.Intro = Regex.Match(movieDraft.DoubanHtml
                 , @"property=""v:summary"".*?>([\w\W]+?)</span>").Groups[1].Value;

@@ -17,6 +17,10 @@ using Hangfire;
 using P9YS.HangfireJobs;
 using Hangfire.MySql.Core;
 using System.Net.Http;
+using Microsoft.AspNetCore.DataProtection.XmlEncryption;
+using System.Xml.Linq;
+using Microsoft.Extensions.Options;
+using Microsoft.AspNetCore.DataProtection.KeyManagement;
 
 namespace P9YS.Manage
 {
@@ -60,9 +64,12 @@ namespace P9YS.Manage
                 options.MinimumSameSitePolicy = SameSiteMode.None;
             });
             //共享cookies
+            var keysFolder = System.IO.Path.Combine(System.IO.Directory.GetCurrentDirectory(), "tempkeys");
             services.AddDataProtection()
-                .SetApplicationName("cookieshare")
-                .PersistKeysToFileSystem(new System.IO.DirectoryInfo("C:\\P9ysCookieShare"));
+                //.SetApplicationName("cookieshare")
+                //.PersistKeysToFileSystem(new System.IO.DirectoryInfo("C:\\P9ysCookieShare"));
+                .PersistKeysToFileSystem(new System.IO.DirectoryInfo(keysFolder))
+                .UseXmlEncryptor(s => new CustomXmlEncryptor());
             //设置身份验证服务
             services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
                 .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, option =>
@@ -141,4 +148,59 @@ namespace P9YS.Manage
             });
         }
     }
+
+
+    #region CustomKeysRepository
+
+    public static class CustomBuilderExtensions
+    {
+        public static IDataProtectionBuilder UseXmlEncryptor(
+            this IDataProtectionBuilder builder,
+            Func<IServiceProvider, IXmlEncryptor> factory)
+        {
+            builder.Services.AddSingleton<IConfigureOptions<KeyManagementOptions>>(serviceProvider =>
+            {
+                var instance = factory(serviceProvider);
+                return new ConfigureOptions<KeyManagementOptions>(options =>
+                {
+                    options.XmlEncryptor = instance;
+                });
+            });
+
+            return builder;
+        }
+    }
+
+    public class CustomXmlDecryptor : IXmlDecryptor
+    {
+        public XElement Decrypt(XElement encryptedElement)
+        {
+            if (encryptedElement == null)
+            {
+                throw new ArgumentNullException(nameof(encryptedElement));
+            }
+
+            return new XElement(encryptedElement.Elements().Single());
+        }
+    }
+
+    public class CustomXmlEncryptor : IXmlEncryptor
+    {
+        public EncryptedXmlInfo Encrypt(XElement plaintextElement)
+        {
+            if (plaintextElement == null)
+            {
+                throw new ArgumentNullException(nameof(plaintextElement));
+            }
+
+            var newElement = new XElement("unencryptedKey",
+                new XComment(" This key is not encrypted. "),
+                new XElement(plaintextElement));
+            var encryptedTextElement = new EncryptedXmlInfo(newElement, typeof(CustomXmlDecryptor));
+
+            return encryptedTextElement;
+        }
+    }
+
+    #endregion
 }
