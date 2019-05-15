@@ -21,6 +21,7 @@ using Microsoft.AspNetCore.DataProtection.XmlEncryption;
 using System.Xml.Linq;
 using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.DataProtection.KeyManagement;
+using Microsoft.EntityFrameworkCore;
 
 namespace P9YS.Manage
 {
@@ -83,7 +84,8 @@ namespace P9YS.Manage
             #endregion
 
             #region 配置DI
-            services.AddScoped<EntityFramework.MovieResourceContext>();
+            services.AddDbContextPool<EntityFramework.MovieResourceContext>(options =>
+                options.UseMySql(Configuration["AppSettings:MovieResourceContext"]), poolSize: 100);
             services.AddScoped<IJobService, JobService>();
             //批量注册Service
             var dics = BaseHelper.GetClassName("P9YS.Services", t => t.Name.EndsWith("Service") && !t.IsInterface);

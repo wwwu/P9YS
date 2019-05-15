@@ -11,9 +11,6 @@ namespace P9YS.EntityFramework
 {
     public class MovieResourceContext : DbContext
     {
-        public MovieResourceContext()
-        { }
-
         public MovieResourceContext(DbContextOptions<MovieResourceContext> options)
             : base(options)
         { }
@@ -40,14 +37,7 @@ namespace P9YS.EntityFramework
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            if (!optionsBuilder.IsConfigured)
-            {
-                var envName = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")?? "Development";
-                Configuration = new ConfigurationBuilder()
-                    .Add(new JsonConfigurationSource { Path = $"appsettings.{envName}.json", ReloadOnChange = true })
-                    .Build();
-                optionsBuilder.UseMySql(Configuration["AppSettings:MovieResourceContext"]);
-            }
+
         }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)

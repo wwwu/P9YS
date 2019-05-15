@@ -14,6 +14,7 @@ using Microsoft.AspNetCore.DataProtection.XmlEncryption;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
@@ -84,7 +85,8 @@ namespace P9YS.Web
             #endregion
 
             #region 配置DI
-            services.AddScoped<EntityFramework.MovieResourceContext>();
+            services.AddDbContextPool<EntityFramework.MovieResourceContext>(options =>
+                options.UseMySql(Configuration["AppSettings:MovieResourceContext"]), poolSize: 100);
             //批量注册Service
             var dics = BaseHelper.GetClassName("P9YS.Services", t => t.Name.EndsWith("Service") && !t.IsInterface);
             foreach (var item in dics)
