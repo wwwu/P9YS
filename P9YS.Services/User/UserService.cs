@@ -164,7 +164,7 @@ namespace P9YS.Services.User
             {
                 string verifyCode = new Random().Next(100000, 999999).ToString();
                 _httpContext.HttpContext.Session.SetString(RegisterVerifyCodeName, verifyCode);
-                await SendEmailHelper.SendEmailAsync(new EmailConfig
+                SendEmailHelper.SendEmailAsync(new EmailConfig
                 {
                     Host = _options.CurrentValue.EmailServer.SmtpServer,
                     FromEmail = _options.CurrentValue.EmailServer.From,

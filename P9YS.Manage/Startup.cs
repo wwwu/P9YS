@@ -22,6 +22,7 @@ using System.Xml.Linq;
 using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.DataProtection.KeyManagement;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.HttpOverrides;
 
 namespace P9YS.Manage
 {
@@ -136,6 +137,10 @@ namespace P9YS.Manage
                 app.UseExceptionHandler("/Home/Error");
             }
             app.UseStaticFiles();
+            app.UseForwardedHeaders(new ForwardedHeadersOptions
+            {
+                ForwardedHeaders = ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto
+            });
             app.UseAuthentication();
             app.UseStatusCodePages("text/plain", "Status Code: {0}");
 

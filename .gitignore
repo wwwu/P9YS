@@ -261,3 +261,5 @@ __pycache__/
 *.pyc
 /P9YS.Manage/tempkeys
 /P9YS.Web/tempkeys
+/P9YS.Web/Properties/PublishProfiles
+/P9YS.Manage/Properties/PublishProfiles
