@@ -92,8 +92,9 @@ namespace P9YS.Services.MovieDraft
             movieDraftDetailInput.MovieAreaId = await _movieAreaService.GetMovieAreaId(areaName);
             movieDraftDetailInput.Director = Regex.Match(movieDraft.DoubanHtml
                 , @"v:directedBy"">(.*?)</a>").Groups[1].Value;
-            movieDraftDetailInput.Score = decimal.Parse(Regex.Match(movieDraft.DoubanHtml
-                , @"v:average"">(.*?)</strong>").Groups[1].Value);
+            decimal.TryParse(Regex.Match(movieDraft.DoubanHtml
+                , @"v:average"">(.*?)</strong>").Groups[1].Value, out decimal score);
+            movieDraftDetailInput.Score = score;
             movieDraftDetailInput.DoubanScore = movieDraftDetailInput.Score;
             //movieDraftDetailInput.ImgUrl = Regex.Match(movieDraft.DoubanHtml
             //    , @"<img.*?src=""(.*?)"".*?rel=""v:image").Groups[1].Value;
