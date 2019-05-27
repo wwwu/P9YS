@@ -1,12 +1,12 @@
 # P9YS
 影片信息、资源分享  
-ASP.NET Core 2 + EF Core 2 + Bootstrap + LayUI
+ASP.NET Core 2.2 + EF Core + LayUI
 
 ### 预览
 > 生产环境  
   Web：[http://www.p9ys.com](http://www.p9ys.com) （账号：test@p9ys.com 密码：123456）  
   后台：[http://ht.p9ys.com](http://ht.p9ys.com) 从Web端登录也可进入，共享cookie  
-  配置：单核、1G内存、1M独享带宽  
+  配置：单核、1G内存、1M带宽  
   
 > 演示环境：暂未搭建
 
@@ -20,7 +20,7 @@ ASP.NET Core 2 + EF Core 2 + Bootstrap + LayUI
 7. P9YS.Web项目d的appsettings配置文件中GeetestOptions（极验验证），会影响登录。
 
 ### 知识点
-> * [ASP.NET Core入门](https://docs.microsoft.com/zh-cn/aspnet/core/getting-started/?view=aspnetcore-2.1&tabs=windows)  
+> * [ASP.NET Core入门](https://docs.microsoft.com/zh-cn/aspnet/core/getting-started/?view=aspnetcore-2.2&tabs=windows)  
 有这种文档简直幸福。
 > * [EF Core入门](https://docs.microsoft.com/zh-cn/ef/core/get-started/)  
 搭配上ASP.NET Core入门，这两个文档涵盖了项目中所有的知识点。

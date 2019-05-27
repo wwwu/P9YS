@@ -1,4 +1,5 @@
 ﻿using JetBrains.Annotations;
+using Microsoft.AspNetCore.DataProtection.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Configuration.Json;
@@ -9,7 +10,7 @@ using System.Text;
 
 namespace P9YS.EntityFramework
 {
-    public class MovieResourceContext : DbContext
+    public class MovieResourceContext : DbContext, IDataProtectionKeyContext
     {
         public MovieResourceContext(DbContextOptions<MovieResourceContext> options)
             : base(options)
@@ -33,7 +34,7 @@ namespace P9YS.EntityFramework
         public virtual DbSet<RatingRecord> RatingRecords { get; set; }
         public virtual DbSet<SuportRecord> SuportRecords { get; set; }
         public virtual DbSet<MovieDraft> MovieDrafts { get; set; }
-
+        public DbSet<DataProtectionKey> DataProtectionKeys { get; set; }
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
