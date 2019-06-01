@@ -287,9 +287,9 @@
                                 result.content.scoreCount = 20;
                                 form.val("lay_add", result.content);
                                 //类型
-                                $("input[name='movieTypes']").attr("checked", false);
+                                $("input[name='movieTypes']").prop("checked", false);
                                 $.each(result.content.movieTypes, function (idx, item) {
-                                    $("input[name='movieTypes'][title='" + item + "']").attr("checked", true);
+                                    $("input[name='movieTypes'][title='" + item + "']").prop("checked", true);
                                 });
                                 form.render('checkbox');
                                 //movieOnlinePlays

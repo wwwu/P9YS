@@ -1,0 +1,43 @@
+version: '3.4'
+
+services:
+  p9ys.web:
+    image: p9ysweb
+    build:
+      context: .
+      dockerfile: P9YS.Web/Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - "8001:80"
+    container_name: p9ysweb
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+    networks:
+      - default
+
+  p9ys.manage:
+    image: p9ysmanage
+    build:
+      context: .
+      dockerfile: P9YS.Manage/Dockerfile
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+    ports:
+      - "8002:80"
+    container_name: p9ysmanage
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+    networks:
+      - default
+      
+networks:
+  default:
+    external: #容器外部已有的network
+      name: custom_bridge

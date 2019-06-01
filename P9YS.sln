@@ -37,6 +37,11 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "04 ThirdPartySDK", "04 Thir
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GeetestSDK", "GeetestSDK\GeetestSDK.csproj", "{2C8BD339-9C1D-4F07-95AD-93AEFE10C073}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "06 Deploy", "06 Deploy", "{73F6A1D3-135C-487F-879A-74C727FCDA36}"
+	ProjectSection(SolutionItems) = preProject
+		docker-compose-development.yml = docker-compose-development.yml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
