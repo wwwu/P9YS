@@ -142,9 +142,10 @@
         <span class="quote-title">资源：</span>
         <div class="layui-form-item">
             <div class="layui-inline">
-                <label class="layui-form-label">大小(MB)</label>
+                <label class="layui-form-label">大小(GB)</label>
                 <div class="layui-input-inline">
-                    <input type="text" name="movieResource.size" autocomplete="off" class="layui-input">
+                    <input type="text" id="size_mb" name="movieResource.size" autocomplete="off" class="layui-input" style="display:inline;width:93px">
+                    <input type="text" id="size_gb" autocomplete="off" class="layui-input" style="display:inline;width: 93px;">
                 </div>
             </div>
             <div class="layui-inline">
@@ -415,6 +416,14 @@
                     }
                 }
             })
+            
+            $("#size_gb,#size_mb").on("input propertychange",function () {
+                if (this.id == "size_gb") {
+                    $("#size_mb").val(this.value * 1024);
+                } else {
+                    $("#size_gb").val((this.value / 1024).toFixed(2));
+                }
+            });
         });
     </script>
 }
