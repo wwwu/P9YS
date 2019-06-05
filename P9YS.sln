@@ -40,6 +40,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "06 Deploy", "06 Deploy", "{73F6A1D3-135C-487F-879A-74C727FCDA36}"
 	ProjectSection(SolutionItems) = preProject
 		docker-compose-development.yml = docker-compose-development.yml
+		docker-compose-production.yml = docker-compose-production.yml
 	EndProjectSection
 EndProject
 Global

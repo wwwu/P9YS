@@ -2,7 +2,7 @@ version: '3.4'
 
 services:
   p9ys.web:
-    image: p9ysweb
+    image: p9ysweb:v1.0
     build:
       context: .
       dockerfile: P9YS.Web/Dockerfile
@@ -20,7 +20,7 @@ services:
       - default
 
   p9ys.manage:
-    image: p9ysmanage
+    image: p9ysmanage:v1.0
     build:
       context: .
       dockerfile: P9YS.Manage/Dockerfile
@@ -37,6 +37,26 @@ services:
     networks:
       - default
       
+  p9ys.nginx:
+    image: p9ysnginx:v1.0
+    build:
+      context: .
+      dockerfile: P9YS.Nginx/Dockerfile
+      args:
+        - env=development
+    ports:
+      - "8080:80"
+      - "8081:81"
+      - "8082:82"
+    container_name: p9ysnginx
+    deploy:
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+    networks:
+      - default
+
 networks:
   default:
     external: #容器外部已有的network

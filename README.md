@@ -5,10 +5,11 @@ ASP.NET Core 2.2 + EF Core + LayUI
 ### 预览
 > 生产环境  
   Web：[http://www.p9ys.com](http://www.p9ys.com) （账号：test@p9ys.com 密码：123456）  
-  后台：[http://ht.p9ys.com](http://ht.p9ys.com) 从Web端登录也可进入，共享cookie  
-  配置：单核、1G内存、1M带宽  
+  后台：[http://ht.p9ys.com](http://ht.p9ys.com) 从Web端个人中心可进入，共享cookie  
+  环境：ubuntu + docker + nginx反向代理
+  配置：单核、1G内存、1M带宽
   
-> 演示环境：暂未搭建
+> 演示环境：未搭建
 
 ### 项目构建
 1. 修改P9YS.Web和P9YS.Manage项目下appsettings.*.json中的连接字符串。 **[必须]**

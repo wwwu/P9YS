@@ -263,3 +263,4 @@ __pycache__/
 /P9YS.Web/tempkeys
 /P9YS.Web/Properties/PublishProfiles
 /P9YS.Manage/Properties/PublishProfiles
+/docker-compose-production.yml
