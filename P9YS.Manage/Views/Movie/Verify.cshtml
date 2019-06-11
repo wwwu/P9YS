@@ -419,7 +419,7 @@
             
             $("#size_gb,#size_mb").on("input propertychange",function () {
                 if (this.id == "size_gb") {
-                    $("#size_mb").val(this.value * 1024);
+                    $("#size_mb").val(parseInt(this.value * 1024));
                 } else {
                     $("#size_gb").val((this.value / 1024).toFixed(2));
                 }

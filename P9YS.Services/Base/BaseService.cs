@@ -138,7 +138,7 @@ namespace P9YS.Services.Base
 
         public (string imgName, byte[] dataBytes) Base64ToBytes(string base64String)
         {
-            base64String = System.Net.WebUtility.UrlDecode(base64String);
+            base64String = System.Net.WebUtility.HtmlDecode(base64String);
             var match = Regex.Match(base64String, @".*?:image/(.+?);base64,(.+)");
             var dataBytes = Convert.FromBase64String(match.Groups[2].Value);
             var imgName = $"{Guid.NewGuid().ToString("N")}.{match.Groups[1].Value}";
