@@ -239,7 +239,7 @@ namespace P9YS.Services.MovieDraft
             var result = new List<string>();
 
             #region 获取dytt最新电影链接，跟数据库中的比对取差集
-            var dyDomain = "https://www.dytt8.net/";
+            var dyDomain = "https://www.ygdy8.net/";
             var encoding = "gb2312";
             var dyListHtml = await _baseService.GetClientStringAsync(dyDomain, encoding);
             var newUrls = Regex.Matches(dyListHtml
