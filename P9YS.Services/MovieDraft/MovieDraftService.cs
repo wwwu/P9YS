@@ -242,6 +242,7 @@ namespace P9YS.Services.MovieDraft
             var dyDomain = "https://www.ygdy8.net/";
             var encoding = "gb2312";
             var dyListHtml = await _baseService.GetClientStringAsync(dyDomain, encoding);
+            result.Add(dyListHtml);
             var newUrls = Regex.Matches(dyListHtml
                 , @"(?<=start:最新电影下载-->[\w\W]*?)href='(.*?/\d+?/\d+?.html)'(?=[\w\W]*?end:最新电影下载--->)")
                 .Select(s => dyDomain + s.Groups[1].Value).Distinct().ToList();

@@ -95,21 +95,19 @@ namespace P9YS.Services.Base
         public async Task<string> GetClientStringAsync(string url, string encoding = "utf-8")
         {
             var result = string.Empty;
-            try
+            using (var httpClient = (url.StartsWith("https") ? _httpClientFactory.CreateClient("tls") : _httpClientFactory.CreateClient()))
             {
-                HttpClient client;
-                if (url.StartsWith("https"))
-                    client = _httpClientFactory.CreateClient("tls"); //TODO: 奇怪，服务器上这里如果不指定ssl协议，会报异常，本地环境则不会。
-                else
-                    client = _httpClientFactory.CreateClient();
-                client.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64)");
-                var bytes = await client.GetByteArrayAsync(url);
-                Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-                result = Encoding.GetEncoding(encoding).GetString(bytes);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex.ToString());
+                try
+                {
+                    httpClient.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64)");
+                    var bytes = await httpClient.GetByteArrayAsync(url);
+                    Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
+                    result = Encoding.GetEncoding(encoding).GetString(bytes);
+                }
+                catch (Exception ex)
+                {
+                    _logger.LogError(ex.ToString());
+                }
             }
             return result;
         }
