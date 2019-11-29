@@ -45,7 +45,8 @@ namespace P9YS.HangfireJobs
 
             //抓取影片资源
             RecurringJob.AddOrUpdate<IJobService>("Recurring_DownloadMovieInfoJob"
-                , s => s.DownloadMovieInfoJob(), "0 0/50 8-15 * * ?");//每天16点-23点之间，每50分钟执行一次
+                , s => s.DownloadMovieInfoJob(), "0 0 7/1 * * ?");//每天7点-23点，每小时执行一次
+            //BackgroundJob.Enqueue<IJobService>(s => s.DownloadMovieInfoJob());
 
             #endregion
         }

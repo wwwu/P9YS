@@ -242,14 +242,22 @@ namespace P9YS.Services.MovieDraft
             var dyDomain = "https://www.ygdy8.net/";
             var encoding = "gb2312";
             var dyListHtml = await _baseService.GetClientStringAsync(dyDomain, encoding);
-            result.Add(dyListHtml);
+            result.Add(dyListHtml.Length.ToString());
             var newUrls = Regex.Matches(dyListHtml
                 , @"(?<=start:最新电影下载-->[\w\W]*?)href='(.*?/\d+?/\d+?.html)'(?=[\w\W]*?end:最新电影下载--->)")
-                .Select(s => dyDomain + s.Groups[1].Value).Distinct().ToList();
+                .Select(s => dyDomain + s.Groups[1].Value)
+                .Distinct()
+                .Take(10)
+                .ToList();
+            result.Add(newUrls.First());
+            result.Add("已存在↓");
             var oldUrls = await _movieResourceContext.MovieDrafts
                 .Where(s => s.AddTime > DateTime.Now.AddMonths(-2) && newUrls.Contains(s.DyUrl))
                 .Select(s => s.DyUrl).Distinct().AsNoTracking().ToListAsync();
+            result.AddRange(oldUrls);
             newUrls = newUrls.Except(oldUrls).Take(maxCount).ToList();
+            result.Add("新↓");
+            result.AddRange(newUrls);
             #endregion
 
             #region 得到的新链接去豆瓣获取详情
