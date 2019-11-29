@@ -249,7 +249,7 @@ namespace P9YS.Services.MovieDraft
                 .Distinct()
                 .Take(10)
                 .ToList();
-            result.Add(newUrls.First());
+            result.Add(newUrls.FirstOrDefault());
             result.Add("已存在↓");
             var oldUrls = await _movieResourceContext.MovieDrafts
                 .Where(s => s.AddTime > DateTime.Now.AddMonths(-2) && newUrls.Contains(s.DyUrl))
