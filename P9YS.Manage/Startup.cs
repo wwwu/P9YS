@@ -53,7 +53,7 @@ namespace P9YS.Manage
             {
                 return new HttpClientHandler
                 {
-                    SslProtocols = System.Security.Authentication.SslProtocols.Tls
+                    SslProtocols = System.Security.Authentication.SslProtocols.Tls12
                 };
             });
             #endregion
