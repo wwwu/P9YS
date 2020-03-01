@@ -5,7 +5,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Hangfire.AspNetCore" Version="1.7.6" />
+    <PackageReference Include="Hangfire.AspNetCore" Version="1.7.9" />
     <PackageReference Include="Hangfire.MySql.Core" Version="2.2.5" />
   </ItemGroup>
 
